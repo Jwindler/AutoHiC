@@ -18,3 +18,6 @@
 		https://pytorch123.com/
 
 		https://handbook.pytorch.wiki/chapter1/1.1-pytorch-introduction.html
+
+	#3.17
+		复习NumPy创建数据与索引

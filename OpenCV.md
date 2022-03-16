@@ -265,3 +265,27 @@ cv.waitKey(0)
 cv.destroyAllWindows()
 ```
 
+
+
+### 性能衡量和提升技术
+
+- 使用OpenCV衡量性能
+
+​		**cv.getTickCount**函数返回从参考事件（如打开机器的那一刻）到调用此函数那一刻之间的时钟周期数。因此，如果在函数执行之前和之后调用它，则会获得用于执行函数的时钟周期数。
+
+​		**cv.getTickFrequency**函数返回时钟周期的频率或每秒的时钟周期数
+
+```python
+e1 = cv.getTickCount()
+# 你的执行代码
+e2 = cv.getTickCount()
+time = (e2 - e1)/ cv.getTickFrequency()
+```
+
+- 默认优化
+
+```python
+# 检查是否启用了优化
+cv.useOptimized()
+```
+
