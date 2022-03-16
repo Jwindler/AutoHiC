@@ -14,3 +14,7 @@
 		https://www.runoob.com/matplotlib/matplotlib-pyplot.html
 
 		https://matplotlib.org/stable/tutorials/introductory/usage.html#sphx-glr-tutorials-introductory-usage-py
+
+		https://pytorch123.com/
+
+		https://handbook.pytorch.wiki/chapter1/1.1-pytorch-introduction.html
