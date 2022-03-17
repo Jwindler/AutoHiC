@@ -191,6 +191,12 @@ torch.eye(n, m=None, out=None, dtype=None, layout=torch.strided, device=None, re
 
 
 
+### 张量操作与线性回归
+
+- 拼接
+
+
+
 
 
 

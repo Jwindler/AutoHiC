@@ -254,11 +254,162 @@ x[np.ix_([1,5,7,2],[0,3,1,2])]
 
 
 
+## 广播
+
+​		广播(Broadcast)是 numpy 对不同形状(shape)的数组进行数值计算的方式， 对数组的算术运算通常在相应的元素上进行。
+
+```python
+# 维数 维度长度相同
+a = np.array([1,2,3,4]) 
+b = np.array([10,20,30,40]) 
+c = a * b  # array([ 10,  40,  90, 160])
+
+
+```
+
+- 数组形状不同
+
+![image-20220317110501650](https://s2.loli.net/2022/03/17/8cwaByVNfngdSkK.png)
 
 
 
+## 迭代数组
+
+```python
+a = np.arange(6).reshape(2,3)
+# 迭代输出元素
+for x in np.nditer(a):
+    print (x, end=", " )
+```
+
+- 控制遍历顺序
+
+- `for x in np.nditer(a, order='F'):`Fortran order，即是列序优先；
+- `for x in np.nditer(a.T, order='C'):`C order，即是行序优先；
+
+![image-20220317111230568](https://s2.loli.net/2022/03/17/BG1HfbwuAk7DvaY.png)
+
+- 修改数组中元素的值
+
+实现对数组元素值得修改，必须指定 read-write 或者 write-only 的模式
+
+```python
+for x in np.nditer(a, op_flags=['readwrite']): 
+    x[...]=2*x 
+```
+
+- 外部循环
+
+| 参数            | 描述                                           |
+| :-------------- | :--------------------------------------------- |
+| `c_index`       | 可以跟踪 C 顺序的索引                          |
+| `f_index`       | 可以跟踪 Fortran 顺序的索引                    |
+| `multi_index`   | 每次迭代可以跟踪一种索引类型                   |
+| `external_loop` | 给出的值是具有多个值的一维数组，而不是零维数组 |
+
+```python
+for x in np.nditer(a, flags =  ['external_loop'], order =  'F'): 
+    print (x, end=", " )
+```
+
+![image-20220317111759884](https://s2.loli.net/2022/03/17/9TtuGZvbhqYC3Sd.png)
+
+- 广播迭代
+
+```python
+a = np.arange(0,60,5) 
+a = a.reshape(3,4) 
+
+b = np.array([1,  2,  3,  4], dtype =  int)  
+
+for x,y in np.nditer([a,b]):  
+    print ("%d:%d"  %  (x,y), end=", " )
+```
+
+![image-20220317111945366](/home/jzj/.config/Typora/typora-user-images/image-20220317111945366.png)
 
 
 
+## 数组操作
+
+### 修改数组形状
+
+- numpy.reshape
+
+```python
+numpy.reshape(arr, newshape, order='C')
+```
+
+- `arr`：要修改形状的数组
+- `newshape`：整数或者整数数组，新的形状应当兼容原有形状
+- order：'C' -- 按行，'F' -- 按列，'A' -- 原顺序，'k' -- 元素在内存中的出现顺序。
+
+```python
+a = np.arange(8)
+# 修改为4行2列的矩阵
+b = a.reshape(4, 2)
+```
 
 
+
+- numpy.ndarray.flat : 数组元素迭代器
+
+```python
+a = np.arange(9).reshape(3,3) 
+for element in a.flat:
+    print(element)
+```
+
+- numpy.ndarray.flatten 返回一份数组拷贝，对拷贝所做的修改不会影响原始数组
+
+```python
+ndarray.flatten(order='C')
+# order：'C' -- 按行，'F' -- 按列，'A' -- 原顺序，'K' -- 元素在内存中的出现顺序。
+```
+
+- numpy.ravel() 展平的数组元素，顺序通常是"C风格"，返回的是数组视图（view，有点类似 C/C++引用reference的意味），修改会影响原始数组。
+
+```python
+numpy.ravel(a, order='C')
+# order：'C' -- 按行，'F' -- 按列，'A' -- 原顺序，'K' -- 元素在内存中的出现顺序。
+```
+
+
+
+### 翻转数组
+
+- numpy.transpose 函数用于对换数组的维度
+  - `arr`：要操作的数组
+  - `axes`：整数列表，对应维度，通常所有维度都会对换。
+
+```python
+numpy.transpose(arr, axes)
+```
+
+
+
+- numpy.rollaxis 函数向后滚动特定的轴到一个特定位置
+  - `arr`：数组
+  - `axis`：要向后滚动的轴，其它轴的相对位置不会改变
+  - `start`：默认为零，表示完整的滚动。会滚动到特定位置。
+
+```python
+numpy.rollaxis(arr, axis, start)
+```
+
+
+
+- numpy.swapaxes 函数用于交换数组的两个轴
+  - `arr`：输入的数组
+  - `axis1`：对应第一个轴的整数
+  - `axis2`：对应第二个轴的整数
+
+```python
+numpy.swapaxes(arr, axis1, axis2)
+```
+
+
+
+### 修改数组维度
+
+- numpy.broadcast 用于模仿广播的对象，它返回一个对象，该对象封装了将一个数组广播到另一个数组的结果

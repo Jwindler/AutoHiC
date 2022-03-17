@@ -289,3 +289,207 @@ time = (e2 - e1)/ cv.getTickFrequency()
 cv.useOptimized()
 ```
 
+
+
+## 图像处理
+
+### 改变颜色空间
+
+- 颜色转换，使用cv函数。
+
+​		cvtColor(input_image, flag)，其中flag决定转换的类型。
+
+对于BGR→灰度转换，我们使用标志cv.COLOR_BGR2GRAY。类似地，对于BGR→HSV，我们使用标志cv.COLOR_BGR2HSV。
+
+```python
+import cv2 as cv
+img1 = cv.imread('./images/hic.png')
+
+# 灰度转换
+img2 = cv.cvtColor(img1, cv.COLOR_BGR2GRAY)
+
+# 列出使用标志
+[i for i in dir(cv) if i.startswith('COLOR_')]
+```
+
+- 对象追踪
+
+```python
+# 提取HiC中的红色
+
+# 读取原始图片
+frame = cv.imread("./images/hic.png")
+
+# 转换颜色空间 BGR 到 HSV
+hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+
+# 定义HSV中蓝色的范围
+lower_blue = np.array([156, 50, 50])
+upper_blue = np.array([180, 255, 255])
+
+# 设置HSV的阈值使得只取蓝色
+mask = cv.inRange(hsv, lower_blue, upper_blue)
+
+# 将掩膜和图像逐像素相加
+res = cv.bitwise_and(frame, frame, mask=mask)
+
+# 展示图片
+cv.imshow('frame', frame)
+cv.imshow('mask', mask)
+cv.imshow('res', res)
+cv.waitKey(0)
+cv.destroyAllWindows()
+```
+
+- HSV值查询
+
+```python
+# 颜色对应的BGR值
+red = np.uint8([[[255, 0, 0]]])
+
+# 转变为HSV值
+hsv_red = cv.cvtColor(red, cv.COLOR_BGR2HSV)
+print(hsv_red)
+```
+
+
+
+### 图像几何变换
+
+- 变换
+
+​		OpenCV提供了两个转换函数**cv.warpAffine**和**cv.warpPerspective**，您可以使用它们进行各种转换。**cv.warpAffine**采用2x3转换矩阵，而**cv.warpPerspective**采用3x3转换矩阵作为输入。
+
+- 缩放
+
+​		缩放只是调整图像的大小。为此，OpenCV带有一个函数**cv.resize()**。图像的大小可以手动指定，也可以指定缩放比例。也可使用不同的插值方法。首选的插值方法是cv.INTER_AREA用于缩小，cv.INTER_CUBIC（慢）和cv.INTER_LINEAR用于缩放。默认情况下，出于所有调整大小的目的，使用的插值方法为cv.INTER_LINEAR。
+
+```python
+img = cv.imread("./images/hic.png")
+
+res = cv.resize(img,None,fx=2, fy=2, interpolation = cv.INTER_CUBIC)
+# height, width = img.shape[:2]
+# res = cv.resize(img,(2*width, 2*height), interpolation = cv.INTER_CUBIC)
+
+cv.imshow("test",res)
+cv.waitKey(0)
+```
+
+- 平移
+
+![image-20220317104014951](https://s2.loli.net/2022/03/17/5FWkbOshr8qgCpM.png)
+
+```python
+# 将其放入np.float32类型的Numpy数组中，并将其传递给cv.warpAffine函数
+# 参见下面偏移为(100, 50)的示例
+
+img = cv.imread("./images/hic.png", 0)
+rows,cols = img.shape
+
+M = np.float32([[1,0,100],[0,1,50]])
+
+# 第三个参数是输出图像的大小，其形式应为(width，height)
+# 记住width =列数，height =行数
+dst = cv.warpAffine(img,M,(cols,rows))
+cv.imshow('img',dst)
+cv.waitKey(0)
+cv.destroyAllWindows()
+```
+
+- 旋转
+
+![image-20220317104313969](https://s2.loli.net/2022/03/17/cQV8vazLiNAbZuT.png)
+
+```python
+# 将图像相对于中心旋转90度而没有任何缩放比例
+img = cv.imread("./images/hic.png", 0)
+rows,cols = img.shape
+
+# cols-1 和 rows-1 是坐标限制
+# 获取旋转矩阵
+M = cv.getRotationMatrix2D(((cols-1)/2.0,(rows-1)/2.0),90,1)
+# 进行旋转
+dst = cv.warpAffine(img,M,(cols,rows))
+
+cv.imshow('img',dst)
+cv.waitKey(0)
+cv.destroyAllWindows()
+```
+
+- 仿射变换
+
+​		在仿射变换中，原始图像中的所有平行线在输出图像中仍将平行。为了找到变换矩阵，我们需要输入图像中的三个点及其在输出图像中的对应位置。然后**cv.getAffineTransform**将创建一个2x3矩阵，该矩阵将传递给**cv.warpAffine**。
+
+![image-20220317105411329](https://s2.loli.net/2022/03/17/CFDAhqK8Te4slPx.png)
+
+```python
+img = cv.imread("./images/hic.png", 0)
+rows, cols = img.shape
+
+pts1 = np.float32([[50, 50], [200, 50], [50, 200]])
+pts2 = np.float32([[10, 100], [200, 50], [100, 250]])
+
+M = cv.getAffineTransform(pts1, pts2)
+
+dst = cv.warpAffine(img, M, (cols, rows))
+plt.subplot(121), plt.imshow(img), plt.title('Input')
+plt.subplot(122), plt.imshow(dst), plt.title('Output')
+plt.show()
+```
+
+![image-20220317105842341](https://s2.loli.net/2022/03/17/apDoeHmY4r2cn1O.png)
+
+- 投射变换
+
+​		对于透视变换，您需要3x3变换矩阵。即使在转换后，直线也将保持直线。要找到此变换矩阵，您需要在输入图像上有4个点，在输出图像上需要相应的点。在这四个点中，其中三个不应共线。然后可以通过函数**cv.getPerspectiveTransform**找到变换矩阵。然后将**cv.warpPerspective**应用于此3x3转换矩阵。
+
+```python
+pts1 = np.float32([[56,65],[368,52],[28,387],[389,390]])
+pts2 = np.float32([[0,0],[300,0],[0,300],[300,300]])
+M = cv.getPerspectiveTransform(pts1,pts2)
+dst = cv.warpPerspective(img,M,(300,300))
+plt.subplot(121),plt.imshow(img),plt.title('Input')
+plt.subplot(122),plt.imshow(dst),plt.title('Output')
+plt.show()
+```
+
+![image-20220317105823790](https://s2.loli.net/2022/03/17/hJTjpB1He4DtlIO.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
