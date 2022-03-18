@@ -20,4 +20,9 @@
 		https://handbook.pytorch.wiki/chapter1/1.1-pytorch-introduction.html
 
 	#3.17
-		复习NumPy创建数据与索引
+		复习NumPy创建数据与索引 （Done）
+
+	#3.18
+		张量 高维表示 分轴(见纸质笔记)
+		HiC分类 寻找数据集
+		A1尽量看完

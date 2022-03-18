@@ -330,7 +330,7 @@ for x,y in np.nditer([a,b]):
 
 
 
-## 数组操作
+## 数组操作（重点）
 
 ### 修改数组形状
 
@@ -413,3 +413,172 @@ numpy.swapaxes(arr, axis1, axis2)
 ### 修改数组维度
 
 - numpy.broadcast 用于模仿广播的对象，它返回一个对象，该对象封装了将一个数组广播到另一个数组的结果
+
+
+
+## 位运算
+
+| 函数          | 描述                   |
+| :------------ | :--------------------- |
+| `bitwise_and` | 对数组元素执行位与操作 |
+| `bitwise_or`  | 对数组元素执行位或操作 |
+| `invert`      | 按位取反               |
+| `left_shift`  | 向左移动二进制表示的位 |
+| `right_shift` | 向右移动二进制表示的位 |
+
+- bitwise_and 函数对数组中整数的二进制形式执行位与运算。
+
+```python
+a,b = 13,17
+print (bin(a), bin(b))
+# 0b1101 0b10001
+
+print (np.bitwise_and(13, 17))
+# 1
+```
+
+
+
+![image-20220318113744868](https://s2.loli.net/2022/03/18/m6dsZMoD83Qf5rv.png)
+
+- bitwise_or()函数对数组中整数的二进制形式执行位或运算
+
+```python
+print (np.bitwise_or(13, 17))
+# 29
+```
+
+![image-20220318113906504](https://s2.loli.net/2022/03/18/FdvLp3j6PSwkUT9.png)
+
+- invert() 函数对数组中整数进行位取反运算，即 0 变成 1，1 变成 0
+
+- left_shift() 函数将数组元素的二进制形式向左移动到指定位置，右侧附加相等数量的 0
+
+```python
+np.left_shift(10,2)
+# 00001010 > 10
+# 00101000 > 40
+```
+
+- right_shift() 函数将数组元素的二进制形式向右移动到指定位置，左侧附加相等数量的 0 (同上，取反向)
+
+
+
+## 字符串函数
+
+- numpy.char.add() 函数依次对两个数组的元素进行字符串连接
+
+```python
+np.char.add(['hello'],[' xyz'])
+# ['hello xyz']
+```
+
+- numpy.char.multiply() 函数执行多重连接
+
+```python
+np.char.multiply('Runoob ',3)
+# Runoob Runoob Runoob 
+```
+
+- numpy.char.center() 函数用于将字符串居中，并使用指定字符在左侧和右侧进行填充
+
+```python
+np.char.center('Runoob', 20,fillchar = '*')
+# *******Runoob*******
+```
+
+- numpy.char.capitalize() 函数将字符串的第一个字母转换为大写
+
+```python
+np.char.capitalize('runoob')
+# Runoob
+```
+
+- numpy.char.title() 函数将字符串的每个单词的第一个字母转换为大写
+
+```python
+np.char.title('i like runoob')
+# I Like Runoob
+```
+
+- numpy.char.lower() 函数对数组的每个元素转换为小写。它对每个元素调用 str.lower
+
+```python
+#操作数组
+np.char.lower(['RUNOOB','GOOGLE'])
+# ['runoob' 'google']
+
+# 操作字符串
+np.char.lower('RUNOOB')
+# runoob
+```
+
+- numpy.char.upper() 函数对数组的每个元素转换为大写。它对每个元素调用 str.upper
+
+```python
+#操作数组
+np.char.upper(['runoob','google'])
+# ['RUNOOB' 'GOOGLE']
+
+# 操作字符串
+np.char.upper('runoob')
+# RUNOOB
+```
+
+- numpy.char.split() 通过指定分隔符对字符串进行分割，并返回数组。默认情况下，分隔符为空格
+
+```python
+np.char.split ('www.runoob.com', sep = '.')
+# ['www', 'runoob', 'com']
+```
+
+- numpy.char.splitlines() 函数以换行符作为分隔符来分割字符串，并返回数组
+
+```python
+np.char.splitlines('i\nlike runoob?')
+# ['i', 'like runoob?']
+# \n，\r，\r\n 都可用作换行符
+```
+
+- numpy.char.strip() 函数用于移除开头或结尾处的特定字符
+
+```python
+np.char.strip(['arunooba','admin','java'],'a')
+# ['runoob' 'dmin' 'jav']
+```
+
+- numpy.char.join() 函数通过指定分隔符来连接数组中的元素或字符串
+
+```python
+np.char.join([':','-'],['runoob','google'])
+# ['r:u:n:o:o:b' 'g-o-o-g-l-e']
+```
+
+- numpy.char.replace() 函数使用新字符串替换字符串中的所有子字符串
+
+```python
+np.char.replace ('i like runoob', 'oo', 'cc')
+# i like runccb
+```
+
+- numpy.char.encode() 函数对数组中的每个元素调用 str.encode 函数
+
+```python
+np.char.encode('runoob', 'cp500') 
+# b'\x99\xa4\x95\x96\x96\x82'
+```
+
+- numpy.char.decode() 函数对编码的元素进行 str.decode() 解码
+
+```python
+np.char.decode(a,'cp500')
+# runoob
+# 接上一个
+```
+
+
+
+
+
+
+

@@ -455,6 +455,63 @@ plt.show()
 
 ![image-20220317105823790](https://s2.loli.net/2022/03/17/hJTjpB1He4DtlIO.png)
 
+### 图像阈值
+
+比较不同的图像阈值处理
+
+```python
+
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
+img = cv.imread('./images/hic.png', 0)
+ret, thresh1 = cv.threshold(img, 127, 255, cv.THRESH_BINARY)
+ret, thresh2 = cv.threshold(img, 127, 255, cv.THRESH_BINARY_INV)
+ret, thresh3 = cv.threshold(img, 127, 255, cv.THRESH_TRUNC)
+ret, thresh4 = cv.threshold(img, 127, 255, cv.THRESH_TOZERO)
+ret, thresh5 = cv.threshold(img, 127, 255, cv.THRESH_TOZERO_INV)
+titles = [
+    'Original Image',
+    'BINARY',
+    'BINARY_INV',
+    'TRUNC',
+    'TOZERO',
+    'TOZERO_INV']
+images = [img, thresh1, thresh2, thresh3, thresh4, thresh5]
+for i in range(6):
+    plt.subplot(2, 3, i + 1), plt.imshow(images[i], 'gray')
+    plt.title(titles[i])
+    plt.xticks([]), plt.yticks([])
+plt.show()
+```
+
+- 自适应阈值
+
+自动选择周围的阈值进行处理
+
+- Otsu的二值化
+
+
+
+### 图像平滑
+
+- 2D卷积（图像过滤）
+
+```python
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
+img = cv.imread('./images/hic.png', 0)
+kernel = np.ones((5,5),np.float32)/25
+dst = cv.filter2D(img,-1,kernel)
+plt.subplot(121),plt.imshow(img),plt.title('Original')
+plt.xticks([]), plt.yticks([])
+plt.subplot(122),plt.imshow(dst),plt.title('Averaging')
+plt.xticks([]), plt.yticks([])
+plt.show()
+```
+
+![image-20220318224053231](https://s2.loli.net/2022/03/18/FuqQaehUlH7Ntcp.png)
 
 
 
@@ -462,10 +519,48 @@ plt.show()
 
 
 
+- 图像模糊（图像平滑）
+
+- 通过将图像与低通滤波器内核进行卷积来实现图像模糊，对于消除噪音很有用
+
+  - 平均
+
+    ```python
+    import cv2 as cv
+    import numpy as np
+    from matplotlib import pyplot as plt
+    img = cv.imread('./images/hic.png', 0)
+    blur = cv.bilateralFilter(img,9,75,75)
+    plt.subplot(121),plt.imshow(img),plt.title('Original')
+    plt.xticks([]), plt.yticks([])
+    plt.subplot(122),plt.imshow(blur),plt.title('Blurred')
+    plt.xticks([]), plt.yticks([])
+    plt.show()
+    ```
+
+  - 高斯模糊
+
+    ```python
+    blur = cv.GaussianBlur(img,(5,5),0)
+    ```
+
+  - 中位模糊
+
+    ```python
+    median = cv.medianBlur(img,5)
+    ```
+
+  - 双边模糊
+
+    ```python
+    blur = cv.bilateralFilter(img,9,75,75)
+    ```
+
+    
 
 
 
-
+​	
 
 
 
