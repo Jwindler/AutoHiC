@@ -197,19 +197,68 @@ torch.eye(n, m=None, out=None, dtype=None, layout=torch.strided, device=None, re
 
 
 
+## 图片处理与数据加载
+
+### DataLoader & DataSet
+
+![image-20220321112011489](https://s2.loli.net/2022/03/21/ome7HS6CdERzuYt.png)
+
+### Transforms
+
+- 数据增强
+
+将原始数据，进行多种变化，可以增加数据量，还能提升模型的适应能力
 
 
 
+## 模型构建
+
+### 模型创建
+
+![img](https://s2.loli.net/2022/03/21/z9GSfgYq7PMjwbd.png)
 
 
 
+![img](https://image.zhangxiann.com/20200614114315.png)
 
 
 
+- 容器
+  - nn.Sequetial：顺序性，各网络层之间严格按照顺序执行，常用于 block 构建，在前向传播时的代码调用变得简洁
+  - nn.ModuleList：迭代行，常用于大量重复网络构建，通过 for 循环实现重复构建
+  - nn.ModuleDict：索引性，常用于可选择的网络层
+
+### 卷积层
+
+### 池化层、线性层和激活函数层
 
 
 
+## 模型训练
 
+### 权值初始化
+
+### 损失函数
+
+​		损失函数是衡量模型输出与真实标签之间的差异
+
+- 损失函数(Loss Function)是计算**一个**样本的模型输出与真实标签的差异
+- 代价函数(Cost Function)是计算**整个样本集**的模型输出与真实标签的差异，是所有样本损失函数的平均值
+- 目标函数(Objective Function)就是代价函数加上正则项
+
+### 优化器
+
+​		用于管理并更新模型中可学习参数的值，使得模型输出更加接近真实标签。
+
+## 可视化与Hook
+
+### TensorBoard
+
+​		可视化模型训练过程中，参数的变化
+
+### Hook
+
+​		由于 PyTorch 是基于动态图实现的，因此在一次迭代运算结束后，一些中间变量如非叶子节点的梯度和特征图，会被释放掉。在这种情况下想要提取和记录这些中间变量，就需要使用 Hook 函数。
 
 
 

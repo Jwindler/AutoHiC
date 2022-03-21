@@ -556,11 +556,88 @@ plt.show()
     blur = cv.bilateralFilter(img,9,75,75)
     ```
 
-    
 
 
 
-​	
+### 形态转换
+
+- 侵蚀
+
+​		有助于去除小的白色噪声(正如我们在颜色空间章节中看到的)，分离两个连接的对象等。
+
+```python
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
+img = cv.imread('./images/hic.png', 0)
+kernel = np.ones((5,5),np.uint8)
+erosion = cv.erode(img,kernel,iterations = 1)
+plt.subplot(121), plt.imshow(img), plt.title('ORIGINAL')
+plt.subplot(122), plt.imshow(erosion), plt.title('erosion')
+plt.show()
+```
+
+![image-20220321110419971](https://s2.loli.net/2022/03/21/joiUHd4wXEkVbIQ.png)
+
+- 扩张
+
+​		增加图像中的白色区域或增加前景对象的大小,在连接对象的损坏部分时也很有用。
+
+```python
+dilation = cv.dilate(img,kernel,iterations = 1)
+```
+
+![image-20220321110509728](https://s2.loli.net/2022/03/21/OoIQaAB7K4khxyR.png)
+
+- 开运算
+
+​		侵蚀然后扩张,对于消除噪音很有用
+
+```python
+opening = cv.morphologyEx(img, cv.MORPH_OPEN, kernel) 
+```
+
+- 闭运算
+
+​		先扩张然后再侵蚀，在关闭前景对象内部的小孔或对象上的小黑点时很有用。
+
+```python
+closing = cv.morphologyEx(img, cv.MORPH_CLOSE, kernel) 
+```
+
+- 形态学梯度
+
+```python
+gradient = cv.morphologyEx(img, cv.MORPH_GRADIENT, kernel) 
+```
+
+- 顶帽
+
+​		输入图像和图像开运算之差
+
+```python
+tophat = cv.morphologyEx(img, cv.MORPH_TOPHAT, kernel) 
+```
+
+- 黑帽
+
+​		输入图像和图像闭运算之差
+
+```python
+blackhat = cv.morphologyEx(img, cv.MORPH_BLACKHAT, kernel) 
+```
+
+
+
+### 图像梯度
+
+滤波器
+
+### Canny边缘检测
+
+### 图像金字塔
+
+### 轮廓
 
 
 

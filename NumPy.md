@@ -578,7 +578,47 @@ np.char.decode(a,'cp500')
 
 
 
+## 数学函数
 
+求各种三角函数
 
+- numpy.around() 函数返回指定数字的**四舍五入**值
 
+```python
+numpy.around(a,decimals)
+```
 
+- a: 数组
+- decimals: 舍入的小数位数。 默认值为0。 如果为负，整数将四舍五入到小数点左侧的位置
+
+向下和向上取整
+
+## 算术函数
+
+加减乘除
+
+- numpy.reciprocal() 函数返回参数逐元素的倒数
+- numpy.power() 函数将第一个输入数组中的元素作为底数，计算它与第二个输入数组中相应元素的幂（计算**幂运算**）
+
+- numpy.mod() 计算输入数组中相应元素的相除后的余数
+
+## 统计函数
+
+- numpy.amin() 用于计算数组中的元素沿**指定轴**的最小值。
+- numpy.amax() 用于计算数组中的元素沿**指定轴**的最大值。
+
+- numpy.ptp()函数计算数组中元素最大值与最小值的差（**最大值 - 最小值**）
+
+- numpy.percentile 百分数统计
+
+- numpy.median() 函数用于计算数组 a 中元素的中位数
+
+- numpy.mean() 函数返回数组中元素的算术平均值。
+
+- numpy.average() 函数根据在另一个数组中给出的各自的**权重计算**数组中元素的加权平均值
+
+- std标准差std = sqrt(mean((x - x.mean())**2))
+
+- var 方差 var = mean((x - x.mean())** 2)
+
+  
