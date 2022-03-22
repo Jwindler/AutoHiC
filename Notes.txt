@@ -35,5 +35,10 @@
 	#3.21
 		relu激活层
 			relu函数的作用就是增加了神经网络各层之间的非线性关系
-			
 		HiC 流程 + HiC分类
+
+	#3.22
+		# OpenCV+CNN手写数字实时识别项目
+		https://blog.csdn.net/weixin_45371989/article/details/110679930
+
+	#3.23

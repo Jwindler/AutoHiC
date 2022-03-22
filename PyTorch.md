@@ -262,3 +262,21 @@ torch.eye(n, m=None, out=None, dtype=None, layout=torch.strided, device=None, re
 
 
 
+## 正则化
+
+### weight decay & dropout
+
+​		一种减少方差的策略
+
+​		误差=偏差+方差+噪声
+
+### 标准化
+
+
+
+> Done
+
+
+
+
+
