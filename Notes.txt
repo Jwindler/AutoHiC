@@ -42,3 +42,5 @@
 		https://blog.csdn.net/weixin_45371989/article/details/110679930
 
 	#3.23
+		OpenCV 特征识别 例子
+		HiC 笔记完成

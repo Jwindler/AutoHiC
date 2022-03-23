@@ -641,6 +641,8 @@ blackhat = cv.morphologyEx(img, cv.MORPH_BLACKHAT, kernel)
 
 
 
+## 5.特征检测与描述
+
 
 
 
