@@ -46,6 +46,30 @@
 		HiC 笔记完成 （流程完）
 
 	#3.24
-		寻找OpenCV实战例子
-		HiC 文献
+		寻找OpenCV实战例子(PASS)
+		HiC 文献 (Done)
 		Juicebox 数据结构 辅助挂载原理 每一个官方信息
+		目标检测
+
+		DL 两步检测
+		  基于候选区域
+		    R-CNN（具有重复计算） 
+
+		    SPP-net(不能使用BP) 
+
+		    Fast R-CNN(无法以数据驱动的方式进行学习)
+
+		    Faster R-CNN（不能实时检测，对于小目标检测效果比较差）
+
+		    R-FCN 
+
+		    Mask R-CNN (基于 Faster R-CNN， 算法有所改进 )
+		    	https://github.com/matterport/Mask_RCNN
+		    	https://blog.csdn.net/WZZ18191171661/article/details/79453780
+
+    # 3.25
+    	juicebox 剪切的底层逻辑
+    	.hic & .assembly 文件的存放格式，信息 操作空间
+    	https://www.biorxiv.org/content/10.1101/254797v1.abstract
+    	https://www.cell.com/fulltext/S0092-8674(14)01497-4
+		2本书
