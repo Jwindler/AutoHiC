@@ -73,3 +73,7 @@
     	https://www.biorxiv.org/content/10.1101/254797v1.abstract
     	https://www.cell.com/fulltext/S0092-8674(14)01497-4
 		2本书
+
+	# 3.28
+		配置TensorBoard
+		一个Example
