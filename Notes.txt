@@ -75,5 +75,11 @@
 		2本书
 
 	# 3.28
-		配置TensorBoard
-		一个Example
+		配置TensorBoard(ERROR)
+		一个Example(Bilibili)
+
+	# 3.29
+		Mask R-CNN 第三章
+		Faster-RCNN
+			https://blog.csdn.net/weixin_44791964/article/details/105739918
+		小例子
