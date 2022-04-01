@@ -1,0 +1,71 @@
+# Statistics Overview 
+Program to calculate statistics on the infile. The infile should be the
+"intermediate" form: no duplicates, 14 fields, laid out as:
+
+str1 chr1 pos1 frag1 str2 chr2 pos2 frag2 mapq1 cigar1 seq1 mapq2 cigar2 seq2
+
+This intermediate form makes it easy to sort (to remove duplicates) and to
+grab just the first six fields to create the HiC map.
+
+The last six fields are needed for this statistics scripts, in order to
+determine the histogram of mapQ values, the number of dangling ends, and the
+number of ligation junctions. Cigar is needed to properly calculate dups.
+
+The program also requires a restriction site file, which lists on
+each line, the sorted locations of the restriction sites.
+
+The program will print out the total reads, # dangling ends, # ligation
+junctions, #intra vs inter chromosomal reads, # inner/outer/right/left
+read pairs, a histogram of the MAPQ values, a histogram of the distance
+from the closest restriction enzyme site, and a count of which end was closest to the
+restriction enzyme site.
+
+#Detailed Usage
+
+```
+statistics [--ligation NNNN] [--mapqs mapq1,maqp2] [--mndindex mnd] [--threads thr] 
+           <site file> <stats file> <infile> <genome ID> [stats file 2] [outfile] 
+```
+The required arguments are: 
+* `<site file>`: list of HindIII restriction sites, one line per chromosome
+* `<stats file>`: output file containing total reads, for library complexity
+* `<infile>`: file in intermediate format to calculate statistics on
+* `<genome ID>: `: file to create chromosome handler
+
+Optional Flags: 
+* `--ligation`: ligation junction, default is "GATCGATC"
+* `--mapqs`: mapping quality thresholds, can pass 0,1, or 2 values, default values are 1 and 30* 
+(30 is used as default only if two separate stats files are passed)
+* `--mndindex`: for multithreading purposes, file of all positions within input file
+* `--threads`: for multithreading purposes, number of threads to be used by system
+
+Optional Arguments: 
+* `[stats file 2]`: second output file containing total reads for second mapping quality value
+* `[outfile]`: TBA 
+
+#Examples
+`statistics --ligation AG --mapqs 1,2 --mndindex mndindex.txt --threads 4 sitefile.txt statsfile.txt statsfile2.txt inputfile.txt
+genomeID.txt`
+
+This command will run statistics calculations for multithreaded systems with two mapping quality values.
+
+`statistics --ligation AG --mapqs 1 --mndindex mndindex.txt --threads 4 sitefile.txt statsfile.txt statsfile2.txt inputfile.txt genomeID.txt`
+
+This command will run statistics calculations for multithreaded systems with one mapping quality value.
+
+`statistics --ligation AG --mapqs 1,2 sitefile.txt statsfile.txt statsfile2.txt inputfile.txt genomeID.txt`
+
+This command will run statistics calculations for single threaded systems with two mapping quality values. 
+
+`statistics --ligation AG --mapqs 1 sitefile.txt statsfile.txt inputfile.txt genomeID.txt`
+
+This command will run statistics calculations for single threaded systems with one mapping quality value.
+
+
+
+
+
+
+
+
+
