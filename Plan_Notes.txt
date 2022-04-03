@@ -1,6 +1,5 @@
 # 3.14-
 # OpenCV ：https://woshicver.com/
-。
 	# 常见问题
 		Python 脚本**整理数据**
 
@@ -12,8 +11,6 @@
 		待检测目标与背景颜色**对比度低**， 网络难以提取出具有判别性的特征各
 		待检测目标之间**数量极度不均衡**， 导致样本不均衡检测算法的速度与精度难以取得良好平衡
 
-	
-	
 	#3.15 
 		OpenCV开发文档学习
 		https://pytorch.zhangxiann.com/1-ji-ben-gai-nian/1.2-tensor-zhang-liang-jie-shao
@@ -37,7 +34,6 @@
 		张量 高维表示 分轴(见纸质笔记)
 		
 		
-
 	#3.20
 		确定HiC分类属于那种问题，关于HiC图像，使用那种编码格式(多分类 多标签 问题)		 			
 		图片的向量化 编码格式
@@ -95,9 +91,11 @@
 		错误分类，用于labelme 标注图像 (找时间 截40张 HiC 热图：想好包括的类型)
 
 	# 4.1
-		Mask R-CNN 第四章 + 源码
-		Wiki
-		文件格式
-		书
-		python进阶
+		Mask R-CNN 第四章 + 源码 (Done)
+		Wiki(Done)
+		文件格式(Done)
+		书(Done)
+		python进阶(Done)
 
+	# 4.2
+		Mask R-CNN 第六章

@@ -97,3 +97,26 @@ NUM_CLASSES = 1 + 80
 ```python 
 DETECTION_MIN_CONFIDENCE = 0.7
 ```
+
+
+
+## 迁移学习
+
+- 直接训练（收敛快）
+- 冻结相关层
+
+```python
+for layers in model.layers:
+    layer.trainable = False
+
+# 冻结前100层
+model.layers[:100].train = False
+```
+
+
+
+- 残差网络
+
+
+
+![image-20220402102926970](https://s2.loli.net/2022/04/02/uNeELHfm1G6xVF5.png)

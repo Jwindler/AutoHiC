@@ -1,5 +1,21 @@
 # HiC
 
+- HiC 开发的软件介绍
+
+```http
+https://www.4dnucleome.org/software.html
+```
+
+
+
+- 文件格式介绍
+
+```http
+https://zhuanlan.zhihu.com/p/49181257
+```
+
+
+
 ## 原理
 
 
@@ -41,6 +57,25 @@
 
 
 ## 互作矩阵
+
+### ContactMap
+
+​		Contact Map 数据是 Reads Pairs 经过划 bin 后转换为矩阵得到的， 所以会有一定程度的信息损失。 Contact Map 从数据结构上来看其实就是一个矩阵， 但在存储形式上可以是稠密的矩阵也可以是稀疏矩阵。 根据划取的 bin 的大小 (binsize) Contact Map 有不同的分辨率 (resolution) 之分，越高的 resolution 意味着 越小的 binsize，从中能观察出更精细的互作结构，但同时占用的存储空间也越大。 所以需要根据测序深度的大小来选取合适的 binsize。
+
+-  Contact Map 存储现有格式
+
+```
+文本文件
+tab-delimited text
+coordinated list
+Numpy 矩阵 (.npy)
+Dekker Lab HDF5
+Cooler
+.hic file (Aiden Lab)
+BUTLR (Yue lab)
+```
+
+
 
 ### 矩阵构建
 
@@ -92,3 +127,41 @@
   - 1. 上方表格内容
     2. 染色体内容
     3. 尾部残余
+
+- 数据操作
+
+```http
+https://github.com/aidenlab/straw
+
+# 基于python 
+https://github.com/aidenlab/straw/tree/master/pybind11_python
+```
+
+
+
+
+
+## 软件
+
+HICUP
+
+Hi-Corrector
+
+Hic-Box
+
+Hiclib
+
+distiller
+
+​	.cool 
+
+cooler
+
+TADbit
+
+- python操作.hic
+
+https://github.com/aidenlab/straw/wiki/Python
+
+https://github.com/aidenlab/
+
