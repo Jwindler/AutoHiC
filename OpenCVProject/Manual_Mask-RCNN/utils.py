@@ -225,4 +225,4 @@ class Dataset(object):
         self.class_from_source_map = {"{}.{}".format(info['source'], info['id']):id
                                       for  info, id in zip(self.class_info, self.class_ids)}
 
-        self.sources = list(set([i['source']]))
+        self.sources = list(set([['source']]))
