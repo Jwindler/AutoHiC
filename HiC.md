@@ -145,19 +145,26 @@ https://github.com/aidenlab/straw/tree/master/pybind11_python
 
 HICUP
 
-Hi-Corrector
+Hi-Corrector (数据格式定义，无用)
 
-Hic-Box
+Hic-Box（无用）
 
-Hiclib
+Hiclib（long time）
 
 distiller
 
 ​	.cool 
 
+HiCExplorer
+https://hicexplorer.readthedocs.io/en/3.7.2/index.html
+
 cooler
 
+https://cooler.readthedocs.io/en/latest/datamodel.html
+
 TADbit
+
+​	[Welcome to TADbit’s documentation! — TADbit 1.0 documentation (3dgenomes.github.io)](http://3dgenomes.github.io/TADbit/)
 
 - python操作.hic
 
