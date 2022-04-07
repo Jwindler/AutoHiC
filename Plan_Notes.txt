@@ -99,3 +99,13 @@
 
 	# 4.2
 		Mask R-CNN 第六章(Done)
+
+	# 4.7
+		Docker CUDA (查看配置关系，寻找可用的包对应) > GPU 实例 (Done)
+		Mask-RCNN 源码（Pycharm）（Done） 
+		安装Juicebox
+		tf.data 数据集的构建与预处理
+			https://tf.wiki/zh_hans/basic/tools.html#tf-data
+
+	# 4.8 
+		论文解读1
