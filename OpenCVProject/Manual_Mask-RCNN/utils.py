@@ -225,4 +225,121 @@ class Dataset(object):
         self.class_from_source_map = {"{}.{}".format(info['source'], info['id']):id
                                       for  info, id in zip(self.class_info, self.class_ids)}
 
-        self.sources = list(set([['source']]))
+        self.sources = list(set([i['source'] for i in self.class_info]))
+        self.source_class_ids = {}
+
+        for source in self.sources:
+            self.source_class_ids[source] = []
+            for i, info in enumerate(self.class_info):
+                if i == 0 or source == info['source']:
+                    self.source_class_ids[source].append(i)
+
+    def map_source_class_id(self, source_class_id):
+
+        return self.class_from_source_map[source_class_id]
+
+    def get_source_class_id(self, class_id, source):
+        info = self.class_info[class_id]
+        assert info['source'] == source
+        return info['id']
+
+    def append_data(self, class_info, image_info):
+        self.external_to_class_id = {}
+        for i, c in enumerate(self.class_info):
+            for ds, id in c["map"]:
+                self.external_to_class_id[ds + str(id)] = i
+
+        self.external_to_class_id = {}
+        for i, info in enumerate(self.image_info):
+            self.external_to_class_id[info["ds"] + str(info["id"])] = i
+    @property
+    def image_ids(self):
+        return self._image_ids
+
+    def source_image_link(self, image_id):
+        return self.image_info[image_id]["path"]
+
+    def load_image(self, image_id):
+        image = skimage.io.imread(self.image_info[image_id]['path'])
+        if image.ndim != 3:
+            image = skimage.color.gray2rgb(image)
+        return image
+
+    def load_mask(self, image_id):
+        mask = np.empty([0, 0, 0])
+        class_ids = np.empty([0], np.int32)
+        return mask, class_ids
+
+def resize_image(image, min_dim=None, max_dim=None, padding=False):
+    h, w = image.shape[:2]
+    window = (0, 0, h, w)
+    scale = 1
+
+    if min_dim:
+        scale  = max(1, min_dim / min(h, w))
+
+    if max_dim:
+        image_max = max(h, w)
+        if round(image_max * scale) > max_dim:
+            scale = max_dim / image_max
+
+    if scale != 1:
+        image = scipy.misc.imresize(
+            image, (round(h * scale), round(w * scale)))
+
+    if padding:
+        h, w = image.shape[:2]
+        top_pad = (max_dim - h) // 2
+        bottom_pad = max_dim -h - top_pad
+        left_pad = (max_dim - w) // 2
+        right_pad = max_dim - w - left_pad
+        padding = [(top_pad, bottom_pad), (left_pad, right_pad), (0, 0)]
+        image = np.pad(image, padding, mode='constant', constant_values=0)
+        window = (top_pad, left_pad, h + top_pad, w + left_pad)
+
+    return image, window, scale, padding
+
+def resize_mask(mask, scale, padding):
+    h, w = mask.shape[:2]
+    mask = scipy.ndimage.zoom(mask, zoom=[scale, scale, 1], order=0)
+    mask = np.pad(mask, padding, mode='constant', constant_values=0)
+    return mask
+
+def minimize_mask(bbox, mask, mini_shape):
+    mini_mask = np.zeros(mini_shape + (mask.shape[-1],), dtype=bool)
+    for i in range(mask.shape[-1]):
+        m = mask[:, :, i]
+        y1, x1, y2, x2 = bbox[i][:4]
+        m = m[y1:y2, x1:x2]
+        if m.size == 0:
+            raise Exception("")
+        m = scipy.misc.imresize(m.astype(float), mini_shape, interp='bilinear')
+        mini_mask[:, :, i] = np.where(m >= 128, 1, 0)
+    return mini_mask
+
+
+def expand_mask(bbox, mini_mask, image_shape):
+
+    mask = np.zeros(image_shape[:2] + (mini_mask.shape[-1],), dtype=bool)
+    for i in range(mask.shape[-1]):
+        m = mini_mask[:, :, i]
+        y1, x1, y2, x2 = bbox[i][:4]
+        h = y2 - y1
+        w = x2 - x1
+        m = scipy.misc.imresize(m.astype(float), (h, w), interp='bilinear')
+        mask[y1:y2, x1:x2, i] = np.where(m >= 128, 1, 0)
+    return mask
+
+def mold_mask(mask, config):
+    pass
+
+def unmold_mask(mask, bbox, image_shape):
+    threshold = 0.5
+    y1, x1, y2, x2 = bbox
+    mask = scipy.misc.imresize(
+        mask, (y2 - y1, x2 - x1), interp='bilinear').astype(np.float32) / 255.0
+    mask = np.where(mask >= threshold, 1, 0).astype(np.uint8)
+
+    full_mask = np.zeros(image_shape[:2], dtype=np.uint8)
+    full_mask[y1:y2, x1:x2] = mask
+    return full_mask
