@@ -172,3 +172,16 @@ https://github.com/aidenlab/straw/wiki/Python
 
 https://github.com/aidenlab/
 
+
+
+## 可视化
+
+[Hi-C数据可视化](https://xuzhougeng.top/archives/HiC-visualization-in-assembly)
+
+[HiCPlotter](https://github.com/akdemirlab/HiCPlotter)
+
+
+
+Juicer使用
+
+​	[HiC 数据处理](https://zhuanlan.zhihu.com/p/341206245)
