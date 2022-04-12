@@ -107,5 +107,20 @@
 		tf.data 数据集的构建与预处理
 			https://tf.wiki/zh_hans/basic/tools.html#tf-data
 
-	# 4.8 
-		论文解读1
+	# 4.9
+		网络细节
+		环境搭建 （Done）
+
+	# 4.11
+		循环层 （Done）
+		迁移学习
+		测试易位检测 （准备数据集）
+
+	# 4.12
+		# Mask-RCNN模型修改
+
+	# 4.13
+		TensorBoard 使用
+
+
+

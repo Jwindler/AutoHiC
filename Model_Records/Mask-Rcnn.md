@@ -1,5 +1,8 @@
 # Mask R-CNN
 
+- 学习网站
+  - https://blog.csdn.net/nima_zhang_b/article/details/82878771
+
 
 
 
@@ -120,3 +123,47 @@ model.layers[:100].train = False
 
 
 ![image-20220402102926970](https://s2.loli.net/2022/04/02/uNeELHfm1G6xVF5.png)
+
+
+
+## 自训练
+
+
+
+### 制作数据集
+
+- 像素转换
+
+​		首先对自己的图片进行像素转换，全部转换为 64 的倍数，比如 1024*768 ，如果不转换为 64 倍数后续**有可能**会出错
+
+```python
+import os
+import glob
+from PIL import Image
+
+# 初始图片放在 pic11文件夹下
+img_path = glob.glob("./pic11") 
+
+# 新建 pic 文件夹，以生成像素转换后的图片
+path_save = "./pic" 
+files = os.listdir(img_path[0])
+# print(img_path)
+for file in files:
+  name = os.path.join(path_save, file)
+  filename = "./pic11/" + file
+  print(filename)
+  # with Image.open(file,'rw') as im:
+  im = Image.open(filename)
+  im.thumbnail((1024,768))
+  print(im.format, im.size, im.mode)
+  im.save(name,'jpeg')
+```
+
+
+
+### 特征标注
+
+​		见`labelme.md`
+
+
+

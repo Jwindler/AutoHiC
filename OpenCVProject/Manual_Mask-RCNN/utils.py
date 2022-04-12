@@ -343,3 +343,96 @@ def unmold_mask(mask, bbox, image_shape):
     full_mask = np.zeros(image_shape[:2], dtype=np.uint8)
     full_mask[y1:y2, x1:x2] = mask
     return full_mask
+
+############################################################
+#  Anchors
+############################################################
+
+def generate_anchors(scales, rations, shape, feature_stride, anchor_stride):
+    scales, rations = np.meshgrid(np.array((scales), np.array((rations))))
+    scales = scales.flatten()
+    rations = rations.flatten()
+
+    heights = scales / np.sqrt(rations)
+    widths = scales * np.sqrt(rations)
+
+    shifts_y = np.arange(0, shape[0], anchor_stride) * feature_stride
+    shifts_x = np.arange(0, shape[1], anchor_stride) * feature_stride
+    shifts_x, shifts_y = np.meshgrid(shifts_x, shifts_y)
+
+    box_widths, box_centers_x = np.meshgrid(widths, shifts_x)
+    box_heights, box_centers_y = np.meshgrid(heights, shifts_y)
+
+    box_centers = np.stack(
+        [box_centers_y, box_centers_x], axis=2).reshape([-1, 2])
+    box_sizes = np.stack([box_heights, box_widths], axis=2).reshape([-1, 2])
+
+    boxes = np.concatenate([box_centers - 0.5 * box_sizes,
+                            box_centers + 0.5 * box_sizes], axis=1)
+
+    return boxes
+
+
+def generate_pyramid_anchors(scales, rations, feature_shapes, feature_strides,
+                             anchor_stride):
+    anchors = []
+    for i in range(len(scales)):
+        anchors.append(generate_anchors(scales[i], rations, feature_shapes[i],
+                                        feature_strides[i], anchor_stride))
+    return np.concatenate(anchors, axis=0)
+
+
+############################################################
+#  Miscellaneous
+############################################################
+
+def trim_zeros(x):
+    assert len(x.shape) == 2
+    return x[~np.all(x == 0, axis=1)]
+
+def compute_ap(gt_boxes, gt_class_ids, gt_masks,
+               pred_boxes, pred_class_ids, pred_scores, pred_masks,
+               iou_threshold=0.5):
+    gt_boxes = trim_zeros(gt_boxes)
+    gt_masks = gt_masks[..., gt_boxes.shape[0]]
+    pred_boxes = trim_zeros(pred_boxes)
+    pred_scores = pred_scores[:pred_boxes.shape[0]]
+    indices = np.argsort(pred_scores)[::-1]
+    pred_boxes = pred_boxes[indices]
+    pred_class_ids = pred_class_ids[indices]
+    pred_scores = pred_scores[indices]
+    pred_masks = pred_masks[..., indices]
+
+    overlaps = compute_overlaps_masks(pred_masks, gt_masks)
+
+    match_count = 0
+    pred_match = np.zeros([pred_boxes.shape[0]])
+    gt_match = np.zeros([gt_boxes.shape[0]])
+    for i in range(len(pred_boxes)):
+        sorted_ixs = np.argsort(overlaps[i])[::-1]
+        for j in sorted_ixs:
+            if gt_match[j] == 1:
+                continue
+            iou = overlaps[i, j]
+            if iou < iou_threshold:
+                break
+            if pred_class_ids[i] == gt_class_ids[j]:
+                match_count += 1
+                gt_match[j] = 1
+                pred_match[i] = 1
+                break
+
+    precisions = np.cumsum(pred_match) / (np.arange(len(pred_match)) + 1)
+    recalls = np.cumsum(pred_match).astype(np.float32) / len(gt_match)
+
+    precisions = np.concatenate([[0], precisions, [0]])
+    recalls = np.concatenate([[0], recalls, [1]])
+
+    for i in range(len(precisions) - 2, -1, -1):
+        precisions[i] = np.maximum(precisions[i], precisions[i + 1])
+
+    indices = np.where(recalls[:-1] != recalls[1:])[0] + 1
+    mAP = np.sum((recalls[indices] - recalls[indices - 1]) *
+                 precisions[indices])
+
+    return mAP, precisions, recalls, overlaps
