@@ -21,7 +21,7 @@ Juicebox 中原始图像序列（draft genome）与 .assembly 的位置关系
 	能否直接修改矩阵
 
 
-# 将矩阵生成图片
+*# 将矩阵生成图片
 
 
 
@@ -31,7 +31,7 @@ Juicebox 中原始图像序列（draft genome）与 .assembly 的位置关系
 	找到错误，更改assembly文件后，更新hic热图后，两个文件是否任然对应
 
 
-# 直接操作矩阵
+*# 直接操作矩阵
 	# 不能确定规律是否通用（loop区域等）
 	# 矩阵太大，操作困难
 
@@ -39,15 +39,15 @@ Juicebox 中原始图像序列（draft genome）与 .assembly 的位置关系
 juicer tools v 2.13.06
 	v9 format  straw
 
-# 提取图片的尺寸唯一
+*# 提取图片的尺寸唯一
 
 
-# 如果获取调整后的hic热图
+*# 如果获取调整后的hic热图
 
 
-# 精确边界位置，采用2分快速迭代，并设置边界值
+*# 精确边界位置，采用2分快速迭代，并设置边界值
 
-# Juice最后一步的脚本学习 run.sh
+*# Juice最后一步的脚本学习 run.sh
 
 
 存在的问题
