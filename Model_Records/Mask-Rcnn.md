@@ -132,6 +132,14 @@ model.layers[:100].train = False
 
 ### 制作数据集
 
+- 创建文件夹
+
+```sh
+mkdir png json png_modify labelme_json cv2_mask
+```
+
+
+
 - 像素转换
 
 ​		首先对自己的图片进行像素转换，全部转换为 64 的倍数，比如 1024*768 ，如果不转换为 64 倍数后续**有可能**会出错
@@ -142,21 +150,27 @@ import glob
 from PIL import Image
 
 # 初始图片放在 pic11文件夹下
-img_path = glob.glob("./pic11") 
+img_path = glob.glob("./png") 
 
 # 新建 pic 文件夹，以生成像素转换后的图片
-path_save = "./pic" 
+path_save = "./png_modify" 
+
+# 判断目录
+if not os.path.exists(path_save):
+    os.makedirs(path_save)
+
 files = os.listdir(img_path[0])
 # print(img_path)
 for file in files:
   name = os.path.join(path_save, file)
-  filename = "./pic11/" + file
+  filename = "./png/" + file
   print(filename)
   # with Image.open(file,'rw') as im:
   im = Image.open(filename)
+  # 转换倍数
   im.thumbnail((1024,768))
   print(im.format, im.size, im.mode)
-  im.save(name,'jpeg')
+  im.save(name,'png')
 ```
 
 
@@ -165,5 +179,44 @@ for file in files:
 
 ​		见`labelme.md`
 
+- **labelme_json_to_dataset**
+
+```shell
+ls ./json | while read id;do (labelme_json_to_dataset ./json/$id);done
+```
 
 
+
+- **move_file.sh**
+
+```bash
+#!/bin/bash
+
+root_dir="./"
+cv2_mask_dir="cv2_mask/"
+labelme_json_dir="labelme_json/"
+for i in `ls ${root_dir}${labelme_json_dir}`
+do
+	cp ${root_dir}${labelme_json_dir}${i}/label.png ${root_dir}${cv2_mask_dir}${i}.png 
+	
+```
+
+
+
+- 数据集结果
+
+```bash
+.
+├── change_pixel.py
+├── cv2_mask # 最终复制出的png文件(黑色图像)
+├── json # 标定的文件
+├── labelme_json # 批量转换后的文件
+├── png # 初始图片
+└── png_modify # 更改像素后的图片
+```
+
+上传至/home/jovyan/Train_test/Mask_RCNN/datasets/hic-datasets
+
+## 训练
+
+见Jupyter：/home/jovyan/Train_test/Mask_RCNN/samples/hic/train.ipynb
