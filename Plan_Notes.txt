@@ -127,6 +127,11 @@
 			https://blog.csdn.net/qfdzwly/article/details/107647003?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164947292516782089347499%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=164947292516782089347499&biz_id=0&utm_medium=distribute.pc_sea rch_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v31_ecpm-2-107647003.142^v7^pc_search_result_control_group,157^v4^control&utm_term=%E7%94%A8Mask-RCNN%E8%AE%AD%E7%BB%83%E8%87%AA%E5%AE%9A%E4%B9%89%E5%A4%A7%E5%B0%8F%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86&spm=1018.2226.3001.4187
 
 	# 4.15
-		day 4
-		改源代码，实现易位检测
+		day 4，5 （Done）
+		改源代码，实现易位检测 (Doning)
+
+	# 4.16
+		day 6,7 + ML(day 1)
+		改写移动文件代码和像素值变换代码
+		MaskRCNN 环境 + 改代码
 
