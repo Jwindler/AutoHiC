@@ -1,0 +1,25 @@
+4.19-
+
+=pdo
+HiC 在线 Jupyter
+	https://colab.research.google.com/drive/1-GG-n-p9nZ7Be82UVJG7n3Q_wQ9IeuFN?usp=sharing
+
+https://github.com/akdemirlab/HiCPlotter
+
+HiC 可视化
+	https://xuzhougeng.top/archives/HiC-visualization-in-assembly
+
+=cut
+
+熟练使用各个HiC软件
+
+跑一个HiC-pro + 3D-DNA
+
+hic2cool
+	https://hicexplorer.readthedocs.io/en/latest/content/tools/hicConvertFormat.html
+
+HiCExplorer
+	https://hicexplorer.readthedocs.io/en/latest/content/list-of-tools.html
+
+# 4.20
+	整理Problems 

@@ -19,6 +19,13 @@ Juicebox 中原始图像序列（draft genome）与 .assembly 的位置关系
 	参数可以单独 | 范围
 
 
+滑动可视化 + 图片位点(对应序列信息) + 动态HiC热图 + Matrix > PNG
+
+
+
+
+
+
 # Contact Matrix 的数值规律
 	loop 区域周围值的大小问题
 	矩阵太大的操作问题
