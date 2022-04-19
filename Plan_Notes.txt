@@ -144,7 +144,12 @@
 
 
 	# 4.19
-		实现从头训练 + GPU加速
+		day 10, 11 + ML(day 4, 5) (Done)
+		GPU配置 (Done) 
+			https://blog.csdn.net/sjjsbsbbs/article/details/119854367
+	
+	# 4.20
+		实现从头训练 
 		改变打标签方式 | 增加训练的样本数
 
 		
