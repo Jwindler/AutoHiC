@@ -1,25 +1,42 @@
 4.19-
 
 =pdo
-HiC 在线 Jupyter
-	https://colab.research.google.com/drive/1-GG-n-p9nZ7Be82UVJG7n3Q_wQ9IeuFN?usp=sharing
 
-https://github.com/akdemirlab/HiCPlotter
+# Document
+	HiC 在线 Jupyter
+		https://colab.research.google.com/drive/1-GG-n-p9nZ7Be82UVJG7n3Q_wQ9IeuFN?usp=sharing
 
-HiC 可视化
-	https://xuzhougeng.top/archives/HiC-visualization-in-assembly
+	https://github.com/akdemirlab/HiCPlotter
+
+	HiC 可视化
+		https://xuzhougeng.top/archives/HiC-visualization-in-assembly
+
+	hic2cool
+		https://hicexplorer.readthedocs.io/en/latest/content/tools/hicConvertFormat.html
+
+	HiCExplorer
+		https://hicexplorer.readthedocs.io/en/latest/content/list-of-tools.html
+
+	3D-DNA辅助组装策略
+		https://www.jianshu.com/p/a4259efc0f80
+
+
+	# wait to do
+		Juice最后一步的脚本学习 run.sh
+
 
 =cut
 
-熟练使用各个HiC软件
 
-跑一个HiC-pro + 3D-DNA
-
-hic2cool
-	https://hicexplorer.readthedocs.io/en/latest/content/tools/hicConvertFormat.html
-
-HiCExplorer
-	https://hicexplorer.readthedocs.io/en/latest/content/list-of-tools.html
 
 # 4.20
-	整理Problems 
+	整理Problems (Done)
+	搭建挂载HiC环境 (Done > ssh -p 10086 root@192.168.1.109)
+
+# 4.21
+	跑HiC
+		重新上传两个数据
+	HiCExplorer
+	
+	
+
