@@ -3,16 +3,14 @@
 =pdo
 
 # Document
-	HiC 在线 Jupyter
-		https://colab.research.google.com/drive/1-GG-n-p9nZ7Be82UVJG7n3Q_wQ9IeuFN?usp=sharing
-
-	https://github.com/akdemirlab/HiCPlotter
-
 	HiC 可视化
 		https://xuzhougeng.top/archives/HiC-visualization-in-assembly
 
-	hic2cool
-		https://hicexplorer.readthedocs.io/en/latest/content/tools/hicConvertFormat.html
+	HiCPlotter:Hi-C数据可视化工具
+		https://github.com/akdemirlab/HiCPlotter
+
+	Hi-C辅助基因组组装原理 | 主流软件
+		https://lxz9.com/2021/04/03/HiC/
 
 	HiCExplorer
 		https://hicexplorer.readthedocs.io/en/latest/content/list-of-tools.html
@@ -20,9 +18,22 @@
 	3D-DNA辅助组装策略
 		https://www.jianshu.com/p/a4259efc0f80
 
+	Galaxy HiC
+		https://galaxyproject.eu/index-hicexplorer.html
+
+	HiC 文件格式转换
+		https://hicexplorer.readthedocs.io/en/latest/content/tools/hicConvertFormat.html
+
+	merged_nodups.txt 文件格式 
+		https://github.com/aidenlab/juicer/wiki/Pre#short-with-score-format
+
+
 
 	# wait to do
+		测试跑 最后一步3d-dna需要多久时间（线程指定16， 48）
 		Juice最后一步的脚本学习 run.sh
+
+	HiC-Glass 
 
 
 =cut
@@ -34,9 +45,29 @@
 	搭建挂载HiC环境 (Done > ssh -p 10086 root@192.168.1.109)
 
 # 4.21
-	跑HiC
-		重新上传两个数据
-	HiCExplorer
+	跑HiCUP HiC-Pro Juicer (Done)
+	HiC jupyter > Windows 
+	
+
+# 4.22
+	实例.hic 与self.hic的 差异
+	HiCExplorer	
+
+# 4.25
+	HiCPlotter
+	merged_nodups.txt 文件格式 
+		https://github.com/aidenlab/juicer/wiki/Pre#short-with-score-format
+	Code : 自动生成HiC图片 （制造HiC错误，用于构建训练集）
+	
+
+# 4.28
+	测试各种矩阵文件转换的时间，是否能够自行写脚本加快转换时间
+		`.hic` > `.cool` > `.hicpro`
+	why .hic 没有信息， 如何生成这些信息, 已提问，等待回复
+	询问，如何让`.assembly`文件中的信息转化到`.hic`文件中
+	查看HiC-Pro运行结果
+
 	
 	
+
 

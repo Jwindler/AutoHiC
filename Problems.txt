@@ -2,7 +2,14 @@
 
 
 # 存在的问题
+	*动态更新HiC热图
+		Method:
+			1. 根据`.assembly` 重新生成`.hic`
+
+	.hic 文件中的序列长度和 .assembly文件中的序列长度不一致，
+	当Juicer中导入`.assembly`文件后，显示的序列长度和组装基因组的长度一致，猜测其中可能存在缩放映射
 	
+
 	滑动可视化 + 图片位点(对应序列信息) + 如果获取调整后的hic热图 + Matrix > PNG
 
 	如何确定每次遍历上错误的位置与contig的对应关系
@@ -17,6 +24,10 @@
 
 
 # 已解决问题
+	依旧走Juicer流程，暂时不考虑HiC-Pro等
+
+	`.hic`文件可以根据hicConvertFormat转换至各种格式
+
 	Juicebox 中原始图像序列（draft genome）与 .assembly 的位置关系
 		juice热图上方序列位置与 .assembly中 contig的关系
 		上方仅是序列长度的叠加，.assenmly中的序列，目前顺序关系还没有确定

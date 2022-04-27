@@ -149,11 +149,30 @@
 			https://blog.csdn.net/sjjsbsbbs/article/details/119854367
 	
 	# 4.20
-		day 12, 13 (Done)
+		100day (Done)
 
-	# 4.21
+	# 4.2
+		训练一个判断是否有HiC错误的，分类器
+		详读MaskRCNN Source Code
 		改变打标签方式 (将易位全部包括其中 )  增加训练的样本数
 		
 		
 
-		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
