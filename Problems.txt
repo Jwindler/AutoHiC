@@ -26,6 +26,8 @@
 # 已解决问题
 	依旧走Juicer流程，暂时不考虑HiC-Pro等
 
+	`inter.hic` 不能直接可视化，导入Juicer中会出现错误
+
 	`.hic`文件可以根据hicConvertFormat转换至各种格式
 
 	Juicebox 中原始图像序列（draft genome）与 .assembly 的位置关系
