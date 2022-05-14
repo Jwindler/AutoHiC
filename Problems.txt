@@ -6,15 +6,23 @@
 		Method:
 			1. 根据`.assembly` 重新生成`.hic`
 
+	如何精确位置信息，寻找需要插入的位置
+
 	.hic 文件中的序列长度和 .assembly文件中的序列长度不一致，
 	当Juicer中导入`.assembly`文件后，显示的序列长度和组装基因组的长度一致，猜测其中可能存在缩放映射
 	
 
 	滑动可视化 + 图片位点(对应序列信息) + 如果获取调整后的hic热图 + Matrix > PNG
 
+	
+	线粒体与叶绿体染色体是纳入考虑范围
+		v1.0 先仅针对动物基因组
+
+
 	如何确定每次遍历上错误的位置与contig的对应关系
 
 	错误的大小不确定
+		预先设置一个大小，提供一个参数给用户选择
 
 	Contact Matrix 的数值规律
 		loop 区域周围值的大小问题
@@ -46,6 +54,18 @@
 		可以手动操作，.assembly文件需要和.hic文件一致，不然后出现边界框不匹配的情况，
 		主要规律看MarkDown文件中的内容
 
+	TAD:拓扑关联结构域简介
+		https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3356448/
+		directionality index统计量
+
+		使用TADbit识别拓扑关联结构域
+		https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5540598/
+
+	chromatin loops:染色质环简介
+		https://www.cell.com/fulltext/S0092-8674(14)01497-401497-4)
+		染色质环鉴定
+
+	有关TAD和loop的深度学习识别，已有发表的文献
 
 
 # 参数设计
@@ -55,6 +75,8 @@
 
 	精确错误边界位置，采用2分快速迭代，并设置边界阈值（根据）
 
+
+	有错误，无法解决，缺失数据或者其他原因
 
 
 
