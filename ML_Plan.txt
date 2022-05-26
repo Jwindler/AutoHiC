@@ -157,17 +157,31 @@
 	# 5.10
 		RetinaNet 详解
 
-	# 
-		训练一个判断是否有HiC错误的，分类器
+	# 5.19 - 5.20
+		分类网络：	https://blog.csdn.net/Kefenggewu_/article/details/117631662 （Done）
 
+		训练一个判断是否有HiC错误的，分类器	（Done）
+
+	# 5.24
+		Pytorch TensorBoard usage (Done)
+
+		dataset dataloader (Done)
+
+	# 5.25
+		目标检测网络 Cascade R-CNN	
+
+
+	# 5.26
+		Cascade Mask R-CNN(Swin-T)
+		
 
 	#
 		改变打标签方式 (将易位全部包括其中 )  增加训练的样本数 > 测试模型训练情况 
 
-		详读MaskRCNN Source Code	
 		
 		win安装labelme 用于后续多人打标签，写一个教程，分配工作
 
+		自动数据增强;	Transformer;
 
 
 
