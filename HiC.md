@@ -112,6 +112,8 @@ BUTLR (Yue lab)
 
 ## .assembly
 
+​		**在可视化上仅起到在hic热图上标记染色体和contig位置的作用**
+
 - `>`开头的行为 contigs
 - `-`代表反向
 - `:::debris`尾部残余
