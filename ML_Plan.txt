@@ -173,9 +173,31 @@
 
 	# 5.26
 		Cascade Mask R-CNN(Swin-T)
+
+
+	# 5.27 
+		Cascade Mask R-CNN(Swin-T) 模型测试
+			COCO 数据下载中
+
+		训练 + 推断时 图像通道数的问题（Done）
+			img = Image.open(img_path).convert('RGB')
+
+	# 5.28
+		项目总结 + 计划
+
+
+	# 5.30 -
+		Cascade Mask R-CNN(Swin-T) 测试 COCO 数据
+			
+
+		准备 分类  + 检测 数据集
+			分类数据集更加准确和细致（随机ColorRange下的数据）
+			1000张异位数据
 		
 
 	#
+		重写 Cascade Mask R-CNN(Swin-T) 模型
+
 		改变打标签方式 (将易位全部包括其中 )  增加训练的样本数 > 测试模型训练情况 
 
 		
