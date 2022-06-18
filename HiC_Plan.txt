@@ -129,61 +129,60 @@
 	Hv.0 生成训练数据	(Done)
 
 
-# 6.9
+# 6.9 
 	3 个GSM 的HiCPng 数据生成	Done
-		脚本错误，导致无效数据生成
+		脚本错误，导致无效数据生成  > 已修改完毕，数据正常生成
 
-# 6.11
-	改写 GenHiCPng
+# 6.13 - 6.14
+	* 改写 GenHiCPng
 		实现TODO 
 		分二种情况：
-			1. all2all
-			2. one2one
-		GSM  or  3D-DNA
+			1. all2all （Done）
+			2. one2one （Done）
+		GSM  or  3D-DNA	（Done）
 
-	3个GS 重新生成文件 + 推断
+	3个GS 重新生成文件 + 推断 （Done）
+
+	优化bulk_inference	（Done）
 	
 
-	设计 Debirs 识别与剪切
+# 6.16
+	修改文件名（加文件前缀） （Done）
 
+	3D-DNA one2one 	（Done）
+		让用户提供染色体位置信息
 
+# 6.18 -
+	确定`.assembly` 调整情况
+		如何查易位的插入位置，插入在前还是后？
+
+	
 
 
 #  
-	优化bulk_inference
+	确定比例是否精确
+	
+	根据 目标检测结果 + 插入位置信息， 写处理`assembly`文件的代码
+
+	多进程 + 多线程
+
+	设计 Debirs 识别与剪切
 
 	随机ColorRange 生成图片
-
-	确定`.assembly` 调整情况
-		如何查易位的插入位置，插入在前还是后？
 
 	调整GenHiCPng.py
 		确定检测错误的分辨率
 
-		实现根据异位错误，定位需要调整的位置
-	
-
-
-	
-
-
-# 	
+	实现根据异位错误，定位需要调整的位置
 
 	染色体长度检测
 		Genome size / chromosome number
 		Max chr 
 
-
-	代码冗余调整，加入logging
-
-
-	根据 目标检测结果 + 插入位置信息， 写处理`assembly`文件的代码
-
 	手动调一个hic ，跑最后一步
 		查看需要使用的时间
 
-
-	生成图片的 多进程 or 多线程
+	添加时间 time
 
 
 
