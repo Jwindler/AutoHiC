@@ -1,2 +1,2 @@
-# HiC-OpenCV
-A HiC-OpenCV repository to cooperative development
+# AutoHiC
+A program to modify hic file automatic.
