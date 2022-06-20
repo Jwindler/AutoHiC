@@ -228,35 +228,38 @@
 			1000张异位数据
 
 		错误检测训练
+			检测精度的查验，能否确定位置
 
+		下载新数据集，增大数据集进行训练
+			最好是调试数据集
+		
+		测试DALI
+
+		模型深度学习，改进模型
+			根据讲解，改进参数，适应HiC数据集
+
+		模型评估学习
 		
 
 	#
-		model_img_size 参数调整
-
+		model_img_size 参数调整 (看视频)
+	
 		Zetane Viewer 模型可视化
 
-		重写 Cascade Mask R-CNN(Swin-T) 模型
-
-		随机ColorRange下的数据
-
-		改变打标签方式 (将易位全部包括其中 )  增加训练的样本数 > 测试模型训练情况 
-		
-		win安装labelme 用于后续多人打标签，写一个教程，分配工作
-
-		自动数据增强;	Transformer;
+		如何增加模型的泛化能力
 
 		类别推断后的调度
 			设计文件是否需要二次保存，还是建立符号链接，写入记录文档
+
+		随机ColorRange下的数据
+		
+		win安装labelme 用于后续多人打标签，写一个教程，分配工作
+
 		
 		模型部署（轻量化部署）
 			分环境 GPU or CPU 
 			GPU 下根据显存 ，多线程推断
 
-		数据读取 + 数据预处理  > GPU  Waiting
-			减小CPU 开销
-			https://www.elecfans.com/d/1817098.html
-			https://zhuanlan.zhihu.com/p/518240063
 
 
 
