@@ -118,12 +118,15 @@ class GenBaseModel:
             vmin=0,
             vmax=GenBaseModel.maxcolor(resolution))
 
+        plt.axis('off')  # 去坐标轴
+
         # 去除刻度
         plt.xticks([])
         plt.yticks([])
 
         # 保存图像
-        plt.savefig(fig_save_dir, dpi=300, format="jpg")
+        # bbox_inches='tight',pad_inches = -0.01 去白边
+        plt.savefig(fig_save_dir, dpi=300, format="jpg", bbox_inches='tight', pad_inches=-0.01)
         plt.close()
 
     @staticmethod

@@ -1,0 +1,200 @@
+4.19-
+
+=pdo
+
+# Document
+	HiC 可视化
+		https://xuzhougeng.top/archives/HiC-visualization-in-assembly
+
+	HiCPlotter:Hi-C数据可视化工具
+		https://github.com/akdemirlab/HiCPlotter
+
+	Hi-C辅助基因组组装原理 | 主流软件
+		https://lxz9.com/2021/04/03/HiC/
+
+	HiCExplorer
+		https://hicexplorer.readthedocs.io/en/latest/content/list-of-tools.html
+
+	3D-DNA辅助组装策略
+		https://www.jianshu.com/p/a4259efc0f80
+
+	Galaxy HiC
+		https://galaxyproject.eu/index-hicexplorer.html
+
+	HiC 文件格式转换
+		https://hicexplorer.readthedocs.io/en/latest/content/tools/hicConvertFormat.html
+
+	merged_nodups.txt 文件格式 
+		https://github.com/aidenlab/juicer/wiki/Pre#short-with-score-format
+
+
+
+	# wait to do
+		测试跑 最后一步3d-dna需要多久时间（线程指定16， 48）
+		Juice最后一步的脚本学习 run.sh
+
+	HiC-Glass 
+
+
+=cut
+
+
+
+# 4.20
+	整理Problems (Done)
+	搭建挂载HiC环境 (Done > ssh -p 10086 root@192.168.1.109)
+
+# 4.21
+	跑HiCUP HiC-Pro Juicer (Done)
+	HiC jupyter > Windows 
+	
+
+# 4.22
+	实例.hic 与self.hic的 差异
+	HiCExplorer	
+
+# 4.25
+	HiCPlotter
+	merged_nodups.txt 文件格式 
+		https://github.com/aidenlab/juicer/wiki/Pre#short-with-score-format
+	Code : 自动生成HiC图片 （制造HiC错误，用于构建训练集）
+	
+
+# 4.28
+	why .hic 没有信息， 如何生成这些信息, 已提问，等待回复
+
+
+
+# 5.5
+	可视化颜色的调整，接近Juicebox（Done）
+		参考Juicebox中自动调整的range即可
+
+	测试HIC001 自己构建`.assembly`文件，导入Juicebox，是否有效（Done）
+		有一定效果，但是基本不起作用，无法使用
+
+	*测试各种分辨率下不同序列长度选取的可视化图片(Done)
+		在特定的分辨率下，以多大的区间进行产生数据
+	
+
+# 5.9
+	查看HiC-Pro运行结果 (Done)
+
+
+# 5.10
+	全局染色体模型，利用HicPlotter来构建数据集( Done )
+		Straw 也可以实现，将分辨率调整到最高
+	
+# 5.19 - 5.20
+	
+	列出总共需要那几个函数，每个函数需要的参数，重新设计，考虑滑动的复杂情况 （Done）
+		拆分，实现模块化 改写HiC图像的生成函数，重写下面两个字典
+		IncrementSets
+		ColorRangeSets
+			默认 + 根据实际数据改写，不然造成KeyError，不存在错误
+
+
+<<<<<<< HEAD
+	调整可视化图片的细节
+		减小高分辨率的可视化步长, 实现指定大小的错误检测
+	
+	根据错误大小 > 对应分辨率矩阵 > 返回调整位点
+	.hic如何构建
+=======
+# 5.23
+	根据位置信息，获取assembly 中包含的contig (Done)
+>>>>>>> f1fcbfe84751c0b2b8bce2a9fb549f9402db1cf8
+
+# 5.25 
+	Problems:
+		ColorRange (Done)
+			查看多种尺寸，更新ColorRange
+		步长太小，图片数目过多，无用数据集过多（Done ）
+			增大步长，根据分辨率改变长宽，高分辨率情况下（步长直接指定为最大的增量）
+			无法确定染色体长度的情况下，手动设置参数（预定义染色体的长度）
+
+
+# 5.27  
+	测试不同分辨率下的，最大长宽 （Done）
+		最大长宽 = 分辨率 × 1444
+
+
+# 5.28 - 31
+	项目总结 + 计划 (Done)
+
+
+# 6.7
+	GenHiCPngV3
+		PNG > JPG 减少通道操作 (Done )
+
+	Hv.0 生成训练数据	(Done)
+
+
+# 6.9 
+	3 个GSM 的HiCPng 数据生成	Done
+		脚本错误，导致无效数据生成  > 已修改完毕，数据正常生成
+
+# 6.13 - 6.14
+	* 改写 GenHiCPng
+		实现TODO 
+		分二种情况：
+			1. all2all （Done）
+			2. one2one （Done）
+		GSM  or  3D-DNA	（Done）
+
+	3个GS 重新生成文件 + 推断 （Done）
+
+	优化bulk_inference	（Done）
+	
+
+# 6.16
+	修改文件名（加文件前缀） （Done）
+
+	3D-DNA one2one 	（Done）
+		让用户提供染色体位置信息
+
+
+# 6.23
+	确定比例是否精确 （Done）
+		高分辨率情况下 精确
+
+	调整 目标检测返回结果代码 （Done）
+
+
+
+# 6.24
+	提示产生图片速度
+		解决多进程实现图片生成
+		留出 进程设置大小
+
+
+#
+	根据 目标检测结果（异位） + 插入位置信息， 写处理`assembly`文件的代码
+
+	尝试解决500 分辨率下，实现冗余片段删除
+	
+
+
+#  
+	综合assembly 操作，改写为类
+
+	实现目标检测与 `assembly`文件调整的 衔接
+
+	设计 Debirs 识别与剪切
+
+	随机ColorRange 生成图片
+
+	染色体长度检测（可能不需要）
+		Genome size / chromosome number
+		Max chr 
+
+	手动调一个hic ，跑最后一步
+		查看需要使用的时间
+
+	添加时间 time
+
+
+
+
+	
+
+	

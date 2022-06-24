@@ -55,7 +55,8 @@ def count_contig(input_file):
 
 
 def main():
-    temp = count_contig("/home/jzj/Auto-HiC/HiC-Data/Np_HiC/0/Np.0.assembly")
+    temp = count_contig(
+        "/home/jzj/Jupyter-Docker/HiC-Straw/Np/0/Np.0.assembly")
     # print(temp)
 
 

@@ -108,10 +108,14 @@ def site_contig(start, end, ratio, assembly):
 
 
 def main():
-    start_site = 453000000
-    end_site = 455000000
-    ratio = 2
-    assembly = "/home/jzj/Auto-HiC/HiC-Data/Np_HiC/0/Np.0.assembly"
+
+    # HiC文件位置
+    start_site = 453010131
+    end_site = 455241282
+
+    ratio = 2  # 染色体长度比例
+
+    assembly = "/home/jzj/Jupyter-Docker/HiC-Straw/Np/0/Np.0.assembly"
     site_contig(start_site, end_site, ratio, assembly)
 
 
