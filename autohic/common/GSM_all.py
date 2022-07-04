@@ -179,7 +179,7 @@ class GsmAll(GenBaseModel):
 
 def main():
     temp = GsmAll(
-        "/home/jzj/Jupyter-Docker/HiC-Straw/Np/0/Np.0.hic",
+        "/home/jzj/Jupyter-Docker/HiC-Straw/GSM/GSM1551550.hic",
         "/home/jzj/buffer")
     temp.run_parsing_hic()
 
