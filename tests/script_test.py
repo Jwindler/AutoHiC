@@ -13,7 +13,6 @@ from multiprocessing import Pool
 
 from mul_GenHicPng import GsmAll
 
-
 if __name__ == '__main__':
 
     gsm = GsmAll(
