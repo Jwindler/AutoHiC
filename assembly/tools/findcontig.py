@@ -9,6 +9,7 @@
 @function: 根据错误检测的结果，查找错误区域内的contig,返回结果为包含的contig和其范围
 """
 
+
 import json
 
 
@@ -70,6 +71,9 @@ def site_contig(start, end, ratio, assembly):
 
     # 获取非全包含的最后一个contig
 
+
+
+    # TODO: 可能查询的位点没有最后一个ctg,比如 2-4 会报错，需要重新考虑情况
     # 全包含的最后一个contig
     last_contig = list(contain_contig.keys())[-1]
     if contain_contig[last_contig]["end"] < genome_end:
@@ -92,7 +96,7 @@ def site_contig(start, end, ratio, assembly):
 
         contain_contig[contig_info[str(abs(int(last_1_index)))]["name"]] = {
             "length": contig_info[str(abs(int(last_1_index)))]["length"],
-            "start": temp_len_last,
+            "start": temp_len_last ,
             "end": temp_len_last + int(contig_info[str(abs(int(last_1_index)))]["length"])
         }
 
@@ -108,7 +112,6 @@ def site_contig(start, end, ratio, assembly):
 
 
 def main():
-
     # HiC文件位置
     start_site = 453010131
     end_site = 455241282

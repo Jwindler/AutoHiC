@@ -19,9 +19,7 @@ import matplotlib.pyplot as plt
 from autohic.conf import Pre_Config
 
 
-# TODO: 增加logging模块，提示用户 和 DEBUG
 
-# TODO: 根据各种情况重写，用于优化目标检测
 def maxcolor(resolution):
     """
     根据分辨率返回MaxColor,用于画图
@@ -48,7 +46,7 @@ def maxcolor(resolution):
         return color_range_sets[result]
 
 
-# TODO: 根据结果，重新调整增量，减少数据产生量
+
 def increment(resolution):
     """
     根据分辨率返回窗口滑动每次滑动的距离和窗口范围
@@ -143,7 +141,6 @@ def info_records(
     return json.dumps(record)
 
 
-# TODO: 冗余调整
 def parsing_hic(hic_file, save_dir):
     num = 0
 
