@@ -22,14 +22,14 @@
 
 from collections import OrderedDict
 
-from assembly.tools.ctg_seq import get_ctg_seq
+from assembly.tools.find_ctg_site import find_ctg_site
 
 
 def insert_site(assembly_path, ctg_name, site: int, save_path):
     ctg_info = OrderedDict()  # contig 信息
     ctg_order = []  # contig 顺序
 
-    ctg_name_start_end = get_ctg_seq(assembly_path, ctg_name)
+    ctg_name_start_end = find_ctg_site(assembly_path, ctg_name)
 
     # 获取contig 信息
     with open(assembly_path, "r") as f:
@@ -121,8 +121,8 @@ def insert_site(assembly_path, ctg_name, site: int, save_path):
 
 
 def main():
-    assembly_path = "/home/jzj/Jupyter-Docker/HiC-Straw/Np/0/Np.0.assembly"
-    save_path = "/home/jzj/buffer/test.txt"
+    assembly_path = "/home/jzj/buffer/test.txt"
+    save_path = "/home/jzj/buffer/test2.txt"
 
     insert_site(assembly_path, ">utg2491", 910482564, save_path)
 
