@@ -15,7 +15,7 @@ import numpy as np
 from collections import defaultdict
 
 
-def get_error_matrix(error_site: tuple, resolution: int) -> tuple:
+def get_error_matrix(hic_file, error_site: tuple, resolution: int) -> tuple:
     """
 
     :param error_site:
@@ -24,7 +24,7 @@ def get_error_matrix(error_site: tuple, resolution: int) -> tuple:
     """
 
     # 解析 .hic 文件
-    hic_object = hicstraw.HiCFile("/home/jzj/Jupyter-Docker/HiC-Straw/Np/0/Np.0.hic")
+    hic_object = hicstraw.HiCFile(hic_file)
 
     assembly_len = 0
     # 获取全部染色体的总长度
@@ -44,10 +44,11 @@ def get_error_matrix(error_site: tuple, resolution: int) -> tuple:
     true_start = true_start_bin * resolution
     true_end = true_end_bin * resolution
 
-    print("分辨率为：", resolution)
+    print("获取矩阵的分辨率为：", resolution)
     print("错误区间的真实范围为：{0} - {1} ".format(true_start, true_end))
     print("错误区间的bin范围为：{0} - {1} \n".format(true_start_bin, true_end_bin))
 
+    # TODO: 当分辨率增大后，assembly_len 不在使用，需要根据情况进行修改
     # 根据错误区间，获取错误区间的矩阵
     error_matrix_object = chr_matrix_object.getRecordsAsMatrix(true_start, true_end, 0, assembly_len)
 
@@ -91,10 +92,11 @@ def remove_peak(peaks_dict, know_peak):
 
 def main():
     error_site = (495140001, 499424992)
+    hic_file = "/home/jzj/Jupyter-Docker/HiC-Straw/Np/0/Np.0.hic"
     # resolution = 1250000
     resolution = 500000
 
-    temp = get_error_matrix(error_site, resolution)
+    temp = get_error_matrix(hic_file, error_site, resolution)
 
     error_matrix_object, bin_index = temp[0], temp[1]
     temp_2 = find_error_peaks(error_matrix_object)

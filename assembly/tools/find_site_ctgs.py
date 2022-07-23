@@ -1,15 +1,16 @@
-#!/usr/bin/env python
-# encoding: utf-8
+#!/usr/bin/env python 
+# encoding: utf-8 
 
 """
 @author: Swindler
 @contact: 1033199817@qq.com
 @file: find_site_ctgs.py
-@time: 5/23/22 11:59 AM
+@time: 7/20/22 5:25 PM
 @function: 根据错误检测的结果，查找错误区域内的contig,返回结果为包含的contig和其范围
 """
 
 import json
+import collections
 
 
 def find_site_ctgs(start, end, ratio, assembly):
@@ -22,7 +23,7 @@ def find_site_ctgs(start, end, ratio, assembly):
     :return: 位点内contig信息
     """
 
-    contain_contig = {}
+    contain_contig = collections.OrderedDict()  # 位点内contig信息
 
     contig_info = {}  # contig 信息{order: {name, length}}
 
@@ -31,9 +32,11 @@ def find_site_ctgs(start, end, ratio, assembly):
     # 基因组上真实的位置信息
     genome_start = start * ratio
     genome_end = end * ratio
+
     print("查询位点为 ： {0} - {1} \n".format(genome_start, genome_end))
 
     print("该区域包含的contig : ")
+
     with open(assembly, "r") as f:
         lines = f.readlines()
         for line in lines:
@@ -52,75 +55,64 @@ def find_site_ctgs(start, end, ratio, assembly):
         contig_order = [order for st in contig_order for order in st]
 
     # 寻找contig
-    temp_len = 0
-    for i in contig_order:
-        if i.startswith("-"):
-            i = i[1:]
-            temp_len += int(contig_info[i]["length"])
-        else:
-            temp_len += int(contig_info[i]["length"])
+    temp_len_s = 0  # 记录当前contig的起始位置
+    temp_len_e = 0  # 记录当前contig的终止位置
 
-        if genome_start <= temp_len <= genome_end:
+    for i in contig_order:  # 循环contig
+
+        if i.startswith("-"):  # 反向contig
+            i = i[1:]
+            temp_len_s = temp_len_e
+            temp_len_e += int(contig_info[i]["length"])
+        else:
+            temp_len_s = temp_len_e
+            temp_len_e += int(contig_info[i]["length"])
+
+        # 解冗余
+        def callback():
             contain_contig[contig_info[i]["name"]] = {
                 "length": contig_info[i]["length"],
-                "start": temp_len - int(contig_info[i]["length"]),
-                "end": temp_len
+                "start": temp_len_s,
+                "end": temp_len_e
             }
-            temp_len_last = temp_len
+            return temp_len_e
 
-    # 获取非全包含的最后一个contig
+        # 各个contig与查询位点之间的关系（主要有四种，可以参考两条线段之间的关系）
+        if temp_len_s < genome_start:
+            if genome_start < temp_len_e < genome_end:
+                callback()
+            elif temp_len_e > genome_end:
+                callback()
+        elif temp_len_s > genome_start:
+            if temp_len_e < genome_end:
+                callback()
+            elif temp_len_s < genome_end < temp_len_e:
+                callback()
 
-    # TODO: 可能查询的位点没有最后一个ctg,比如 2-4 会报错，需要重新考虑情况
-    # 全包含的最后一个contig
-    last_contig = list(contain_contig.keys())[-1]
-    if contain_contig[last_contig]["end"] < genome_end:
-
-        last_contig_order = 0
-        # 获取全包含的最后一个contig的序号
-        for key, value in contig_info.items():
-            if value["name"] == last_contig:
-                last_contig_order = key
-
-        # 获取非全包含的最后一个contig在contig_order中的index
-        try:
-            temp = contig_order.index(last_contig_order)
-
-        except ValueError:
-            t = "-" + last_contig_order
-            temp = contig_order.index(t)
-
-        last_1_index = contig_order[int(temp) + 1]
-
-        contain_contig[contig_info[str(abs(int(last_1_index)))]["name"]] = {
-            "length": contig_info[str(abs(int(last_1_index)))]["length"],
-            "start": temp_len_last,
-            "end": temp_len_last + int(contig_info[str(abs(int(last_1_index)))]["length"])
-        }
-
-        contain_contig = json.dumps(
-            contain_contig,
-            indent=4,
-            separators=(
-                ',',
-                ': '))
-        print(contain_contig)
+    # json格式输出
+    contain_contig = json.dumps(
+        contain_contig,
+        indent=4,
+        separators=(
+            ',',
+            ': '))
+    print(contain_contig)
 
     return contain_contig
 
 
 def main():
     # HiC文件位置
-    # start_site = 453010131
-    # end_site = 455241282
-
-    start_site = 556250000
-    end_site = 557500000
+    start_site = 495140001
+    end_site = 499424992
 
     ratio = 2  # 染色体长度比例
 
     assembly = "/home/jzj/Jupyter-Docker/HiC-Straw/Np/0/Np.0.assembly"
-    find_site_ctgs(start_site, end_site, ratio, assembly)
-
+    temp = find_site_ctgs(start_site, end_site, ratio, assembly)
+    error_contain_ctgs = json.loads(temp)  # 将字符串转换为字典
+    error_contain_ctgs = list(error_contain_ctgs.items())  # 将字典转换为列表
+    print(error_contain_ctgs[0])
 
 if __name__ == "__main__":
     main()

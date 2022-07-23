@@ -13,7 +13,6 @@ from collections import OrderedDict
 from assembly.tools.find_ctg_site import find_ctg_site
 
 
-# TODO: 实现多个contig的切割，列表，并且支持一个contig的切割
 def insert_site(assembly_path, ctg_name, site: int, save_path):
     ctg_info = OrderedDict()  # contig 信息
     ctg_order = []  # contig 顺序
@@ -109,11 +108,22 @@ def insert_site(assembly_path, ctg_name, site: int, save_path):
             f2.writelines("\n")
 
 
-def main():
-    assembly_path = "/home/jzj/buffer/test.txt"
-    save_path = "/home/jzj/buffer/test2.txt"
+# 同时切割多个错误
+# 暂时未启用
+def mul_cut_ctgs(assembly_path, cut_ctgs, save_path):
+    for key, value in cut_ctgs.items():
+        insert_site(assembly_path, key, value, save_path)
 
-    insert_site(assembly_path, ">utg2491", 910482564, save_path)
+
+def main():
+    assembly_path = "/home/jzj/buffer/test.assembly"
+    save_path = "/home/jzj/buffer/3.txt"
+
+    cut_ctgs = {
+        ">utg765": 998849984
+    }
+
+    mul_cut_ctgs(assembly_path, cut_ctgs, save_path)
 
 
 if __name__ == "__main__":
