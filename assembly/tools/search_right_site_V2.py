@@ -12,6 +12,10 @@
 import json
 import hicstraw
 from collections import OrderedDict
+<<<<<<< HEAD
+=======
+import math
+>>>>>>> Ubuntu
 
 from iterated.search_right_site import get_error_matrix
 from iterated.search_right_site import find_error_peaks
@@ -20,6 +24,11 @@ from assembly.tools.find_site_ctgs import find_site_ctgs
 
 
 def search_right_site_v2(hic_file, assembly_file, ratio, error_site):
+<<<<<<< HEAD
+=======
+    error_site_copy = error_site  # 将错误位点复制一份，用于后续的判断
+
+>>>>>>> Ubuntu
     # 获取分辨率数组
     hic = hicstraw.HiCFile(hic_file)
     resolutions = hic.getResolutions()
@@ -43,11 +52,24 @@ def search_right_site_v2(hic_file, assembly_file, ratio, error_site):
         error_peaks = find_error_peaks(error_matrix_object)
 
         # 去除自身peak
+<<<<<<< HEAD
         if flag:
             final_peaks = remove_peak(error_peaks, bin_index)
             flag = False  # 只需要去除一次
         else:
             final_peaks = error_peaks
+=======
+        # if flag:
+        #     final_peaks = remove_peak(error_peaks, bin_index)
+        #     flag = False  # 只需要去除一次
+        # else:
+        #     final_peaks = error_peaks
+        bin_index = [i for i in
+                     range(math.floor(error_site_copy[0] / resolution),
+                           math.floor(error_site_copy[1] / resolution) + 1)]
+        print("self bin", bin_index)
+        final_peaks = remove_peak(error_peaks, bin_index)
+>>>>>>> Ubuntu
 
         # 获取交集最多的index
         many_key_name = max(final_peaks, key=final_peaks.get)
@@ -70,7 +92,11 @@ def search_right_site_v2(hic_file, assembly_file, ratio, error_site):
 
 
 def main():
+<<<<<<< HEAD
     error_site = (495140001, 499424992)
+=======
+    error_site = (453010131, 455241282)
+>>>>>>> Ubuntu
     hic_file = "/home/jzj/Jupyter-Docker/HiC-Straw/Np/0/Np.0.hic"
 
     ratio = 2  # 染色体长度比例

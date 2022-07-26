@@ -85,13 +85,24 @@ def find_error_peaks(numpy_matrix):
 # 去除已知的峰值点
 def remove_peak(peaks_dict, know_peak):
     for i in know_peak:
+<<<<<<< HEAD
         del peaks_dict[i]
+=======
+        try:
+            del peaks_dict[i]
+        except KeyError:  # 如果key不存在，则会抛出KeyError异常
+            pass
+>>>>>>> Ubuntu
 
     return peaks_dict
 
 
 def main():
+<<<<<<< HEAD
     error_site = (495140001, 499424992)
+=======
+    error_site = (453010131, 455241282)
+>>>>>>> Ubuntu
     hic_file = "/home/jzj/Jupyter-Docker/HiC-Straw/Np/0/Np.0.hic"
     # resolution = 1250000
     resolution = 500000

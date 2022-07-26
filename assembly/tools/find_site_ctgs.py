@@ -78,13 +78,21 @@ def find_site_ctgs(start, end, ratio, assembly):
             return temp_len_e
 
         # 各个contig与查询位点之间的关系（主要有四种，可以参考两条线段之间的关系）
+<<<<<<< HEAD
         if temp_len_s < genome_start:
+=======
+        if temp_len_s <= genome_start:
+>>>>>>> Ubuntu
             if genome_start < temp_len_e < genome_end:
                 callback()
             elif temp_len_e > genome_end:
                 callback()
         elif temp_len_s > genome_start:
+<<<<<<< HEAD
             if temp_len_e < genome_end:
+=======
+            if temp_len_e <= genome_end:
+>>>>>>> Ubuntu
                 callback()
             elif temp_len_s < genome_end < temp_len_e:
                 callback()
@@ -103,6 +111,7 @@ def find_site_ctgs(start, end, ratio, assembly):
 
 def main():
     # HiC文件位置
+<<<<<<< HEAD
     start_site = 495140001
     end_site = 499424992
 
@@ -113,6 +122,18 @@ def main():
     error_contain_ctgs = json.loads(temp)  # 将字符串转换为字典
     error_contain_ctgs = list(error_contain_ctgs.items())  # 将字典转换为列表
     print(error_contain_ctgs[0])
+=======
+    start_site = 453010131
+    end_site = 455241282
+
+    ratio = 2  # 染色体长度比例
+
+    assembly = "/home/jzj/Auto-HiC/HiC-API/tests/modified_test.assembly"
+    temp = find_site_ctgs(start_site, end_site, ratio, assembly)
+    error_contain_ctgs = json.loads(temp)  # 将字符串转换为字典
+    error_contain_ctgs = list(error_contain_ctgs.items())  # 将字典转换为列表
+    print(error_contain_ctgs)
+>>>>>>> Ubuntu
 
 if __name__ == "__main__":
     main()

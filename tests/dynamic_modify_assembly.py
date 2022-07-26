@@ -15,7 +15,74 @@ from collections import OrderedDict
 from assembly.tools.search_right_site_V2 import search_right_site_v2
 from assembly.tools.find_site_ctgs import find_site_ctgs
 from assembly.tools.cut_ctg import insert_site
+<<<<<<< HEAD
 from tests.cut_ctg_to3 import cut_ctg_to_three
+=======
+from assembly.tools.cut_ctg_to3 import cut_ctg_to_three
+from assembly.tools.move_ctgs import move_ctgs_toback
+
+
+def adjust_errors(error_queue, hic_file, ratio, assembly_file, modified_assembly_file):
+    # 错误插入位点记录
+    error_insert_site = OrderedDict()
+
+    flag = True  # 用于文件修改判断
+
+    for error in error_queue:
+        print("正在修改第", error, "个错误")
+
+        # 对错误进行ctg 切割
+        # 查找错误区间中包含的ctgs
+        error_contain_ctgs = find_site_ctgs(error_queue[error]["start"], error_queue[error]["end"], ratio,
+                                            assembly_file)
+        error_contain_ctgs = json.loads(error_contain_ctgs)  # 将字符串转换为字典
+        error_contain_ctgs = list(error_contain_ctgs.items())  # 将字典转换为列表
+
+        # 对错误区间中包含的ctgs进行切割,判断情况
+        if len(error_contain_ctgs) >= 2:
+            # 切割第一个ctg
+            first_ctg = error_contain_ctgs[0]
+
+            if flag:  # 第一次修改文件
+                insert_site(assembly_file, first_ctg[0], error_queue[error]["start"] * ratio, modified_assembly_file)
+                flag = False
+            else:
+                insert_site(modified_assembly_file, first_ctg[0], error_queue[error]["start"] * ratio,
+                            modified_assembly_file)
+
+            # 切割最后一个ctg
+            last_ctg = error_contain_ctgs[-1]
+            insert_site(modified_assembly_file, last_ctg[0], error_queue[error]["end"] * ratio, modified_assembly_file)
+
+        else:  # 只有一个ctg
+            if flag:  # 第一次修改文件
+                _ctg = error_contain_ctgs[0]
+
+                # 将一个ctg切割为三个ctg
+                cut_ctg_to_three(modified_assembly_file, _ctg[0], error_queue[error]["start"],
+                                 error_queue[error]["end"],
+                                 modified_assembly_file)
+                flag = False
+
+        new_error_contain_ctgs = find_site_ctgs(error_queue[error]["start"], error_queue[error]["end"], ratio,
+                                                modified_assembly_file)
+        new_error_contain_ctgs = json.loads(new_error_contain_ctgs)  # 将字符串转换为字典
+
+        print("需要移动的ctgs:", new_error_contain_ctgs)
+
+        # 依次获取错误的插入ctg位点
+        error_site = (error_queue[error]["start"], error_queue[error]["end"])
+        temp_result = search_right_site_v2(hic_file, assembly_file, ratio, error_site)
+        error_insert_site[error] = {
+            "move_ctgs": new_error_contain_ctgs,
+            "insert_site": temp_result
+        }
+    print("错误插入位点记录:", error_insert_site)
+
+    move_ctgs_toback(modified_assembly_file, error_insert_site)
+
+    print("RESULT： ", error_insert_site)
+>>>>>>> Ubuntu
 
 
 def main():
@@ -42,6 +109,7 @@ def main():
     # 修改后assembly文件路径
     modified_assembly_file = "/home/jzj/Auto-HiC/HiC-API/tests/modified_test.assembly"
 
+<<<<<<< HEAD
     # 错误插入位点记录
     error_insert_site = OrderedDict()
 
@@ -89,6 +157,9 @@ def main():
         error_insert_site[error] = temp_result
 
     print(error_insert_site)
+=======
+    adjust_errors(error_queue, hic_file, ratio, assembly_file, modified_assembly_file)
+>>>>>>> Ubuntu
 
 
 if __name__ == "__main__":
