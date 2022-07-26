@@ -4,10 +4,10 @@
 # 问题
 	GenHiCPng 位移长度配置文件 > 用于减少检测的计算量
 
-	*动态更新HiC热图
-		Method:
-			1. 根据`.assembly` 重新生成`.hic`，重新跑一遍3D-DNA，需要考虑时间因素
-				6G 一天左右完成 run-asm-pipeline-post-review.sh
+	3D-DNA 的加速
+		https://hub.fastgit.org/aidenlab/3d-dna/pull/58
+		写好告诉用户如何使用，论文的测试例子也应该使用
+		或者自己配置好脚本
 
 
 # 已解决问题
@@ -140,9 +140,9 @@
 		run-asm-pipeline-post-review.sh -r genome.review.assembly genome.fa aligned/merged_nodups.txt > 最终文件
 
 
-
-
-
-
 文章写作
 	参考：工具文章 + 深度学习文章
+
+
+请教HiC问题
+	lurui@frasergen.com
