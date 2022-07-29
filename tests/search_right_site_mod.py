@@ -4,10 +4,9 @@
 """
 @author: Swindler
 @contact: 1033199817@qq.com
-@file: search_right_site.py
-@time: 7/15/22 10:02 AM
-@function: 根据易位检测模型返回的错误区间，查找其需要插入的位置
-            根据bin 利用滑动窗口来查找
+@file: search_right_site_mod.py
+@time: 7/28/22 17:42 PM
+@function: 解决TODO,分辨率问题 line：52
 """
 from scipy.signal import find_peaks
 import hicstraw
@@ -48,7 +47,7 @@ def get_error_matrix(hic_file, error_site: tuple, resolution: int) -> tuple:
     print("错误区间的真实范围为：{0} - {1} ".format(true_start, true_end))
     print("错误区间的bin范围为：{0} - {1} \n".format(true_start_bin, true_end_bin))
 
-    # 当分辨率增大后，assembly_len 不在使用，需要根据情况进行修改 > search_right_site_mod.py
+    # TODO: 当分辨率增大后，assembly_len 不在使用，需要根据情况进行修改
     # 根据错误区间，获取错误区间的矩阵
     error_matrix_object = chr_matrix_object.getRecordsAsMatrix(true_start, true_end, 0, assembly_len)
 
