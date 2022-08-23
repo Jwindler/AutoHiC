@@ -29,7 +29,7 @@ def get_ctg_order(assembly_path, ctg_name):
 
 
 def main():
-    assembly_path = "/home/jzj/buffer/modified_test.assembly"
+    assembly_path = "/home/jzj/Auto-HiC/HiC-API/tests/Np.0.assembly"
     ctg_name = ">utg20393"
     temp_result = get_ctg_order(assembly_path, ctg_name)
     print(temp_result)

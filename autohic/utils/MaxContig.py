@@ -56,7 +56,7 @@ def count_contig(input_file):
 
 def main():
     temp = count_contig(
-        "/home/jzj/buffer/test.assembly")
+        "/home/jzj/Auto-HiC/Test/Np-Self/Np.rawchrom.assembly")
     # print(temp)
 
 

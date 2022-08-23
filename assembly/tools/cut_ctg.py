@@ -116,11 +116,11 @@ def mul_cut_ctgs(assembly_path, cut_ctgs, save_path):
 
 
 def main():
-    assembly_path = "/home/jzj/buffer/test.assembly"
+    assembly_path = "/home/jzj/buffer/Np.0.assembly"
     save_path = "/home/jzj/buffer/3.txt"
 
     cut_ctgs = {
-        ">utg765": 998849984
+        ">utg832": 993365637
     }
 
     mul_cut_ctgs(assembly_path, cut_ctgs, save_path)
