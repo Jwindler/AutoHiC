@@ -9,6 +9,9 @@
 		写好告诉用户如何使用，论文的测试例子也应该使用
 		或者自己配置好脚本
 
+		# 中间限速步骤
+		juicebox_tools.jar dump observed NONE Np.0.hic assembly assembly BP 500 h.hic_dump.500.txt 
+
 
 # 已解决问题
 	1.如何拿到 调整位置

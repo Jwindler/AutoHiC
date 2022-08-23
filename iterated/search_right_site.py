@@ -13,11 +13,15 @@ from scipy.signal import find_peaks
 import hicstraw
 import numpy as np
 from collections import defaultdict
+from autohic.utils.logger import LoggerHandler
+
+# 初始化日志
+logger = LoggerHandler()
 
 
 def get_error_matrix(hic_file, error_site: tuple, resolution: int) -> tuple:
     """
-
+    :param hic_file:
     :param error_site:
     :param resolution:
     :return:
@@ -44,9 +48,9 @@ def get_error_matrix(hic_file, error_site: tuple, resolution: int) -> tuple:
     true_start = true_start_bin * resolution
     true_end = true_end_bin * resolution
 
-    print("获取矩阵的分辨率为：", resolution)
-    print("错误区间的真实范围为：{0} - {1} ".format(true_start, true_end))
-    print("错误区间的bin范围为：{0} - {1} \n".format(true_start_bin, true_end_bin))
+    logger.info("获取矩阵的分辨率为： %s", resolution)
+    logger.info("错误区间的真实范围为：{0} - {1} ".format(true_start, true_end))
+    logger.info("错误区间的bin范围为：{0} - {1} \n".format(true_start_bin, true_end_bin))
 
     # 当分辨率增大后，assembly_len 不在使用，需要根据情况进行修改 > search_right_site_mod.py
     # 根据错误区间，获取错误区间的矩阵
@@ -72,13 +76,17 @@ def find_error_peaks(numpy_matrix):
         peaks_index = x[peak_id]  # 获取峰值点的索引
         peaks_height = peak_property['peak_heights']  # 获取峰值点的值
 
-        print("第{0}个矩阵的峰值点信息：".format(i))
-        print("index：{0}".format(peaks_index))
-        print("value：{0} \n".format(peaks_height))
+        logger.info("第{0}个矩阵的峰值点信息：".format(i))
+        logger.info("index：{0}".format(peaks_index))
+        logger.info("value：{0} \n".format(peaks_height))
 
-        for peak_index in peaks_index:
-            peaks_dict[peak_index] += 1
-
+        # for peak_index in peaks_index:
+        #     peaks_dict[peak_index] += 1
+        for peak_index, peak_height in zip(peaks_index, peaks_height):
+            if peak_index not in peaks_dict:
+                peaks_dict[peak_index] = peak_height
+            else:
+                peaks_dict[peak_index] = max(peak_height, peaks_dict[peak_index])
     return peaks_dict
 
 

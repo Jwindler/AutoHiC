@@ -51,7 +51,7 @@ def find_ctg_site(assembly_path, ctg_name):
 
 
 def main():
-    temp = find_ctg_site("/home/jzj/Jupyter-Docker/HiC-Straw/Np/0/Np.0.assembly", ">utg765")
+    temp = find_ctg_site("/home/jzj/buffer/Np.0.assembly", ">utg832")
     print(temp)
 
 

@@ -12,12 +12,17 @@
 import json
 import collections
 
+from autohic.utils.logger import LoggerHandler
+
+# 初始化日志
+logger = LoggerHandler()
+
 
 def find_site_ctgs(start, end, ratio, assembly):
     """
     根据start,end 返回该区域所包含的contig
-    :param start:    查询起始坐标
-    :param end:      查询终止坐标
+    :param start:    hic file 查询起始坐标
+    :param end:      hic file 查询终止坐标
     :param ratio:    .hic中`assembly` 与Genome size的比值
     :param assembly: `.assembly`文件绝对路径
     :return: 位点内contig信息
@@ -33,9 +38,9 @@ def find_site_ctgs(start, end, ratio, assembly):
     genome_start = start * ratio
     genome_end = end * ratio
 
-    print("查询位点为 ： {0} - {1} \n".format(genome_start, genome_end))
+    logger.info("查询真实位点为 ： {0} - {1} \n".format(genome_start, genome_end))
 
-    print("该区域包含的contig : ")
+    logger.info("该区域包含的contig : ")
 
     with open(assembly, "r") as f:
         lines = f.readlines()
@@ -96,23 +101,24 @@ def find_site_ctgs(start, end, ratio, assembly):
         separators=(
             ',',
             ': '))
-    print(contain_contig)
+    logger.info(contain_contig)
 
     return contain_contig
 
 
 def main():
     # HiC文件位置
-    start_site = 453010131
-    end_site = 455241282
+    start_site = 556250000
+    end_site = 557500000
 
     ratio = 2  # 染色体长度比例
 
-    assembly = "/home/jzj/Auto-HiC/HiC-API/tests/modified_test.assembly"
+    assembly = "/home/jzj/Auto-HiC/Test/Np-Self/Np.0.assembly"
     temp = find_site_ctgs(start_site, end_site, ratio, assembly)
     error_contain_ctgs = json.loads(temp)  # 将字符串转换为字典
     error_contain_ctgs = list(error_contain_ctgs.items())  # 将字典转换为列表
     print(error_contain_ctgs)
+
 
 if __name__ == "__main__":
     main()
