@@ -24,7 +24,7 @@
 
 
 
-## *矩阵获取
+## 矩阵获取
 
 > Notes!
 
@@ -44,7 +44,7 @@ numpy_matrix_chr_1 = matrix_object_chr.getRecordsAsMatrix(453010131, 455241282, 
 
 
 
-## *插入位置的确定
+## 插入位置的确定
 
 ​		将上面获取的矩阵，转化为图像的形式，获取峰值，峰值除开原本位置，就是需要插入的位置，利用这个峰值所在的bin，获取插入的区间，再寻找contig，进行整合插入。
 
@@ -54,7 +54,7 @@ numpy_matrix_chr_1 = matrix_object_chr.getRecordsAsMatrix(453010131, 455241282, 
 
 
 
-## *插入位置精确
+## 插入位置精确
 
 ​		从各个分辨率进行进行查找插入位置，直到返回位置为一个ctg时，就结束查找
 
@@ -64,7 +64,7 @@ numpy_matrix_chr_1 = matrix_object_chr.getRecordsAsMatrix(453010131, 455241282, 
 
 
 
-## *assembly调整
+## assembly调整
 
 ​		如何调整assembly文件
 

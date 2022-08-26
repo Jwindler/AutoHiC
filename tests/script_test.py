@@ -11,7 +11,7 @@
 
 from multiprocessing import Pool
 
-from mul_GenHicPng import GsmAll
+from tests.mul_GenHicPng import GsmAll
 
 if __name__ == '__main__':
 

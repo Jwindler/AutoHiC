@@ -14,7 +14,7 @@ import hicstraw
 import uuid
 
 from mul_gen_class import GenBaseModel
-from autohic.utils.logger import LoggerHandler
+from src.auto_hic.utils.logger import LoggerHandler
 
 
 class GsmAll(GenBaseModel):
