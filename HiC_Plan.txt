@@ -253,7 +253,25 @@
 
 	调整项目结构 （Done）
 
-#  		
+	添加时间 time (Done)
+		加入了Logger，可以时时查看时间
+
+	格式化项目 （Done）
+		已经按照规范，修改
+
+# 8.29
+	*正负*ctg反转对于asy的改变 （Done）
+		已经跑上
+
+	扩展测易位试数据集
+
+
+#  			
+	inv_ctg
+		反转代码
+
+	图片生成多线程
+
 	设计 Debirs 识别与剪切
 		尝试解决500 分辨率下，实现冗余片段删除
 
@@ -267,11 +285,6 @@
 		Genome size / chromosome number
 		Max chr 
 
-	添加时间 time (Done)
-		加入了Logger，可以时时查看时间
-
-	格式化项目 （Done）
-		已经按照规范，修改
 
 
 	
