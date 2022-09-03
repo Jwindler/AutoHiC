@@ -13,23 +13,26 @@ from collections import OrderedDict
 
 from src.assembly.asy_operate import AssemblyOperate
 from src.assembly.search_right_site_V2 import search_right_site_v2
+from src.auto_hic.utils.get_ratio import get_ratio
 from src.auto_hic.utils.logger import LoggerHandler
 
 # 初始化日志
 logger = LoggerHandler()
 
 
-def adjust_translocation(error_queue, hic_file, ratio, assembly_file, modified_assembly_file):
+def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file):
     """
     易位错误调整
     :param error_queue: 易位错误队列
     :param hic_file:  hic文件路径
-    :param ratio:  染色体长度比例
     :param assembly_file:  assembly文件路径
     :param modified_assembly_file:  修改后assembly文件保存路径
     :return: None
     """
     logger.info("Start \n")
+
+    # 获取染色体长度比例
+    ratio = get_ratio(hic_file, assembly_file)
 
     # 实例化AssemblyOperate类
     asy_operate = AssemblyOperate(assembly_file, ratio)
@@ -129,15 +132,13 @@ def main():
     # hic文件路径
     hic_file = "/home/jzj/Auto-HiC/Test/Np-Self/Np.0.hic"
 
-    ratio = 2  # 染色体长度比例
-
     # assembly文件路径
     assembly_file = "/home/jzj/Auto-HiC/Test/asy_test/Np.0.assembly"
 
     # 修改后assembly文件路径
     modified_assembly_file = "/home/jzj/Downloads/2_ctg.assembly"
 
-    adjust_translocation(error_queue, hic_file, ratio, assembly_file, modified_assembly_file)
+    adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file)
 
 
 if __name__ == "__main__":

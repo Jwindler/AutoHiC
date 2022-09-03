@@ -4,30 +4,25 @@
 """
 @author: Swindler
 @contact: 1033199817@qq.com
-@file: GenHiCPngV3.py
-@time: 14/6/22 12:03 AM
-@function: 3D-DNA数据生成HiC图,全局滑动
+@file: gsm_all.py
+@time: 6/13/22 9:54 PM
+@function: HiC文件生成染色体一对一的互作图片（全局移动）
 """
+
 
 import os
 import hicstraw
 
-from src.auto_hic.utils.logger import LoggerHandler
 from src.auto_hic.common.hic_base_model import GenBaseModel
+from src.auto_hic.utils.logger import LoggerHandler
 
 
-class GenHiCPngV3(GenBaseModel):
+class GsmAll(GenBaseModel):
     logger = LoggerHandler()
 
     def run_parsing_hic(self):
-        """
-        组装数据，生成HiC图,全局滑动
-        :return: None
-        """
-        self.logger.info(
-            "Assembly HiC File Parsing With Translational Motion Start")
+        self.logger.info("Parsing HiC File With Translational Motion Start")
         self.logger.info("Execute File: %s" % self.hic_file)
-
         num = 1  # 图片起始名称
 
         # HiC对象
@@ -71,7 +66,7 @@ class GenHiCPngV3(GenBaseModel):
                 self.logger.debug("Create Resolution Folder: %s" % temp_folder)
                 self.create_folder(temp_folder)
 
-                # 循环assembly
+                # 循环染色体对
                 for chrom in chromosomes:
                     matrix_object_chr = hic.getMatrixZoomData(
                         chrom, chrom, "observed", "NONE", "BP", resolution)
@@ -83,6 +78,7 @@ class GenHiCPngV3(GenBaseModel):
                     for site_1 in range(start, end, temp_increase["increase"]):
                         for site_2 in range(
                                 start, end, temp_increase["increase"]):
+
                             flag = False  # 跳出外循环标志
 
                             # 图片文件名
@@ -120,7 +116,7 @@ class GenHiCPngV3(GenBaseModel):
                                     site_1, site_1 + temp_increase["dim"], end - temp_increase["dim"], end)
                                 self.plot_hic_map(
                                     numpy_matrix_chr, resolution, temp_folder2)
-                                t = GenHiCPngV3.info_records(
+                                t = GsmAll.info_records(
                                     temp_folder2,
                                     genome_id,
                                     chrom,
@@ -141,7 +137,7 @@ class GenHiCPngV3(GenBaseModel):
                                     end - temp_increase["dim"], end, site_2, site_2 + temp_increase["dim"])
                                 self.plot_hic_map(
                                     numpy_matrix_chr, resolution, temp_folder2)
-                                t = GenHiCPngV3.info_records(
+                                t = GsmAll.info_records(
                                     temp_folder2,
                                     genome_id,
                                     chrom,
@@ -161,7 +157,7 @@ class GenHiCPngV3(GenBaseModel):
                                     site_1, site_1 + temp_increase["dim"], site_2, site_2 + temp_increase["dim"])
                                 self.plot_hic_map(
                                     numpy_matrix_chr, resolution, temp_folder2)
-                                t = GenHiCPngV3.info_records(
+                                t = GsmAll.info_records(
                                     temp_folder2,
                                     genome_id,
                                     chrom,
@@ -176,15 +172,14 @@ class GenHiCPngV3(GenBaseModel):
                             num += 1  # 图片名称加1
                         if flag:
                             break
-
                 # 分辨率logging
                 self.logger.info("Resolution: %s Done" % resolution)
         self.logger.info("Parsing HiC File With Translational Motion Done")
 
 
 def main():
-    temp = GenHiCPngV3(
-        "/home/jzj/Jupyter-Docker/HiC-Straw/Np/0/Np.0.hic",
+    temp = GsmAll(
+        "/home/jzj/Jupyter-Docker/HiC-Straw/GSM/GSM1551550.hic",
         "/home/jzj/buffer")
     temp.run_parsing_hic()
 

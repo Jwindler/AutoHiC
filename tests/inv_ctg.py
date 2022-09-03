@@ -10,7 +10,7 @@
 """
 
 
-# TODO: 根据根据需要反转的ctg_name,调整asy文件
+# TODO: 根据根据需要反转的ctg_name,调整asy文件,参考易位的处理
 class Main:
     def __init__(self):
         pass

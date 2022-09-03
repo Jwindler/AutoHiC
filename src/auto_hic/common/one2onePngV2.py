@@ -13,7 +13,7 @@
 import os
 import hicstraw
 
-from src.auto_hic.common.base_gen_model import GenBaseModel
+from src.auto_hic.common.hic_base_model import GenBaseModel
 from src.auto_hic.utils.logger import LoggerHandler
 from conf.chr_len_config import width as width_dic
 

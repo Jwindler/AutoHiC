@@ -1,16 +1,20 @@
 [tool.poetry]
 name = "auto-hic"
 version = "0.1.0"
-description = "A rectify tool for hic operate."
+description = "A tool to rectify hic assembly."
 authors = ["Swindler <“1033199817@qq.com”>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-matplotlib = "^3.5.3"
 hic-straw = "^1.3.1"
-colorlog = "^6.7.0"
 scipy = "^1.9.1"
+matplotlib = "<3.3"
+colorlog = "^6.7.0"
+scikit-image = "^0.19.3"
+labelme = "^5.0.1"
+shapely = "^1.8.4"
+opencv-python = "^4.6.0.66"
 
 [tool.poetry.dev-dependencies]
 
