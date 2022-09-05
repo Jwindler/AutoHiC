@@ -11,7 +11,6 @@
 # 输出文件夹必须为空文件夹
 """
 
-
 import argparse
 import collections
 import datetime
@@ -34,7 +33,6 @@ except ImportError:
 
 
 def to_coco(args, label_files, train):
-
     now = datetime.datetime.now()  # 获取当前时间
 
     data = dict(
@@ -186,7 +184,8 @@ def to_coco(args, label_files, train):
         # ************************** 可视化的处理开始 *********************************
         if not args.noviz:
             labels, captions, masks = zip(*[(class_name_to_id[cnm], cnm, msk) for (
-                cnm, gid), msk in masks.items() if cnm in class_name_to_id])
+                                                                                      cnm, gid), msk in masks.items() if
+                                            cnm in class_name_to_id])
             viz = imgviz.instances2rgb(
                 image=img,
                 labels=labels,

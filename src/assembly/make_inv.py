@@ -20,9 +20,11 @@ def make_inv(asy_file, out_file_path):
             if line.startswith(">"):
                 temp_line = line.strip().split(" ")
 
+                # 全部反转
+                inv_list.append(int(temp_line[1]))
                 # ctg长度大于1Mb
-                if int(temp_line[2]) >= 1000000:
-                    inv_list.append(int(temp_line[1]))
+                # if int(temp_line[2]) >= 1000000:
+                #     inv_list.append(int(temp_line[1]))
 
     # 获取原始信息
     asy_operate = AssemblyOperate(asy_file, ratio=None)
@@ -50,8 +52,8 @@ def make_inv(asy_file, out_file_path):
 
 
 def main():
-    asy_file = "/home/jzj/Auto-HiC/Test/asy_test/Np.0.assembly"
-    out_file_path = "/home/jzj/buffer/test_inv.assembly"
+    asy_file = "/home/jzj/Downloads/Hv_bgi_HiC.assembly"
+    out_file_path = "/home/jzj/Downloads/inv_Hv_bgi_HiC.assembly"
     make_inv(asy_file, out_file_path)
 
 

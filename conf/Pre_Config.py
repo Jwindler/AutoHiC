@@ -6,7 +6,7 @@
 @contact: 1033199817@qq.com
 @file: Pre_Config.py
 @time: 5/19/22 7:26 PM
-@function: 
+@function: 配置文件
 """
 
 # 预定义ColorRange

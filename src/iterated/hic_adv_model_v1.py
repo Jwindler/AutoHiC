@@ -4,9 +4,9 @@
 """
 @author: Swindler
 @contact: jzjlab@163.com
-@file: hic_adv_model_v2.py
-@time: 9/2/22 10:42 AM
-@function: 解析Hic文件，生成图片（全局，会产生许多无互作图片）
+@file: hic_adv_model_v1.py
+@time: 8/31/22 3:26 PM
+@function: 原生hic文件处理类，便于多进程生成图片
 """
 
 import json
@@ -23,9 +23,9 @@ from src.auto_hic.utils.logger import LoggerHandler
 
 class GenBaseModel:
     logger = LoggerHandler()
+    logger.info("Base Model Initiating ...")
 
     def __init__(self, hic_file, genome_id, out_file):
-        self.logger.info("Base Model Initiating ...")
         self.hic_file = hic_file  # 原始hic文件路径
         self.genome_id = genome_id  # 基因组id
         self.out_file = out_file  # 输出文件路径
@@ -132,16 +132,6 @@ class GenBaseModel:
 
     @staticmethod
     def plot_hic_map(matrix, resolution, fig_save_dir):
-        """
-        画图
-        Args:
-            matrix: 互作矩阵
-            resolution: 分辨率
-            fig_save_dir: 图片保存路径
-
-        Returns:
-            None
-        """
         redmap = LinearSegmentedColormap.from_list(
             "bright_red", [(1, 1, 1), (1, 0, 0)])
 
@@ -192,57 +182,125 @@ class GenBaseModel:
 
         return json.dumps(record)
 
-    def gen_png(self, resolution, a_start, a_end, b_start, b_end):
-        """
-        生成png
-        Args:
-            resolution: 分辨率
-            a_start: 互作图像左侧的起始位置
-            a_end: 互作图像左侧的结束位置
-            b_start: 互作图像上侧的起始位置
-            b_end: 互作图像上侧的结束位置
+    def gen_png(self, resolution, start, end):
 
-        Returns:
-            None
-        """
         hic = hicstraw.HiCFile(self.hic_file)  # 实例化hic对象
 
         # 创建分辨率文件夹
         temp_folder = os.path.join(self.genome_folder, str(resolution))
+        self.create_folder(temp_folder)
 
         # 获取指定分辨率下的矩阵对象
         matrix_object_chr = hic.getMatrixZoomData('assembly', 'assembly', "observed", "KR", "BP", resolution)
 
-        temp_q = uuid.uuid4().hex  # 生成随机字符串，命令
+        # 创建info.txt
+        info_file = os.path.join(self.genome_folder, "info.txt")
+        # 打开info.txt 进行记录
+        with open(info_file, "a+") as f:
 
-        # 图片文件名
-        temp_folder2 = os.path.join(temp_folder, str(temp_q) + ".jpg")
+            # 范围与增量
+            temp_increase = self.increment(resolution)
 
-        # 提取互作矩阵
-        numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(a_start, a_end, b_start, b_end)
+            # 染色体内滑动
+            for site_1 in range(start, end, temp_increase["increase"]):
+                for site_2 in range(
+                        start, end, temp_increase["increase"]):
 
-        # 互作图像生成
-        self.plot_hic_map(numpy_matrix_chr, resolution, temp_folder2)
+                    flag = False  # 跳出外循环标志
 
-        # 构建记录字典
-        temp_field = self.info_records(
-            temp_folder2,
-            self.genome_id,
-            "assembly",
-            a_start,
-            a_end,
-            "assembly",
-            b_start,
-            b_end) + "\n"
+                    temp_q = uuid.uuid1()
 
-        return temp_field
+                    # 图片文件名
+                    temp_folder2 = os.path.join(
+                        temp_folder, str(temp_q) + ".jpg")
+
+                    # 染色体总长度小于 预定义的 宽度
+                    if end < temp_increase["dim"]:
+                        flag = True  # 跳出外循环标记
+                        numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(
+                            start, end, start, end)
+
+                        # 图片生成
+                        self.plot_hic_map(
+                            numpy_matrix_chr, resolution, temp_folder2)
+
+                        # 构建记录
+                        t = self.info_records(
+                            temp_folder2,
+                            self.genome_id,
+                            "assembly",
+                            start,
+                            end,
+                            "assembly",
+                            start,
+                            end)
+                        f.writelines(t + "\n")
+                        break
+
+                    # 一个范围小于边界
+                    elif site_1 + temp_increase["dim"] < end < site_2 + temp_increase["dim"]:
+                        numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(
+                            site_1, site_1 + temp_increase["dim"], end - temp_increase["dim"], end)
+                        self.plot_hic_map(
+                            numpy_matrix_chr, resolution, temp_folder2)
+                        t = self.info_records(
+                            temp_folder2,
+                            self.genome_id,
+                            "assembly",
+                            site_1,
+                            site_1 +
+                            temp_increase["dim"],
+                            "assembly",
+                            end - temp_increase["dim"],
+                            end)
+                        f.writelines(t + "\n")
+                        break
+
+                    # 一个范围小于边界
+                    elif site_2 + temp_increase["dim"] < end < site_1 + temp_increase["dim"]:
+                        numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(
+                            end - temp_increase["dim"], end, site_2, site_2 + temp_increase["dim"])
+                        self.plot_hic_map(
+                            numpy_matrix_chr, resolution, temp_folder2)
+                        t = self.info_records(
+                            temp_folder2,
+                            self.genome_id,
+                            "assembly",
+                            end - temp_increase["dim"],
+                            end,
+                            "assembly",
+                            site_2,
+                            site_2 + temp_increase["dim"])
+                        f.writelines(t + "\n")
+                        break
+
+                    # 范围内
+                    else:
+                        numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(
+                            site_1, site_1 + temp_increase["dim"], site_2, site_2 + temp_increase["dim"])
+                        self.plot_hic_map(
+                            numpy_matrix_chr, resolution, temp_folder2)
+                        t = self.info_records(
+                            temp_folder2,
+                            self.genome_id,
+                            "assembly",
+                            site_1,
+                            site_1 +
+                            temp_increase["dim"],
+                            "assembly",
+                            site_2,
+                            site_2 +
+                            temp_increase["dim"])
+                        f.writelines(t + "\n")
+                if flag:
+                    break
 
 
 def main():
     temp = GenBaseModel(
         "/home/jzj/Auto-HiC/Test/Np-Self/Np.0.hic", "Np",
         "/home/jzj/buffer")
-    temp.gen_png(1250000, 0, 1145951891, 0, 1145951891)
+    temp.gen_png(1250000, 0, 1145951891)
 
 
 if __name__ == "__main__":
