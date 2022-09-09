@@ -261,16 +261,62 @@
 
 # 8.29
 	*正负*ctg反转对于asy的改变 （Done）
-		已经跑上
+		已经跑上，与预想一致
 
-	扩展测易位试数据集
+# 8.31
+	扩展易位测试数据集，测试
+		暂时没有好的测试数据集
+
+	反转数据集生成 （Done）
+		已完成hic文件生成，晚上跑图片生成
+
+	图片生成多线程 （Done）
+
+# 9.1
+	项目依赖导出，用poetry构建 (Done)
+
+# 9.2 - 9.5
+	检查mul_process的BUG，为什么造成了不一样的图片数目（Done）
+		根据 1250000中图片信息和info.txt 结合
+		> 多线程的切割 与 位点移动产生了冲突，需要重新规划（Done）
+
+	考虑修改图片生成的长宽 / 像素（Done）
+		统计juicebox中， 指定分辨率下的合适长宽比例，并记录文件：color_range_sets， len_width_sets， increment_sets
+		> juicebox中的长宽，可以通过缩放软件窗口来变化，无参考意义
+
+	反转数据集生成（Done）
+		> Np_2: 全部ctg 都反转
+
+	Hv + Ls 反转数据集生成（Done）
+		Ls：/home/zgq/work/01.assemble/02.Ls/04.hic_ass/02.3D/04.4th_jzj_inv 
+		Hv：/home/zgq/work/01.assemble/01.Hv/02.Hic/05.3D/06.jzj_inv
+
+# 9.6
+	Hv + Ls 互作图像生成（Done）
+		> Hv 存在问题：需要等待3d-dna 运行结果
+
+# 9.7
+	已有数据进行挑选，全部为反转数据 （Done）
+
+	下载两只鹦鹉的数据集 （Done）
 
 
-#  			
+# 9.8
+	两只鹦鹉数据集 HiC挂载 （Doing）
+		> 正在 130 服务区运行
+
+# 
+
+
+#  		
 	inv_ctg
 		反转代码
 
-	图片生成多线程
+	Pre_Config 调整
+
+	斜对角移动fix
+		需要提前知道每条染色体的大概长度，才能进行有效的移动
+
 
 	设计 Debirs 识别与剪切
 		尝试解决500 分辨率下，实现冗余片段删除

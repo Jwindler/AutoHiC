@@ -98,7 +98,6 @@ class BulkHiCPng:
             resolution_dir = os.path.join(png_save_dir, str(resolution))
             self.generate_file(resolution_dir)
             # self.parsing_hic(hic, resolution, resolution_dir)
-            # TODO: 解决问题
 
 
 def main():
