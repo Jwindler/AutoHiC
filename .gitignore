@@ -1,3 +1,6 @@
+# node-package
+node_modules/
+
 # Virtual environment
 venv/ 
 
