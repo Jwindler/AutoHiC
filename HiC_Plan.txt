@@ -290,6 +290,7 @@
 	Hv + Ls 反转数据集生成（Done）
 		Ls：/home/zgq/work/01.assemble/02.Ls/04.hic_ass/02.3D/04.4th_jzj_inv 
 		Hv：/home/zgq/work/01.assemble/01.Hv/02.Hic/05.3D/06.jzj_inv
+			9.13 Hv运行仍有问题，已抛弃
 
 # 9.6
 	Hv + Ls 互作图像生成（Done）
@@ -304,13 +305,30 @@
 # 9.8
 	两只鹦鹉数据集 HiC挂载 （Doing）
 		> 正在 130 服务区运行
+		9.13 仍在运行
+		9.19 仍在运行
 
-# 
+# 9.13
+	Ls + Hv 随机反转数据生成 
+		> 9.13 Doing
+		> 9.19 Hv 已运行完毕
+
+# 9.16
+	typer （Done）
+
+
+# 9.19 - 9.21
+	inv_ctg 反转代码 （Done）
+		一切三 需要判断 （Doing）
+		Debug 
+
+# 9.22
+	
+
 
 
 #  		
-	inv_ctg
-		反转代码
+
 
 	Pre_Config 调整
 

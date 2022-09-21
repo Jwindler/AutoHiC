@@ -103,9 +103,9 @@ def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10)
 
 
 def main():
-    hic_file = "/home/jzj/Jupyter-Docker/datasets/inv/Ls_dia/Ls_contig.final.hic"
+    hic_file = "/home/jzj/Auto-HiC/Test/asy_test/random_Np/Np.final.hic"
     # mul_process(hic_file, "test", "/home/jzj/buffer", "global", 10)
-    mul_process(hic_file, "Ls_dia", "/home/jzj/Jupyter-Docker/datasets/inv/Ls_dia", "diagonal", 4)
+    mul_process(hic_file, "Np_random", "/home/jzj/Auto-HiC/Test/asy_test/random_Np", "diagonal", 10)
 
 
 if __name__ == "__main__":

@@ -45,3 +45,35 @@
 
 
 
+
+
+
+
+## 功能测试
+
+- 两个测试用例
+
+> random_Np/Np.final.hic
+>
+> random_Np/Np.final.assembly
+>
+> 268689492 - 274981071  utg563
+>
+> 280560061 - 284239273  utg487
+
+
+
+- 原图
+
+![](https://swindler-typora.oss-cn-chengdu.aliyuncs.com/typora_imgs/image-20220920094219320.png)
+
+
+
+- 检测结果
+
+![image-20220920094349636](https://swindler-typora.oss-cn-chengdu.aliyuncs.com/typora_imgs/image-20220920094349636.png)
+
+
+
+- 修改结果
+
