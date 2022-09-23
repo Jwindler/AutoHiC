@@ -1,3 +1,12 @@
+## [0.2.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.2.0...v0.2.1) (2022-09-23)
+
+
+### Bug Fixes
+
+* remove debris files ([5a99550](https://github.com/Jwindler/HiC-OpenCV/commit/5a99550c0f8184d2fbccd78060f179d01de1c632))
+
+
+
 #  (2022-09-21)
 
 
