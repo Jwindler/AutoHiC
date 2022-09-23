@@ -1,15 +1,49 @@
 # Auto-HiC
 
-介绍
 
 
-## Usage
+## Getting Started
+
+
+
+[toc]
+
+## Introduction
+
+
+
+
+
+
+
+## Users' Guide
 
 ### Installation
 
 
 
 ### platform
+
+
+
+### Usage
+
+
+
+
+
+
+## Citing
+
+
+
+
+
+## LICENSE
+
+
+
+
 
 
 
@@ -26,15 +60,6 @@
 
 
 
-
-
-## Citing
-
-
-
-
-
-## 协议
 
 
 
