@@ -1,6 +1,6 @@
 # Auto-HiC
 
-![](https://img.shields.io/badge/release-v0.3.0-blue)![a](https://img.shields.io/badge/license-MIT-brightgreen)
+![](https://img.shields.io/badge/release-v0.3.4-blue)![a](https://img.shields.io/badge/license-MIT-brightgreen)
 
 
 
@@ -12,6 +12,10 @@
 
 
 ### platform
+
+
+
+> Note: the [iterated](https://github.com/Jwindler/AutoHiC/tree/main/iterated) is deprecated
 
 
 
