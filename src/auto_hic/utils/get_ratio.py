@@ -37,8 +37,12 @@ def get_ratio(hic, asy_file) -> int:
 
 
 def main():
-    hic_file = "/home/jzj/Jupyter-Docker/HiC-Straw/Hv/0/Hv_bgi.0.hic"
-    asy_file = "/home/jzj/Jupyter-Docker/HiC-Straw/Hv/0/Hv_bgi.0.assembly"
+    # hic文件路径
+    hic_file = "/home/jzj/Data/Test/raw_data/Aa/Aa.2.hic"
+
+    # assembly文件路径
+    asy_file = "/home/jzj/Data/Test/raw_data/Aa/Aa.2.assembly"
+
     result = get_ratio(hic_file, asy_file)
     print(result)
 

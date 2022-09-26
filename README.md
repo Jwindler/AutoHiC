@@ -2,48 +2,16 @@
 
 
 
-## Getting Started
 
 
 
-[toc]
-
-## Introduction
-
-
-
-
-
-
-
-## Users' Guide
+## Usage
 
 ### Installation
 
 
 
 ### platform
-
-
-
-### Usage
-
-
-
-
-
-
-## Citing
-
-
-
-
-
-## LICENSE
-
-
-
-
 
 
 
@@ -55,11 +23,24 @@
 - 2022-05-27: add object detection network
 - 2022-06-02: train translocation detection network
 - 2022-06-06: train translocation detection network
-- 2022-09-21: add inversion adjust function and fix the translocation bugs
+- 2022-09-26: add debris function and fix the gen_png.py bug
 
 
 
 
+
+
+## Citing
+
+
+
+## Contact
+
+
+
+
+
+## LICENSE
 
 
 

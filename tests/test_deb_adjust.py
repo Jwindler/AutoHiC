@@ -3,16 +3,17 @@
 
 """
 @author: Swindler
-@contact: 1033199817@qq.com
-@file: tran_adjust.py
-@time: 8/23/22 8:13 PM
-@function: 易位错误调整流程整合
+@contact: jzjlab@163.com
+@file: test_deb_adjust.py
+@time: 9/23/22 4:05 PM
+@function: 
 """
+
+# TODO: 获取冗余ctg位置区间后，在asy文件中 删除冗余ctg
 import json
 from collections import OrderedDict
 
 from src.assembly.asy_operate import AssemblyOperate
-from src.assembly.search_right_site_V2 import search_right_site_v2
 from src.auto_hic.utils.get_ratio import get_ratio
 from src.auto_hic.utils.logger import LoggerHandler
 
@@ -20,16 +21,8 @@ from src.auto_hic.utils.logger import LoggerHandler
 logger = LoggerHandler()
 
 
-def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file):
-    """
-    易位错误调整
-    :param error_queue: 易位错误队列
-    :param hic_file:  hic文件路径
-    :param assembly_file:  assembly文件路径
-    :param modified_assembly_file:  修改后assembly文件保存路径
-    :return: None
-    """
-    logger.info("Start adjust translocation \n")
+def adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file):
+    logger.info("Start adjust debris \n")
 
     # 获取染色体长度比例
     ratio = get_ratio(hic_file, assembly_file)
@@ -37,26 +30,25 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
     # 实例化AssemblyOperate类
     asy_operate = AssemblyOperate(assembly_file, ratio)
 
-    # 错误修改信息记录
-    error_mdy_info = OrderedDict()
-
     flag = True  # 用于文件修改判断
     cut_ctg_name_site = {}  # 存放切割的染色体名和位置
 
-    # 循环易位错误队列
+    error_deb_info = OrderedDict()  # 错误 和 需要调整的冗余信息
+
+    # 循环冗余错误队列
     for error in error_queue:
         logger.info("开始计算 {0} 的调整信息：".format(error))
 
-        # 查找易位错误区间中包含的ctgs
+        # 查找冗余错误区间中包含的ctgs
         error_contain_ctgs = asy_operate.find_site_ctgs(assembly_file, error_queue[error]["start"],
                                                         error_queue[error]["end"])
         error_contain_ctgs = json.loads(error_contain_ctgs)  # 将字符串转换为字典
         error_contain_ctgs = list(error_contain_ctgs.items())  # 将字典转换为列表
 
-        logger.info("开始切割易位错误的边界ctgs：")
+        logger.info("开始切割冗余错误的边界ctgs：")
 
-        # 对易位错误区间中包含的ctgs进行切割,判断情况
-        if len(error_contain_ctgs) >= 2:  # 易位错误区间内包含两个或两个以上的ctgs
+        # 对冗余错误区间中包含的ctgs进行切割,判断情况
+        if len(error_contain_ctgs) >= 2:  # 冗余错误区间内包含两个或两个以上的ctgs
 
             # 切割第一个ctg
             first_ctg = error_contain_ctgs[0]
@@ -76,7 +68,7 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
             cut_ctg_name_site[last_ctg[0]] = error_queue[error]["end"] * ratio
             asy_operate.cut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
 
-        else:  # 易位错误区间内只有一个ctg
+        else:  # 冗余错误区间内只有一个ctg
             _ctg = error_contain_ctgs[0]  # ctg_name
 
             _ctg_info = asy_operate.get_ctg_info(ctg_name=_ctg[0], new_asy_file=assembly_file)  # 获取ctg信息
@@ -119,35 +111,30 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
                     # 将一个ctg切割为三个ctg
                     asy_operate.cut_ctg_to_3(modified_assembly_file, _ctg[0], cut_ctg_site_start,
                                              cut_ctg_site_end, modified_assembly_file)
+        logger.info("冗余错误的边界ctgs切割完成 \n")
 
-        logger.info("易位错误的边界ctgs切割完成 \n")
-
-        logger.info("重新查询易位错误区间包含的ctgs")
+        logger.info("重新查询冗余错误区间包含的ctgs")
         new_error_contain_ctgs = asy_operate.find_site_ctgs(modified_assembly_file, error_queue[error]["start"],
                                                             error_queue[error]["end"])
 
         new_error_contain_ctgs = json.loads(new_error_contain_ctgs)  # 将字符串转换为字典
 
-        logger.info("需要移动的ctgs: %s \n", new_error_contain_ctgs)
+        logger.info("需要移动冗余的ctgs: %s \n", new_error_contain_ctgs)
 
-        logger.info("开始查询易位错误的插入位点：")
-        # 依次获取错误的插入ctg位点
-        error_site = (error_queue[error]["start"], error_queue[error]["end"])
-        temp_result, insert_left = search_right_site_v2(hic_file, assembly_file, ratio, error_site)
-        error_mdy_info[error] = {
-            "move_ctgs": new_error_contain_ctgs,
-            "insert_site": temp_result,
-            "direction": insert_left
+        error_deb_info[error] = {
+            "deb_ctgs": list(new_error_contain_ctgs.keys())
         }
-        logger.info("易位错误的插入位点查询完成 \n")
 
-    logger.info("开始对所有易位错误进行调整：")
+    logger.info("开始对所有冗余错误进行调整：")
 
-    # 开始移动记录的ctgs
-    asy_operate.move_ctgs(modified_assembly_file, error_mdy_info, modified_assembly_file)
-    logger.info("所有易位错误调整完成 \n")
+    # 开始翻转记录的ctgs
+    for error in error_deb_info:
+        for deb_ctg in error_deb_info[error]["deb_ctgs"]:
+            asy_operate.move_deb_ctg(modified_assembly_file, deb_ctg, modified_assembly_file)
 
-    logger.info("所有易位错误的调整信息： %s \n", error_mdy_info)
+    logger.info("所有冗余错误调整完成 \n")
+
+    logger.info("所有冗余错误的调整信息： %s \n", error_deb_info)
     logger.info("All Done! \n")
 
 
@@ -155,25 +142,25 @@ def main():
     # 错误队列，其中的start和end是基于hic文件上的位置，没有转换为基因组上的位置
     error_queue = {
         "error_1": {
-            "start": 250081212,
-            "end": 254212374
+            "start": 268689492,
+            "end": 274981070
+        },
+        "error_2": {
+            "start": 280560061,
+            "end": 284239273
         }
-        # "error_2": {
-        #     "start": 453010131,
-        #     "end": 455241282
-        # }
     }
 
     # hic文件路径
-    hic_file = "/home/jzj/Data/Test/raw_data/Aa/Aa.2.hic"
+    hic_file = "/home/jzj/Data/Test/asy_test/random_Np/Np.final.hic"
 
     # assembly文件路径
-    assembly_file = "/home/jzj/Data/Test/raw_data/Aa/Aa.2.assembly"
+    assembly_file = "/home/jzj/Data/Test/asy_test/random_Np/Np.final.assembly"
 
     # 修改后assembly文件路径
     modified_assembly_file = "/home/jzj/buffer/test.assembly"
 
-    adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file)
+    adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file)
 
 
 if __name__ == "__main__":

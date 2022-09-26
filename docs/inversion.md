@@ -65,7 +65,7 @@
 
 - 原图
 
-![](https://swindler-typora.oss-cn-chengdu.aliyuncs.com/typora_imgs/image-20220920094219320.png)
+![](/home/jzj/buffer/image-20220920094219320.png)
 
 
 
@@ -77,3 +77,4 @@
 
 - 修改结果
 
+![image-20220922100620063](https://swindler-typora.oss-cn-chengdu.aliyuncs.com/typora_imgs/image-20220922100620063.png)

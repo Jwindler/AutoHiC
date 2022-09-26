@@ -349,3 +349,29 @@ print('peak_height',peak_height)
 
 
 
+
+
+## 精确错误范围
+
+method：在当前分辨率提取的错误，先计算长宽，看是否能够在更高分辨率下来生成图片，再用模型来检测
+
+
+
+> 问题：需要对每一个存在易位的区域，进行各个方面的截图，不然检测不到
+
+
+
+- 测试
+
+| 分辨率 | 原图                                                         | 检测                                                         |
+| ------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 500000 | ![image-20220926172344393](https://swindler-typora.oss-cn-chengdu.aliyuncs.com/typora_imgs/image-20220926172344393.png) | 没有检测到                                                   |
+| 250000 |                                                              | 检测到一个，但不是目标区域                                   |
+| 125000 |                                                              | 都检测到了，两个都在目标区域内                               |
+| 50000  | ![image-20220926172428108](https://swindler-typora.oss-cn-chengdu.aliyuncs.com/typora_imgs/image-20220926172428108.png) | ![image-20220926172416964](https://swindler-typora.oss-cn-chengdu.aliyuncs.com/typora_imgs/image-20220926172416964.png) |
+| 25000  |                                                              | ![image-20220926172455224](https://swindler-typora.oss-cn-chengdu.aliyuncs.com/typora_imgs/image-20220926172455224.png) |
+| 12500  |                                                              | 没有检测到                                                   |
+| 5000   |                                                              | 没有检测到                                                   |
+
+
+

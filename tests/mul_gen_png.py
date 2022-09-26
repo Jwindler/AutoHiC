@@ -56,13 +56,12 @@ def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10)
     logger.info("threads: %s" % process_num)
     pool = Pool(process_num)  # 进程数
     start = 0
-    end = 1145951891
+    end = hic_operate.get_chr_len()  # 基因组长度
 
     global info_path  # info.txt 文件路径
     info_path = os.path.join(hic_operate.genome_folder, "info.txt")
 
     for resolution in resolutions:
-
         # 创建分辨率文件夹
         temp_folder = os.path.join(hic_operate.genome_folder, str(resolution))
         hic_operate.create_folder(temp_folder)
@@ -103,9 +102,9 @@ def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10)
 
 
 def main():
-    hic_file = "/home/jzj/Auto-HiC/Test/asy_test/random_Np/Np.final.hic"
-    # mul_process(hic_file, "test", "/home/jzj/buffer", "global", 10)
-    mul_process(hic_file, "Np_random", "/home/jzj/Auto-HiC/Test/asy_test/random_Np", "diagonal", 10)
+    hic_file = "/home/jzj/Data/Test/Np-Self/Np.0.hic"
+    # mul_process(hic_file, "Np_global", "/home/jzj/Downloads", "global", 10)
+    mul_process(hic_file, "Np_dia", "/home/jzj/Downloads", "diagonal", 10)
 
 
 if __name__ == "__main__":

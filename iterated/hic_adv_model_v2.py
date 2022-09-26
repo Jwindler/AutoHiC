@@ -6,7 +6,7 @@
 @contact: jzjlab@163.com
 @file: hic_adv_model_v2.py
 @time: 9/2/22 10:42 AM
-@function:
+@function: 解析Hic文件，生成图片（全局，会产生许多无互作图片）
 """
 
 import json
@@ -59,7 +59,7 @@ class GenBaseModel:
         """
 
         # 预定义ColorRange
-        color_range_sets = Pre_Config.color_range_sets
+        color_range_sets = Pre_Config.COLOR_RANGE_SETS
 
         result = None  # No_Use
         # 分辨率包括在预定义中
@@ -88,10 +88,10 @@ class GenBaseModel:
         dim_increase = {}
 
         # 预定义长宽
-        len_width_sets = Pre_Config.len_width_sets
+        len_width_sets = Pre_Config.LEN_WIDTH_SETS
 
         # 预定义增量
-        increment_sets = Pre_Config.increment_sets
+        increment_sets = Pre_Config.INCREMENT_SETS
 
         result = None  # No_Use
         # 分辨率包括在预定义中
@@ -182,7 +182,7 @@ class GenBaseModel:
 
         return json.dumps(record)
 
-    def gen_png(self, resolution, start, end):
+    def gen_png_global(self, resolution, start, end):
 
         hic = hicstraw.HiCFile(self.hic_file)  # 实例化hic对象
 
@@ -198,6 +198,7 @@ class GenBaseModel:
 
         info_records = ""
 
+        flag = None  # 提前声明
         # 染色体内滑动
         for site_1 in range(start, end, temp_increase["increase"]):
             for site_2 in range(
@@ -234,7 +235,7 @@ class GenBaseModel:
                     info_records += t + "\n"
                     break
 
-                # 一个范围小于边界
+                # site_2 + dim 超过染色体长度
                 elif site_1 + temp_increase["dim"] < end < site_2 + temp_increase["dim"]:
                     numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(
                         site_1, site_1 + temp_increase["dim"], end - temp_increase["dim"], end)
@@ -253,7 +254,7 @@ class GenBaseModel:
                     info_records += t + "\n"
                     break
 
-                # 一个范围小于边界
+                # site_1 + dim 超过染色体长度
                 elif site_2 + temp_increase["dim"] < end < site_1 + temp_increase["dim"]:
                     numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(
                         end - temp_increase["dim"], end, site_2, site_2 + temp_increase["dim"])
@@ -298,7 +299,7 @@ def main():
     temp = GenBaseModel(
         "/home/jzj/Auto-HiC/Test/Np-Self/Np.0.hic", "Np",
         "/home/jzj/buffer")
-    temp.gen_png(1250000, 0, 1145951891)
+    temp.gen_png_global(1250000, 0, 1145951891)
 
 
 if __name__ == "__main__":

@@ -178,8 +178,8 @@ class AssemblyOperate(object):
         cut_ctg_order = cut_ctg_info["ctg_order"]
 
         # 计算切割的起始位置和结束位置
-        cut_ctg_site1 = cut_ctg_site - cut_ctg_info["site"][0]
-        cut_ctg_site2 = cut_ctg_info["site"][1] - cut_ctg_site + 1
+        cut_ctg_site1 = cut_ctg_site - cut_ctg_info["site"][0] + 1
+        cut_ctg_site2 = cut_ctg_info["site"][1] - cut_ctg_site
 
         with open(out_file_path, "w") as f:
 
@@ -344,14 +344,13 @@ class AssemblyOperate(object):
 
             if i.startswith("-"):  # 反向contig
                 i = i[1:]
-                temp_len_s = temp_len_e + 1
+                temp_len_s = temp_len_e
                 temp_len_e += int(contig_info[i]["length"])
             else:
-                temp_len_s = temp_len_e + 1
+                temp_len_s = temp_len_e
                 temp_len_e += int(contig_info[i]["length"])
 
-                # 解冗余
-
+            # 解冗余
             def callback():
                 contain_contig[contig_info[i]["name"]] = {
                     "length": contig_info[i]["length"],
@@ -361,13 +360,15 @@ class AssemblyOperate(object):
                 return temp_len_e
 
             # 各个contig与查询位点之间的关系（主要有四种，可以参考两条线段之间的关系）
-            if temp_len_s < genome_start:
-                if genome_start < temp_len_e:
+            if temp_len_s <= genome_start:
+                if genome_start < temp_len_e < genome_end:
                     callback()
-            elif temp_len_s >= genome_start:
-                if temp_len_e < genome_end:
+                elif temp_len_e > genome_end:
                     callback()
-                elif temp_len_s < genome_end:
+            elif temp_len_s > genome_start:
+                if temp_len_e <= genome_end:
+                    callback()
+                elif temp_len_s < genome_end < temp_len_e:
                     callback()
 
         # json格式输出
@@ -406,7 +407,7 @@ class AssemblyOperate(object):
         # 计算切割的起始位置和结束位置
         cut_ctg_site1 = site_1 - cut_ctg_info["site"][0]
         cut_ctg_site2 = site_2 - site_1 + 1
-        cut_ctg_site3 = cut_ctg_info["site"][1] - site_2
+        cut_ctg_site3 = cut_ctg_info["site"][1] - site_2 + 1
 
         with open(out_file_path, "w") as f:
             # 写入新的ctg信息
@@ -499,28 +500,18 @@ class AssemblyOperate(object):
                         temp_write_list.append(str(x))
                 f.write(" ".join(temp_write_list) + "\n")
 
-    # TODO: 冗余移动到末尾
-    def move_deb_ctg(self, assembly_file_path, error_info, out_file_path):
-        # error_info是ctg_name: >utg563:::fragment_2
-        pass
-
 
 def main():
     # 实例化Assembly类
-    # temp = AssemblyOperate("/home/jzj/Data/Test/asy_test/random_Np/Np.final.assembly", ratio=2)
-    temp = AssemblyOperate("/home/jzj/buffer/test.assembly", ratio=2)
+    temp = AssemblyOperate("/home/jzj/Data/Test/asy_test/random_Np/Np.final.assembly", ratio=2)
 
     # 测试获取整体信息
     print(json.dumps(temp.get_info(), indent=4))
 
     # 测试获取指定ctg信息
-    assembly_info = temp.get_ctg_info(ctg_name="utg563:::fragment_1")
+    assembly_info = temp.get_ctg_info(ctg_name="utg487")
     # assembly_info = temp.get_ctg_info(ctg_order=1335)
     print(json.dumps(assembly_info, indent=4))
-
-    # 测试查询指定区间的ctg
-    # result = temp.find_site_ctgs("/home/jzj/buffer/test.assembly", start=537378984, end=549962140)
-    # print(result)
 
     # 测试切割指定ctg
     # out_file_path = "/home/jzj/buffer/cut_Np.0.assembly"

@@ -39,7 +39,7 @@ class GenBaseModel:
         """
 
         # 预定义ColorRange
-        color_range_sets = Pre_Config.color_range_sets
+        color_range_sets = Pre_Config.COLOR_RANGE_SETS
 
         result = None  # No_Use
         # 分辨率包括在预定义中
@@ -68,10 +68,10 @@ class GenBaseModel:
         dim_increase = {}
 
         # 预定义长宽
-        len_width_sets = Pre_Config.len_width_sets
+        len_width_sets = Pre_Config.LEN_WIDTH_SETS
 
         # 预定义增量
-        increment_sets = Pre_Config.increment_sets
+        increment_sets = Pre_Config.INCREMENT_SETS
 
         result = None  # No_Use
         # 分辨率包括在预定义中

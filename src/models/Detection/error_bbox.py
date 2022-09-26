@@ -10,16 +10,14 @@
 """
 
 # TODO: 接推断结果（Png > Model > json）
-
 result = inference_detector(model, img)
 
-
-img_size = (1440, 1440)
+# 推断图片的高宽
+img_size = (1605, 1070)
 
 # Straw 的 b
 img_chr_a_s = 0
 img_chr_a_e = 1000
-
 
 # Straw 的 a
 img_chr_b_s = 0
@@ -32,7 +30,6 @@ w_ration = img_chr_w / img_size[0]
 h_ration = img_chr_h / img_size[1]
 
 error = {}  # a_s, a_e, b_s, b_e
-
 
 for index, value in enumerate(result[0][0]):
 

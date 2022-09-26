@@ -13,23 +13,26 @@ from collections import OrderedDict
 
 from src.assembly.asy_operate import AssemblyOperate
 from src.assembly.search_right_site_V2 import search_right_site_v2
+from src.auto_hic.utils.get_ratio import get_ratio
 from src.auto_hic.utils.logger import LoggerHandler
 
 # 初始化日志
 logger = LoggerHandler()
 
 
-def adjust_translocation(error_queue, hic_file, ratio, assembly_file, modified_assembly_file):
+def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file):
     """
     易位错误调整
     :param error_queue: 易位错误队列
     :param hic_file:  hic文件路径
-    :param ratio:  染色体长度比例
     :param assembly_file:  assembly文件路径
     :param modified_assembly_file:  修改后assembly文件保存路径
     :return: None
     """
-    logger.info("Start \n")
+    logger.info("Start adjust translocation \n")
+
+    # 获取染色体长度比例
+    ratio = get_ratio(hic_file, assembly_file)
 
     # 实例化AssemblyOperate类
     asy_operate = AssemblyOperate(assembly_file, ratio)
@@ -74,13 +77,48 @@ def adjust_translocation(error_queue, hic_file, ratio, assembly_file, modified_a
             asy_operate.cut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
 
         else:  # 易位错误区间内只有一个ctg
-            if flag:  # 第一次修改文件
-                _ctg = error_contain_ctgs[0]
+            _ctg = error_contain_ctgs[0]  # ctg_name
 
-                # 将一个ctg切割为三个ctg
-                asy_operate.cut_ctg_to_3(modified_assembly_file, _ctg[0], error_queue[error]["start"],
-                                         error_queue[error]["end"], modified_assembly_file)
-                flag = False  # 标记为已经第一次修改过
+            _ctg_info = asy_operate.get_ctg_info(ctg_name=_ctg[0], new_asy_file=assembly_file)  # 获取ctg信息
+
+            cut_ctg_site_start = error_queue[error]["start"] * ratio  # 错误真实起始位置
+            cut_ctg_site_end = error_queue[error]["end"] * ratio  # 错误真实终止位置
+
+            # 判断该ctg的位置情况
+            if _ctg_info["site"][0] == cut_ctg_site_start:  # 左边界重合，一切二即可
+                cut_ctg_name_site[_ctg[0]] = cut_ctg_site_end
+                if flag:  # 第一次修改文件
+
+                    # 将一个ctg切割为二个ctg
+                    asy_operate.cut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
+                    flag = False  # 标记为已经第一次修改过
+
+                else:
+                    # 将一个ctg切割为二个ctg
+                    asy_operate.cut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
+
+            elif _ctg_info["site"][1] == cut_ctg_site_end:  # 右边界重合，一切二即可
+                cut_ctg_name_site[_ctg[0]] = cut_ctg_site_start
+                if flag:  # 第一次修改文件
+                    # 将一个ctg切割为二个ctg
+                    asy_operate.cut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
+                    flag = False  # 标记为已经第一次修改过
+
+                else:
+                    # 将一个ctg切割为二个ctg
+                    asy_operate.cut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
+
+            else:  # 不存在边界情况，一切三
+                if flag:  # 第一次修改文件
+                    # 将一个ctg切割为三个ctg
+                    asy_operate.cut_ctg_to_3(assembly_file, _ctg[0], cut_ctg_site_start,
+                                             cut_ctg_site_end, modified_assembly_file)
+                    flag = False  # 标记为已经第一次修改过
+
+                else:
+                    # 将一个ctg切割为三个ctg
+                    asy_operate.cut_ctg_to_3(modified_assembly_file, _ctg[0], cut_ctg_site_start,
+                                             cut_ctg_site_end, modified_assembly_file)
 
         logger.info("易位错误的边界ctgs切割完成 \n")
 
@@ -127,17 +165,15 @@ def main():
     }
 
     # hic文件路径
-    hic_file = "/home/jzj/Auto-HiC/Test/Np-Self/Np.0.hic"
-
-    ratio = 2  # 染色体长度比例
+    hic_file = "/home/jzj/Data/Test/Np-Self/Np.0.hic"
 
     # assembly文件路径
-    assembly_file = "/home/jzj/Auto-HiC/Test/asy_test/Np.0.assembly"
+    assembly_file = "/home/jzj/Data/Test/Np-Self/Np.0.assembly"
 
     # 修改后assembly文件路径
-    modified_assembly_file = "/home/jzj/Downloads/2_ctg.assembly"
+    modified_assembly_file = "/home/jzj/Downloads/test.assembly"
 
-    adjust_translocation(error_queue, hic_file, ratio, assembly_file, modified_assembly_file)
+    adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file)
 
 
 if __name__ == "__main__":
