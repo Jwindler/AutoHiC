@@ -1,3 +1,12 @@
+# [0.3.0](https://github.com/Jwindler/HiC-OpenCV/compare/0.2.1...0.3.0) (2022-09-26)
+
+
+### Features
+
+* add debris function ([8a2bedb](https://github.com/Jwindler/HiC-OpenCV/commit/8a2bedb32660d45a9560a95aec7dc15ff90418b9))
+
+
+
 ## [0.2.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.2.0...v0.2.1) (2022-09-23)
 
 
