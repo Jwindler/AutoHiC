@@ -6,6 +6,7 @@ package.json
 # Virtual environment
 venv/ 
 .venv/
+.idea/
 
 # temp
 temp/

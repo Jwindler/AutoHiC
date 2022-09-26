@@ -1,3 +1,12 @@
+## [0.3.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.3.0...v0.3.1) (2022-09-26)
+
+
+### Features
+
+* switch new branch ([3ef928a](https://github.com/Jwindler/HiC-OpenCV/commit/3ef928af8840a83bf73be27392a2a2ffb23a885e))
+
+
+
 # [0.3.0](https://github.com/Jwindler/HiC-OpenCV/compare/0.2.1...0.3.0) (2022-09-26)
 
 
