@@ -1,3 +1,12 @@
+## [0.3.2](https://github.com/Jwindler/HiC-OpenCV/compare/v0.3.1...v0.3.2) (2022-09-26)
+
+
+### Bug Fixes
+
+* rm .idea folder ([b86f7a6](https://github.com/Jwindler/HiC-OpenCV/commit/b86f7a67ff62f5bc5248a5d247dff7a3db216392))
+
+
+
 ## [0.3.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.3.0...v0.3.1) (2022-09-26)
 
 
