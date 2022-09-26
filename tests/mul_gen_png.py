@@ -104,7 +104,7 @@ def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10)
 def main():
     hic_file = "/home/jzj/Data/Test/Np-Self/Np.0.hic"
     # mul_process(hic_file, "Np_global", "/home/jzj/Downloads", "global", 10)
-    mul_process(hic_file, "Np_dia", "/home/jzj/Downloads", "diagonal", 10)
+    mul_process(hic_file, "Np_test", "/home/jzj/Downloads", "diagonal", 10)
 
 
 if __name__ == "__main__":

@@ -5,6 +5,10 @@ package.json
 
 # Virtual environment
 venv/ 
+.venv/
+
+# temp
+temp/
 
 # Build and Release Folders
 bin-debug/
