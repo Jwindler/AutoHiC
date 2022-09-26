@@ -1,3 +1,12 @@
+## [0.3.3](https://github.com/Jwindler/HiC-OpenCV/compare/v0.3.2...v0.3.3) (2022-09-26)
+
+
+### Bug Fixes
+
+* rm __pycache__ ([3b4cef6](https://github.com/Jwindler/HiC-OpenCV/commit/3b4cef60c6b379db9ddd83c93d076d56c1999e43))
+
+
+
 ## [0.3.2](https://github.com/Jwindler/HiC-OpenCV/compare/v0.3.1...v0.3.2) (2022-09-26)
 
 
