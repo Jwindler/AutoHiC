@@ -17,7 +17,7 @@ import hicstraw
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
-from src.auto_hic.utils.logger import LoggerHandler
+from src.core.utils.logger import LoggerHandler
 from conf import Pre_Config
 
 
@@ -69,7 +69,7 @@ class GenBaseModel:
             min_temp = 9999999  #
 
             for key, value in color_range_sets.items():
-                temp = abs(key - resolution)
+                temp = abs(key - resolution)  # 绝对距离
                 if temp < min_temp:
                     min_temp = temp
                     result = key
@@ -91,29 +91,25 @@ class GenBaseModel:
         len_width_sets = Pre_Config.LEN_WIDTH_SETS
 
         # 预定义增量
-        increment_sets = Pre_Config.INCREMENT_SETS
+        increment_sets = Pre_Config.INCREMENT_SETS_DETAIL
 
-        result = None  # No_Use
         # 分辨率包括在预定义中
         if resolution in increment_sets.keys():
             dim_increase["increase"] = increment_sets[resolution]
             dim_increase["dim"] = len_width_sets[resolution]
             return dim_increase
-        else:  # 与预定义分辨率不符,根据分辨率返回分辨率最靠近的值
-            min_temp = 9999999  #
+        else:  # 与预定义分辨率不符,根据分辨率返回分辨率最靠近的值，向下取
             for key, value in increment_sets.items():
-                temp = abs(key - resolution)
-                if temp < min_temp:
-                    min_temp = temp
-                    result = key
+                if key < resolution:
+                    continue
+                else:
+                    # 滑动增量
+                    dim_increase["increase"] = increment_sets[key]
 
-            # 滑动增量
-            dim_increase["increase"] = increment_sets[result]
+                    # 滑动范围
+                    dim_increase["dim"] = len_width_sets[key]
 
-            # 滑动范围
-            dim_increase["dim"] = len_width_sets[result]
-
-            return dim_increase
+                    return dim_increase
 
     @staticmethod
     def create_folder(file_dir):
@@ -244,6 +240,7 @@ def main():
         "/home/jzj/buffer")
     # temp.gen_png(1250000, 0, 1145951891, 0, 1145951891)
     print(temp.get_chr_len())
+
 
 if __name__ == "__main__":
     main()

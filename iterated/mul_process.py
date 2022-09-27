@@ -12,7 +12,7 @@
 from multiprocessing import Pool
 
 from iterated.hic_adv_model_v1 import GenBaseModel
-from src.auto_hic.utils.logger import LoggerHandler
+from src.core.utils.logger import LoggerHandler
 
 logger = LoggerHandler()
 

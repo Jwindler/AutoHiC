@@ -14,7 +14,7 @@ import os
 import shutil
 import glob
 
-from src.auto_hic.utils.logger import LoggerHandler
+from src.core.utils.logger import LoggerHandler
 
 
 class PngTypeMove:

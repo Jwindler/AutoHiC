@@ -8,16 +8,3 @@
 @time: 8/26/22 11:08 AM
 @function: 
 """
-
-
-class Main:
-    def __init__(self):
-        pass
-
-
-def main():
-    pass
-
-
-if __name__ == "__main__":
-    main()

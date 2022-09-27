@@ -13,7 +13,7 @@ from scipy.signal import find_peaks
 import hicstraw
 import numpy as np
 from collections import defaultdict
-from src.auto_hic.utils.logger import LoggerHandler
+from src.core.utils.logger import LoggerHandler
 
 # 初始化日志
 logger = LoggerHandler()

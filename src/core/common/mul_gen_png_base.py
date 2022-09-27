@@ -15,8 +15,8 @@ from multiprocessing import Pool
 
 import hicstraw
 
-from src.auto_hic.common.hic_base_model import GenBaseModel
-from src.auto_hic.utils.logger import LoggerHandler
+from src.core.common.hic_base_model import GenBaseModel
+from src.core.utils.logger import LoggerHandler
 
 
 class GsmAll(GenBaseModel):

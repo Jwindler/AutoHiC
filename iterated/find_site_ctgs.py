@@ -12,7 +12,7 @@
 import json
 import collections
 
-from src.auto_hic.utils.logger import LoggerHandler
+from src.core.utils.logger import LoggerHandler
 
 # 初始化日志
 logger = LoggerHandler()

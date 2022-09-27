@@ -4,19 +4,18 @@
 """
 @author: Swindler
 @contact: 1033199817@qq.com
-@file: hic_base_model.py
+@file: base_gen_model.py
 @time: 6/14/22 3:00 PM
 @function: 生成图片的基类
 """
 
-import json
 import os
-
-import matplotlib.pyplot as plt
+import json
 from matplotlib.colors import LinearSegmentedColormap
+import matplotlib.pyplot as plt
 
 from conf import Pre_Config
-from src.auto_hic.utils.logger import LoggerHandler
+from src.core.utils.logger import LoggerHandler
 
 
 class GenBaseModel:
@@ -39,7 +38,7 @@ class GenBaseModel:
         """
 
         # 预定义ColorRange
-        color_range_sets = Pre_Config.COLOR_RANGE_SETS
+        color_range_sets = Pre_Config.color_range_sets
 
         result = None  # No_Use
         # 分辨率包括在预定义中
@@ -68,10 +67,10 @@ class GenBaseModel:
         dim_increase = {}
 
         # 预定义长宽
-        len_width_sets = Pre_Config.LEN_WIDTH_SETS
+        len_width_sets = Pre_Config.len_width_sets
 
         # 预定义增量
-        increment_sets = Pre_Config.INCREMENT_SETS
+        increment_sets = Pre_Config.increment_sets
 
         result = None  # No_Use
         # 分辨率包括在预定义中

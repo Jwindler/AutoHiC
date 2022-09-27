@@ -12,8 +12,8 @@
 import os
 from multiprocessing import Pool
 
-from src.auto_hic.utils.logger import LoggerHandler
-from src.auto_hic.common.hic_adv_model import GenBaseModel
+from src.core.utils.logger import LoggerHandler
+from src.core.common.hic_adv_model import GenBaseModel
 
 logger = LoggerHandler()
 
@@ -46,7 +46,7 @@ def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10)
     Returns:
         None
     """
-    logger.info("Mul Process Initiating ...")
+    logger.info("Multiple Process Initiating ...")
 
     # 实例化hic处理类
     hic_operate = GenBaseModel(hic_file, genome_id, out_file)
@@ -62,6 +62,8 @@ def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10)
     info_path = os.path.join(hic_operate.genome_folder, "info.txt")
 
     for resolution in resolutions:
+        logger.info("Processing resolution: %s" % resolution)
+
         # 创建分辨率文件夹
         temp_folder = os.path.join(hic_operate.genome_folder, str(resolution))
         hic_operate.create_folder(temp_folder)
@@ -98,13 +100,13 @@ def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10)
     pool.close()  # 关闭进程池，不再接受新的进程
     pool.join()  # 主进程阻塞等待子进程的退出
 
-    logger.info("Mul Process Finished ...")
+    logger.info("Multiple Process Finished ...")
 
 
 def main():
     hic_file = "/home/jzj/Data/Test/Np-Self/Np.0.hic"
     # mul_process(hic_file, "Np_global", "/home/jzj/Downloads", "global", 10)
-    mul_process(hic_file, "Np_test", "/home/jzj/Downloads", "diagonal", 10)
+    mul_process(hic_file, "Np_fast", "/home/jzj/Downloads", "diagonal", 10)
 
 
 if __name__ == "__main__":

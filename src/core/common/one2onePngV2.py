@@ -4,24 +4,27 @@
 """
 @author: Swindler
 @contact: 1033199817@qq.com
-@file: gsm_all.py
-@time: 6/13/22 9:54 PM
-@function: HiC文件生成染色体一对一的互作图片（全局移动）
+@file: one2onePngV2.py
+@time: 6/16/22 4:12 PM
+@function: .hic 数据 染色体对角线上的热图
 """
 
 
 import os
 import hicstraw
 
-from src.auto_hic.common.hic_base_model import GenBaseModel
-from src.auto_hic.utils.logger import LoggerHandler
+from src.core.common.hic_base_model import GenBaseModel
+from src.core.utils.logger import LoggerHandler
+from conf.chr_len_config import width as width_dic
 
 
-class GsmAll(GenBaseModel):
+class One2OnePng(GenBaseModel):
     logger = LoggerHandler()
 
     def run_parsing_hic(self):
-        self.logger.info("Parsing HiC File With Translational Motion Start")
+
+        self.logger.info(
+            "Assembly HiC File Parsing With Translational Motion Start")
         self.logger.info("Execute File: %s" % self.hic_file)
         num = 1  # 图片起始名称
 
@@ -67,12 +70,12 @@ class GsmAll(GenBaseModel):
                 self.create_folder(temp_folder)
 
                 # 循环染色体对
-                for chrom in chromosomes:
+                for chrom in width_dic:
                     matrix_object_chr = hic.getMatrixZoomData(
-                        chrom, chrom, "observed", "NONE", "BP", resolution)
+                        "assembly", "assembly", "observed", "NONE", "BP", resolution)
 
-                    start = 0  # 染色体起始
-                    end = chromosomes[chrom]  # 终止
+                    start = width_dic[chrom]["start"]  # 染色体起始
+                    end = width_dic[chrom]["end"]  # 终止
 
                     # 染色体内滑动
                     for site_1 in range(start, end, temp_increase["increase"]):
@@ -116,7 +119,7 @@ class GsmAll(GenBaseModel):
                                     site_1, site_1 + temp_increase["dim"], end - temp_increase["dim"], end)
                                 self.plot_hic_map(
                                     numpy_matrix_chr, resolution, temp_folder2)
-                                t = GsmAll.info_records(
+                                t = One2OnePng.info_records(
                                     temp_folder2,
                                     genome_id,
                                     chrom,
@@ -137,7 +140,7 @@ class GsmAll(GenBaseModel):
                                     end - temp_increase["dim"], end, site_2, site_2 + temp_increase["dim"])
                                 self.plot_hic_map(
                                     numpy_matrix_chr, resolution, temp_folder2)
-                                t = GsmAll.info_records(
+                                t = One2OnePng.info_records(
                                     temp_folder2,
                                     genome_id,
                                     chrom,
@@ -157,7 +160,7 @@ class GsmAll(GenBaseModel):
                                     site_1, site_1 + temp_increase["dim"], site_2, site_2 + temp_increase["dim"])
                                 self.plot_hic_map(
                                     numpy_matrix_chr, resolution, temp_folder2)
-                                t = GsmAll.info_records(
+                                t = One2OnePng.info_records(
                                     temp_folder2,
                                     genome_id,
                                     chrom,
@@ -172,14 +175,14 @@ class GsmAll(GenBaseModel):
                             num += 1  # 图片名称加1
                         if flag:
                             break
-                # 分辨率logging
+                    # 分辨率logging
                 self.logger.info("Resolution: %s Done" % resolution)
         self.logger.info("Parsing HiC File With Translational Motion Done")
 
 
 def main():
-    temp = GsmAll(
-        "/home/jzj/Jupyter-Docker/HiC-Straw/GSM/GSM1551550.hic",
+    temp = One2OnePng(
+        "/home/jzj/Jupyter-Docker/HiC-Straw/Np/0/Np.0.hic",
         "/home/jzj/buffer")
     temp.run_parsing_hic()
 

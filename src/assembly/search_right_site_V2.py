@@ -17,7 +17,7 @@ import hicstraw
 
 from src.assembly import get_max_peak
 from src.assembly.asy_operate import AssemblyOperate
-from src.auto_hic.utils.logger import LoggerHandler
+from src.core.utils.logger import LoggerHandler
 
 # 初始化日志
 logger = LoggerHandler()

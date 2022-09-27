@@ -15,7 +15,7 @@ import hicstraw
 import numpy as np
 from scipy.signal import find_peaks
 
-from src.auto_hic.utils.logger import LoggerHandler
+from src.core.utils.logger import LoggerHandler
 
 # 实例化日志对象
 logger = LoggerHandler()

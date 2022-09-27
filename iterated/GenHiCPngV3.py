@@ -12,8 +12,8 @@
 import os
 import hicstraw
 
-from src.auto_hic.utils.logger import LoggerHandler
-from src.auto_hic.common.hic_base_model import GenBaseModel
+from src.core.utils.logger import LoggerHandler
+from src.core.common.hic_base_model import GenBaseModel
 
 
 class GenHiCPngV3(GenBaseModel):

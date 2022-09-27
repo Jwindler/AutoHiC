@@ -12,7 +12,7 @@
 import json
 from collections import OrderedDict
 
-from src.auto_hic.utils.logger import LoggerHandler
+from src.core.utils.logger import LoggerHandler
 
 
 class AssemblyOperate(object):

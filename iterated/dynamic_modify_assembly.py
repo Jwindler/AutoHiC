@@ -17,7 +17,7 @@ from iterated.cut_ctg_to3 import cut_ctg_to_three
 from iterated.find_site_ctgs import find_site_ctgs
 from iterated.move_ctgs import move_ctgs_toback
 from src.assembly.search_right_site_V2 import search_right_site_v2
-from src.auto_hic.utils.logger import LoggerHandler
+from src.core.utils.logger import LoggerHandler
 
 # 初始化日志
 logger = LoggerHandler()
