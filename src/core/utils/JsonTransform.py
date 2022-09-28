@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/scripts/env python
 # encoding: utf-8
 
 """
@@ -24,5 +24,5 @@ class TransformJson:
     def execute(self):
         json_files = glob.glob(f'{self.json_path}*.json')
         for json_file in json_files:
-            command = "/home/jzj/.local/bin/labelme_json_to_dataset " + json_file
+            command = "/home/jzj/.local/scripts/labelme_json_to_dataset " + json_file
             os.system(command)

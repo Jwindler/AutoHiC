@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/scripts/env python
 # encoding: utf-8
 
 """

@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/scripts/env python
 # encoding: utf-8 
 
 """
@@ -71,7 +71,7 @@ def search_right_site_v2(hic_file, assembly_file, ratio, error_site):
             bin_index = [i for i in
                          range(math.floor(error_site_copy[0] / resolution),
                                math.floor(error_site_copy[1] / resolution) + 1)]
-            logger.info("self bin %s", bin_index)
+            logger.info("self scripts %s", bin_index)
 
             logger.info("去除自身的bin")
             final_peaks = get_max_peak.remove_peak(error_peaks, bin_index)
