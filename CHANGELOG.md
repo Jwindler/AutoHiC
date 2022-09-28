@@ -1,3 +1,12 @@
+## [0.4.2](https://github.com/Jwindler/HiC-OpenCV/compare/v0.4.1...v0.4.2) (2022-09-28)
+
+
+### Bug Fixes
+
+* fix the CLI bug ([becad59](https://github.com/Jwindler/HiC-OpenCV/commit/becad59ada42c7d63ff1c5c388ddc861480d76a0))
+
+
+
 ## [0.4.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.4.0...v0.4.1) (2022-09-28)
 
 
