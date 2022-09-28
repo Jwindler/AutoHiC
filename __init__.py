@@ -4,14 +4,10 @@
 """
 @author: Swindler
 @contact: jzjlab@163.com
-@file: __init__.py.py
-@time: 9/28/22 10:01 AM
+@file: __init__.py
+@time: 9/28/22 10:05 AM
 @function: 
 """
-import sys
-import pathlib
-
-sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
 
 
 class Main:
