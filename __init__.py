@@ -8,6 +8,7 @@
 @time: 9/28/22 10:05 AM
 @function: 
 """
+from .src import get_conf
 
 
 class Main:

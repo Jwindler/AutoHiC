@@ -9,7 +9,7 @@
 @function: 制造inversion错误
 """
 
-from src.assembly.asy_operate import AssemblyOperate
+from .asy_operate import AssemblyOperate
 
 
 def make_inv(asy_file, out_file_path):

@@ -9,12 +9,8 @@
 @function: 命令行程序
 """
 import os
-import pathlib
-import sys
 
 import typer
-
-sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
 
 from src.core.mul_gen_png import mul_process
 

@@ -508,15 +508,15 @@ class AssemblyOperate(object):
 def main():
     # 实例化Assembly类
     # temp = AssemblyOperate("/home/jzj/Data/Test/asy_test/random_Np/Np.final.assembly", ratio=2)
-    temp = AssemblyOperate("/home/jzj/buffer/test.assembly", ratio=2)
+    temp = AssemblyOperate("/home/jzj/Data/Test/Np-Self/Np.0.assembly", ratio=2)
 
     # 测试获取整体信息
     print(json.dumps(temp.get_info(), indent=4))
 
     # 测试获取指定ctg信息
-    assembly_info = temp.get_ctg_info(ctg_name="utg563:::fragment_1")
+    # assembly_info = temp.get_ctg_info(ctg_name="utg563:::fragment_1")
     # assembly_info = temp.get_ctg_info(ctg_order=1335)
-    print(json.dumps(assembly_info, indent=4))
+    # print(json.dumps(assembly_info, indent=4))
 
     # 测试查询指定区间的ctg
     # result = temp.find_site_ctgs("/home/jzj/buffer/test.assembly", start=537378984, end=549962140)

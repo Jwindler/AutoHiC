@@ -20,6 +20,7 @@ sklearn = "^0.0"
 seaborn = "^0.12.0"
 typer = "^0.6.1"
 rich = "^12.5.1"
+configobj = "*"
 
 [tool.poetry.dev-dependencies]
 

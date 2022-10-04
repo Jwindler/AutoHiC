@@ -18,14 +18,11 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
 from core.utils.logger import LoggerHandler
-from core.utils.get_conf import get_conf
+from conf import Pre_Config
 
 
 class GenBaseModel:
     logger = LoggerHandler()
-
-    # 获取配置字典
-    cfg = get_conf()
 
     def __init__(self, hic_file, genome_id, out_file):
         self.logger.info("Base Model Initiating ...")
@@ -62,7 +59,7 @@ class GenBaseModel:
         """
 
         # 预定义ColorRange
-        color_range_sets = GenBaseModel.cfg["color_range_sets"]
+        color_range_sets = Pre_Config.COLOR_RANGE_SETS
 
         result = None  # No_Use
         # 分辨率包括在预定义中
@@ -91,10 +88,10 @@ class GenBaseModel:
         dim_increase = {}
 
         # 预定义长宽
-        len_width_sets = GenBaseModel.cfg["len_width_sets"]
+        len_width_sets = Pre_Config.LEN_WIDTH_SETS
 
         # 预定义增量
-        increment_sets = GenBaseModel.cfg["increment_sets_detail"]
+        increment_sets = Pre_Config.INCREMENT_SETS_DETAIL
 
         # 分辨率包括在预定义中
         if resolution in increment_sets.keys():

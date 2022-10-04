@@ -15,9 +15,9 @@ from collections import OrderedDict
 
 import hicstraw
 
-from src.assembly import get_max_peak
-from src.assembly.asy_operate import AssemblyOperate
+import get_max_peak
 from src.core.utils.logger import LoggerHandler
+from .asy_operate import AssemblyOperate
 
 # 初始化日志
 logger = LoggerHandler()

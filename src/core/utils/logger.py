@@ -9,7 +9,6 @@
 @function: 构建日志处理的基础类，用于记录
 """
 
-
 import logging
 import colorlog
 
@@ -29,7 +28,6 @@ class LoggerHandler(logging.Logger):
             name="root",
             level='DEBUG',
             file=None):
-
         # logger = logging.gerLogger(name)
         super().__init__(name)
 

@@ -13,8 +13,8 @@ from collections import OrderedDict
 
 from src.assembly.asy_operate import AssemblyOperate
 from src.assembly.search_right_site_V2 import search_right_site_v2
-from src.core.utils.get_ratio import get_ratio
 from src.core.utils.logger import LoggerHandler
+from src.core.utils.get_ratio import get_ratio
 
 # 初始化日志
 logger = LoggerHandler()

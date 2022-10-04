@@ -10,7 +10,7 @@
 """
 
 import random
-from src.assembly.asy_operate import AssemblyOperate
+from .asy_operate import AssemblyOperate
 
 
 def random_inv(asy_file, out_file_path):

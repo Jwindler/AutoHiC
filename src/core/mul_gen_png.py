@@ -12,8 +12,8 @@
 import os
 from multiprocessing import Pool
 
-from src.core.utils.logger import LoggerHandler
 from src.core.common.hic_adv_model import GenBaseModel
+from src.core.utils.logger import LoggerHandler
 
 logger = LoggerHandler()
 
@@ -106,7 +106,7 @@ def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10)
 def main():
     hic_file = "/home/jzj/Data/Test/Np-Self/Np.0.hic"
     # mul_process(hic_file, "Np_global", "/home/jzj/Downloads", "global", 10)
-    # mul_process(hic_file, "Np_fast", "/home/jzj/Downloads", "diagonal", 10)
+    mul_process(hic_file, "Np_fast", "/home/jzj/Downloads", "diagonal", 10)
 
 
 if __name__ == "__main__":
