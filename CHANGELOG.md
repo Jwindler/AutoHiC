@@ -1,3 +1,12 @@
+## [0.5.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.5.0...v0.5.1) (2022-10-04)
+
+
+### Bug Fixes
+
+* fix the get dim bug ([c469f68](https://github.com/Jwindler/HiC-OpenCV/commit/c469f68342962c8163f67ab95f58fcaf3c154624))
+
+
+
 # [0.5.0](https://github.com/Jwindler/HiC-OpenCV/compare/v0.4.2...v0.5.0) (2022-10-04)
 
 
