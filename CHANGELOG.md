@@ -1,3 +1,12 @@
+# [0.5.0](https://github.com/Jwindler/HiC-OpenCV/compare/v0.4.2...v0.5.0) (2022-10-04)
+
+
+### Bug Fixes
+
+* fix the import error and project structure ([d8988ff](https://github.com/Jwindler/HiC-OpenCV/commit/d8988ffa03995cd77d57abb84ac99491f33e657a))
+
+
+
 ## [0.4.2](https://github.com/Jwindler/HiC-OpenCV/compare/v0.4.1...v0.4.2) (2022-09-28)
 
 
