@@ -245,11 +245,12 @@ class GenBaseModel:
 
 def main():
     temp = GenBaseModel(
-        "/home/jzj/Data/Test/Np-Self/Np.0.hic", "Np",
+        "/home/jzj/Data/Test/raw_data/Hv/0/Hv_bgi.0.hic", "Np",
         "/home/jzj/buffer")
     # temp.gen_png(1250000, 0, 1145951891, 0, 1145951891)
 
-    print(temp.increment(833333))
+    print(temp.increment(333))
+    print(temp.maxcolor(333))
 
 
 if __name__ == "__main__":

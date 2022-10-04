@@ -33,7 +33,7 @@ def write_records(records):
         f.writelines(records)
 
 
-def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10):
+def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10, _resolution=None):
     """
     多进程生成互作图片
     Args:
@@ -42,6 +42,7 @@ def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10)
         out_file: 输出文件路径
         methods: global 全局，diagonal 对角线, 默认全局
         process_num: 进程数，默认10
+        _resolution: 内部测试，用于指定分辨率
 
     Returns:
         None
@@ -60,6 +61,8 @@ def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10)
 
     global info_path  # info.txt 文件路径
     info_path = os.path.join(hic_operate.genome_folder, "info.txt")
+    if _resolution is not None:
+        resolutions = [_resolution]
 
     for resolution in resolutions:
         logger.info("Processing resolution: %s" % resolution)
