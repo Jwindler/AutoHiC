@@ -64,20 +64,20 @@ class GenBaseModel:
         # 预定义ColorRange
         color_range_sets = GenBaseModel.cfg["color_range_sets"]
 
-        result = None  # No_Use
+        temp_return = None  # 默认返回值
+
         # 分辨率包括在预定义中
         if resolution in color_range_sets.keys():
             return color_range_sets[resolution]
         else:  # 与预定义分辨率不符,根据分辨率返回分辨率最靠近的值
-            min_temp = 9999999  #
-
             for key, value in color_range_sets.items():
-                temp = abs(key - resolution)  # 绝对距离
-                if temp < min_temp:
-                    min_temp = temp
-                    result = key
+                if resolution < key:
+                    temp_return = value
+                    continue
+                else:
+                    return color_range_sets[key]
 
-            return color_range_sets[result]
+            return temp_return
 
     @staticmethod
     def increment(resolution):
@@ -103,7 +103,12 @@ class GenBaseModel:
             return dim_increase
         else:  # 与预定义分辨率不符,根据分辨率返回分辨率最靠近的值，向下取
             for key, value in increment_sets.items():
-                if key < resolution:
+                if resolution < key:
+                    # 滑动增量
+                    dim_increase["increase"] = increment_sets[key]
+
+                    # 滑动范围
+                    dim_increase["dim"] = len_width_sets[key]
                     continue
                 else:
                     # 滑动增量
@@ -113,6 +118,7 @@ class GenBaseModel:
                     dim_increase["dim"] = len_width_sets[key]
 
                     return dim_increase
+            return dim_increase
 
     @staticmethod
     def create_folder(file_dir):
@@ -242,7 +248,8 @@ def main():
         "/home/jzj/Data/Test/Np-Self/Np.0.hic", "Np",
         "/home/jzj/buffer")
     # temp.gen_png(1250000, 0, 1145951891, 0, 1145951891)
-    print(temp.get_chr_len())
+
+    print(temp.increment(833333))
 
 
 if __name__ == "__main__":
