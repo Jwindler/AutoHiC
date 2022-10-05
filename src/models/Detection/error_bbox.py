@@ -9,7 +9,6 @@
 @function: 根据目标检测模型的结果，获取错误的染色体位置
 """
 
-# TODO: 接推断结果（Png > Model > json）
 result = inference_detector(model, img)
 
 # 推断图片的高宽

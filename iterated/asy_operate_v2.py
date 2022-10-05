@@ -8,7 +8,7 @@
 @time: 8/18/22 4:14 PM
 @function:
 """
-import re
+
 import json
 from collections import OrderedDict
 
@@ -150,7 +150,6 @@ class AssemblyOperate(object):
                     ctgs_orders.append(temp_line)
         return ctgs, ctgs_orders
 
-    # TODO : 增加二次剪切的功能
     def cut_ctgs(self, assembly_file_path, cut_ctg, out_file_path):
         """
         切割指定的ctgs
@@ -188,7 +187,7 @@ class AssemblyOperate(object):
             for key, value in ctgs.items():
                 if key == cut_ctg_name:
                     # ctg正负 对于切割长度的影响
-                    if int(cut_ctg_order) > 0:
+                    if cut_ctg_order > 0:
                         f.write(key + ":::fragment_1 " + value["order"] + " " + str(cut_ctg_site1) + "\n")
                         temp_order = int(value["order"]) + 1
                         f.write(key + ":::fragment_2" + " " + str(temp_order) + " " + str(cut_ctg_site2) + "\n")
@@ -198,116 +197,7 @@ class AssemblyOperate(object):
                         f.write(key + ":::fragment_2" + " " + str(temp_order) + " " + str(cut_ctg_site1) + "\n")
                 else:
                     # 一分为二后，后续序号+
-                    if int(value["order"]) > abs(int(cut_ctg_order)):
-                        temp_order = int(value["order"]) + 1
-                        f.write(key + " " + str(temp_order) + " " + value["length"] + "\n")
-                    else:
-                        f.write(key + " " + value["order"] + " " + value["length"] + "\n")
-
-            # 写入新的ctg顺序
-            for ctgs_order in ctgs_orders:
-                temp_write_list = []
-                for x in ctgs_order:
-                    # 跟新需要切割的ctg顺序
-                    if int(x) == int(cut_ctg_order):
-                        if cut_ctg_order > 0:
-                            temp = cut_ctg_order + 1
-                            temp_write_list.append(str(cut_ctg_order))
-                            temp_write_list.append(str(temp))
-                        else:  # 反向
-                            temp = cut_ctg_order - 1
-                            temp_write_list.append(str(temp))
-                            temp_write_list.append(str(cut_ctg_order))
-                    else:  # 其余ctg + 1
-                        if abs(int(x)) > abs(int(cut_ctg_order)):
-                            if int(x) > 0:
-                                temp = int(x) + 1
-                                temp_write_list.append(str(temp))
-                            else:
-                                temp = int(x) - 1
-                                temp_write_list.append(str(temp))
-                        else:
-                            temp_write_list.append(str(x))
-                f.write(" ".join(temp_write_list) + "\n")
-
-    def recut_ctgs(self, assembly_file_path, cut_ctg, out_file_path):
-        # 获取原始ctgs信息
-        ctgs, ctgs_orders = self._get_ctgs_orders(assembly_file_path)
-
-        # 声明变量（以防后续提醒）
-        cut_ctg_name = None
-        cut_ctg_site = None
-
-        # 获取需要剪切的ctg信息
-        for key, values in cut_ctg.items():
-            cut_ctg_name = key  # 获取需要剪切的ctg名称
-            cut_ctg_site = values  # 获取需要剪切的ctg位置
-
-        # 需要二次切割的ctg的原本切割需要的head
-        cut_ctg_name_head = re.search(r"(.*_)(\d+)", cut_ctg_name).group(1)
-        # 需要二次切割的ctg的原本切割需要（fragment_X）
-        cut_ctg_name_order = re.search(r"(.*_)(\d+)", cut_ctg_name).group(2)
-
-        # 计算剪切的ctg的新信息
-        cut_ctg_info = self.get_ctg_info(ctg_name=cut_ctg_name, new_asy_file=assembly_file_path)
-
-        # 获取cut_ctg的顺序（正:True, 负:False）
-        cut_ctg_order = cut_ctg_info["ctg_order"]
-
-        # 计算切割的起始位置和结束位置
-        cut_ctg_site1 = cut_ctg_site - cut_ctg_info["site"][0]
-        cut_ctg_site2 = cut_ctg_info["site"][1] - cut_ctg_site + 1
-
-        with open(out_file_path, "w") as f:
-
-            # 写入新的ctg信息
-            for key, value in ctgs.items():
-                if key.startswith(cut_ctg_name_head):
-                    head = re.search(r"(.*_)(\d+)", key).group(1)
-                    order = re.search(r"(.*_)(\d+)", key).group(2)
-
-                    # 如果是需要剪切的ctg的前面的ctg，直接写入
-                    if int(order) < int(cut_ctg_name_order):
-                        f.write(key + " " + value["order"] + " " + value["length"] + "\n")
-
-                    # 如果是需要剪切的ctg，需要根据顺序进行切割
-                    elif order == cut_ctg_name_order:
-                        # ctg正负 对于切割长度的影响
-                        temp_order = int(value["order"]) + 1
-                        if int(cut_ctg_order) > 0:
-                            if key.endswith("debris"):
-                                f.write(head + order + ":::debris " + value["order"] + " " + str(cut_ctg_site1) + "\n")
-
-                                f.write(head + str(int(order) + 1) + ":::debris " + str(temp_order) + " " + str(
-                                    cut_ctg_site2) + "\n")
-                            else:
-                                f.write(head + order + " " + value["order"] + " " + str(cut_ctg_site1) + "\n")
-
-                                f.write(head + str(int(order) + 1) + " " + str(temp_order) + " " + str(
-                                    cut_ctg_site2) + "\n")
-                        else:
-                            if key.endswith("debris"):
-                                f.write(head + order + ":::debris " + value["order"] + " " + str(cut_ctg_site2) + "\n")
-
-                                f.write(head + str(int(order) + 1) + ":::debris " + str(temp_order) + " " + str(
-                                    cut_ctg_site1) + "\n")
-                            else:
-                                f.write(head + order + " " + value["order"] + " " + str(cut_ctg_site2) + "\n")
-
-                                f.write(head + str(int(order) + 1) + " " + str(temp_order) + " " + str(
-                                    cut_ctg_site1) + "\n")
-
-                    else:  # 如果是需要剪切的ctg的后面的ctg，序号递增即可
-                        temp_order = int(value["order"]) + 1
-                        if key.endswith("debris"):
-                            f.write(head + str(int(order) + 1) + ":::debris " + str(temp_order) + " " + value[
-                                "length"] + "\n")
-                        else:
-                            f.write(
-                                head + str(int(order) + 1) + " " + str(temp_order) + " " + value["length"] + "\n")
-                else:
-                    # 一分为二后，后续序号+
-                    if int(value["order"]) > abs(int(cut_ctg_order)):
+                    if int(value["order"]) > abs(cut_ctg_order):
                         temp_order = int(value["order"]) + 1
                         f.write(key + " " + str(temp_order) + " " + value["length"] + "\n")
                     else:
@@ -491,7 +381,6 @@ class AssemblyOperate(object):
 
         return contain_contig
 
-    # TODO : 增加二次剪切的功能
     def cut_ctg_to_3(self, assembly_file_path, cut_ctg_name, site_1, site_2, out_file_path):
         """
         将contig切割为3个
@@ -614,14 +503,14 @@ class AssemblyOperate(object):
 def main():
     # 实例化Assembly类
     # temp = AssemblyOperate("/home/jzj/Data/Test/asy_test/random_Np/Np.final.assembly", ratio=2)
-    temp = AssemblyOperate("/home/jzj/buffer/test.asy", ratio=2)
+    temp = AssemblyOperate("/home/jzj/Data/Test/Np-Self/Np.0.assembly", ratio=2)
 
     # 测试获取整体信息
     print(json.dumps(temp.get_info(), indent=4))
 
     # 测试获取指定ctg信息
-    # assembly_info = temp.get_ctg_info(ctg_name=">ptg000474l:::fragment_37")
-    # # assembly_info = temp.get_ctg_info(ctg_order=1335)
+    # assembly_info = temp.get_ctg_info(ctg_name="utg563:::fragment_1")
+    # assembly_info = temp.get_ctg_info(ctg_order=1335)
     # print(json.dumps(assembly_info, indent=4))
 
     # 测试查询指定区间的ctg
@@ -651,13 +540,6 @@ def main():
     # out_file_path = "/home/jzj/buffer/test.assembly"
     # ctg_name = "utg2441"
     # temp.inv_ctg(ctg_name, assembly_file_path, out_file_path)
-
-    # 测试二次切割
-    # assembly_file_path = "/home/jzj/buffer/test.asy"
-    # out_file_path = "/home/jzj/buffer/recut.asy"
-    # cut_ctgs = {
-    #     ">ptg000474l:::fragment_37": 2552365374}
-    # temp.recut_ctgs(assembly_file_path, cut_ctgs, out_file_path)
 
 
 if __name__ == "__main__":
