@@ -10,13 +10,19 @@
 """
 
 import yaml
+import os
 
 
 def get_conf(key=None):
-    #  TODO： 需要修改如何读取配置文件
-    conf_path = '/home/jzj/HiC-OpenCV/conf/config.yml'
+    try:
+        config_path = os.environ['CONFIG_PATH']
+    except Exception:
+        print("Please set the environment variable CONFIG_PATH")
+        raise ValueError
 
-    with open(conf_path) as f:
+    # conf_path = '/home/jzj/HiC-OpenCV/conf/config.yml'
+
+    with open(config_path) as f:
         data = yaml.load(f, Loader=yaml.FullLoader)
         if key:
             try:
