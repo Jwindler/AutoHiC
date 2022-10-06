@@ -1,3 +1,20 @@
+# [0.6.0](https://github.com/Jwindler/HiC-OpenCV/compare/v0.5.1...v0.6.0) (2022-10-06)
+
+
+### Bug Fixes
+
+* fix get dim from abnormal resolution ([4f4ff68](https://github.com/Jwindler/HiC-OpenCV/commit/4f4ff68c9ae1ceaea705762ab4af2a91ed2f96ed))
+
+
+### Features
+
+* add delete debris function ([dccc75b](https://github.com/Jwindler/HiC-OpenCV/commit/dccc75b839542b2528dce329fa65dafc8d59a45d))
+* add recut code to operate assembly file ([2f983b2](https://github.com/Jwindler/HiC-OpenCV/commit/2f983b282d5a372157ce055c1ec43bb59bd44519))
+* add recut_ctg_to_3 function ([1ff2844](https://github.com/Jwindler/HiC-OpenCV/commit/1ff28446187e7a146671099813f200924a018485))
+* update obtain config file ([32bd930](https://github.com/Jwindler/HiC-OpenCV/commit/32bd93022c78c2ce6e8bb96ffb06018c5fe2f936))
+
+
+
 ## [0.5.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.5.0...v0.5.1) (2022-10-04)
 
 

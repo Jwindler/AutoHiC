@@ -1,7 +1,8 @@
 # Auto-HiC
 
-![](https://img.shields.io/badge/release-v0.5.1-blue)![a](https://img.shields.io/badge/license-MIT-brightgreen)
+![](https://img.shields.io/badge/release-v0.6.0-blue)![a](https://img.shields.io/badge/license-MIT-brightgreen)
 
+> Note: the [iterated](https://github.com/Jwindler/AutoHiC/tree/main/iterated) folder is deprecated
 
 
 
@@ -9,16 +10,13 @@
 
 ### Installation
 
-
-
 ### platform
 
+## Citing
 
+## Contact
 
-> Note: the [iterated](https://github.com/Jwindler/AutoHiC/tree/main/iterated) is deprecated
-
-
-
+## LICENSE
 
 ## Updates
 
@@ -28,23 +26,4 @@
 - 2022-06-02: train translocation detection network
 - 2022-06-06: train translocation detection network
 - 2022-09-26: add debris function and fix the gen_png.py bug
-
-
-
-
-
-
-## Citing
-
-
-
-## Contact
-
-
-
-
-
-## LICENSE
-
-
 
