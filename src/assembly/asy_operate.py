@@ -8,8 +8,8 @@
 @time: 8/18/22 4:14 PM
 @function:
 """
-import re
 import json
+import re
 from collections import OrderedDict
 
 from src.core.utils.logger import LoggerHandler
@@ -733,6 +733,34 @@ class AssemblyOperate(object):
                         temp_write_list.append(str(x))
                 f.write(" ".join(temp_write_list) + "\n")
 
+    def move_deb_to_end(self, assembly_file_path, move_ctgs, out_file_path):
+        move_ctgs_order = OrderedDict()
+        deb_ctgs_order = []
+        for move_ctg in move_ctgs:
+            temp = self.get_ctg_info(ctg_name=move_ctg, new_asy_file=assembly_file_path)
+            move_ctgs_order[move_ctg] = temp["ctg_order"]
+            deb_ctgs_order.append(str(temp["ctg_order"]))
+
+        # 获取assembly_file_path中 ctgs 序号信息
+        ctgs, ctgs_orders = AssemblyOperate._get_ctgs_orders(assembly_file_path)
+
+        # 修改序号，写入新文件
+        with open(out_file_path, "w") as f:
+            # 写入新的ctg信息
+            for key, value in ctgs.items():
+                f.write(key + " " + value["order"] + " " + value["length"] + "\n")
+
+            # 写入新的ctg顺序
+            for ctgs_order in ctgs_orders:
+                temp_write_list = []
+                for x in ctgs_order:
+                    if int(x) in deb_ctgs_order:
+                        continue
+                    else:
+                        temp_write_list.append(str(x))
+                f.write(" ".join(temp_write_list) + "\n")
+            f.write(" ".join(deb_ctgs_order) + "\n")
+
 
 def main():
     # 实例化Assembly类
@@ -786,6 +814,12 @@ def main():
     # assembly_file_path = "/home/jzj/buffer/test.asy"
     # out_file_path = "/home/jzj/buffer/recut.asy"
     # temp.recut_ctg_to_3(assembly_file_path, ">ptg000059l:::fragment_366:::debris", 2437385273, 2437385294, out_file_path)
+
+    # 测试移动指定ctg到末尾
+    # assembly_file_path = "/home/jzj/buffer/test.asy"
+    # out_file_path = "/home/jzj/buffer/debris.asy"
+    # move_ctgs = ['>utg30544', '>utg4278', '>utg140072', '>utg147794', '>utg22455']
+    # temp.move_deb_to_end(assembly_file_path, move_ctgs, out_file_path)
 
 
 if __name__ == "__main__":

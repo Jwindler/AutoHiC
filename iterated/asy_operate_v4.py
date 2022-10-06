@@ -733,8 +733,6 @@ class AssemblyOperate(object):
                         temp_write_list.append(str(x))
                 f.write(" ".join(temp_write_list) + "\n")
 
-    # TODO: 移动ctgs
-
 
 def main():
     # 实例化Assembly类

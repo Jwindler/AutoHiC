@@ -4,12 +4,11 @@
 """
 @author: Swindler
 @contact: jzjlab@163.com
-@file: test_deb_adjust.py
+@file: deb_adjust.py
 @time: 9/23/22 4:05 PM
 @function: 
 """
 
-# TODO: 获取冗余ctg位置区间后，在asy文件中 删除冗余ctg
 import json
 from collections import OrderedDict
 
@@ -129,8 +128,7 @@ def adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file):
 
     # 开始翻转记录的ctgs
     for error in error_deb_info:
-        for deb_ctg in error_deb_info[error]["deb_ctgs"]:
-            asy_operate.move_deb_ctg(modified_assembly_file, deb_ctg, modified_assembly_file)
+        asy_operate.move_deb_to_end(modified_assembly_file, error_deb_info[error]["deb_ctgs"], modified_assembly_file)
 
     logger.info("所有冗余错误调整完成 \n")
 
@@ -142,20 +140,20 @@ def main():
     # 错误队列，其中的start和end是基于hic文件上的位置，没有转换为基因组上的位置
     error_queue = {
         "error_1": {
-            "start": 268689492,
-            "end": 274981070
-        },
-        "error_2": {
-            "start": 280560061,
-            "end": 284239273
+            "start": 163482501,
+            "end": 163820001
         }
+        # "error_2": {
+        #     "start": 280560061,
+        #     "end": 284239273
+        # }
     }
 
     # hic文件路径
-    hic_file = "/home/jzj/Data/Test/asy_test/random_Np/Np.final.hic"
+    hic_file = "/home/jzj/Data/Test/Np-Self/Np.0.hic"
 
     # assembly文件路径
-    assembly_file = "/home/jzj/Data/Test/asy_test/random_Np/Np.final.assembly"
+    assembly_file = "/home/jzj/Data/Test/Np-Self/Np.0.assembly"
 
     # 修改后assembly文件路径
     modified_assembly_file = "/home/jzj/buffer/test.assembly"
