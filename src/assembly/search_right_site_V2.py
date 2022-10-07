@@ -5,7 +5,7 @@
 @author: Swindler
 @contact: 1033199817@qq.com
 @file: search_right_site_V2.py
-@time: 7/21/22 4:11 PM
+@time: 10/7/22 10:27 AM
 @function: search_right_site的升级版本，用于更加精确的查找插入位点
 """
 
@@ -15,9 +15,9 @@ from collections import OrderedDict
 
 import hicstraw
 
-import get_max_peak
+from src.assembly import get_max_peak
 from src.core.utils.logger import LoggerHandler
-from .asy_operate import AssemblyOperate
+from src.assembly.asy_operate import AssemblyOperate
 
 # 初始化日志
 logger = LoggerHandler()
