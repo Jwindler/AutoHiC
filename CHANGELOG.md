@@ -1,3 +1,12 @@
+## [0.6.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.6.0...v0.6.1) (2022-10-07)
+
+
+### Features
+
+* add recut function to main func and delete iterated folder ([34347fe](https://github.com/Jwindler/HiC-OpenCV/commit/34347fede5953b497b2330db0f283c214f0894a6))
+
+
+
 # [0.6.0](https://github.com/Jwindler/HiC-OpenCV/compare/v0.5.1...v0.6.0) (2022-10-06)
 
 
