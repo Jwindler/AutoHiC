@@ -30,14 +30,19 @@ def mul_gen_png(hic_file: str = typer.Option(..., "--hic-file", "-h", help="`.hi
                                             rich_help_panel="Secondary Arguments"),
 
                 process_num: int = typer.Option(10, "--process-num", "-p", help="进程数，默认10",
-                                                rich_help_panel="Secondary Arguments")):
+                                                rich_help_panel="Secondary Arguments"),
+                ran_color: bool = typer.Option("False", "--random-color", "-r", help="是否随机颜色",
+                                               rich_help_panel="Secondary Arguments")):
     """
     多进程生成互作图片
     """
 
     if result_name is None:
         result_name = os.path.basename(hic_file).split(".")[0]
-    mul_process(hic_file, result_name, out_path, methods, process_num)
+    if ran_color:
+        mul_process(hic_file, result_name, out_path, methods, process_num, ran_color=True)
+    else:
+        mul_process(hic_file, result_name, out_path, methods, process_num)
 
 
 if __name__ == "__main__":

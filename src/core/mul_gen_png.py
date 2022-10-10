@@ -33,7 +33,7 @@ def write_records(records):
         f.writelines(records)
 
 
-def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10, _resolution=None):
+def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10, _resolution=None, ran_color=False):
     """
     多进程生成互作图片
     Args:
@@ -43,6 +43,7 @@ def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10,
         methods: global 全局，diagonal 对角线, 默认全局
         process_num: 进程数，默认10
         _resolution: 内部测试，用于指定分辨率
+        ran_color: 是否随机颜色
 
     Returns:
         None
@@ -96,14 +97,20 @@ def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10,
             for site in range(start, end, temp_increase["increase"]):
                 if site + temp_increase["dim"] > end:
                     site = end - temp_increase["dim"]
-                pool.apply_async(hic_operate.gen_png, args=(
-                    resolution, site, site + temp_increase["dim"], site, site + temp_increase["dim"],),
-                                 callback=write_records)
+                if ran_color:
+                    pool.apply_async(hic_operate.gen_png, args=(
+                        resolution, site, site + temp_increase["dim"], site, site + temp_increase["dim"], True,),
+                                     callback=write_records)
+                else:
+                    pool.apply_async(hic_operate.gen_png, args=(
+                        resolution, site, site + temp_increase["dim"], site, site + temp_increase["dim"],),
+                                     callback=write_records)
 
     pool.close()  # 关闭进程池，不再接受新的进程
     pool.join()  # 主进程阻塞等待子进程的退出
 
-    logger.info("Multiple Process Finished ...")
+
+logger.info("Multiple Process Finished ...")
 
 
 def main():

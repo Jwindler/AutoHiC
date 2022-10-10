@@ -19,6 +19,7 @@ from matplotlib.colors import LinearSegmentedColormap
 
 from core.utils.logger import LoggerHandler
 from core.utils.get_conf import get_conf
+from tests.make_asy import random_color
 
 
 class GenBaseModel:
@@ -136,13 +137,14 @@ class GenBaseModel:
             GenBaseModel.logger.debug("Folder Already Exists")
 
     @staticmethod
-    def plot_hic_map(matrix, resolution, fig_save_dir):
+    def plot_hic_map(matrix, resolution, fig_save_dir, ran_color=False):
         """
         画图
         Args:
             matrix: 互作矩阵
             resolution: 分辨率
             fig_save_dir: 图片保存路径
+            ran_color: 是否随机颜色
 
         Returns:
             None
@@ -150,12 +152,17 @@ class GenBaseModel:
         redmap = LinearSegmentedColormap.from_list(
             "bright_red", [(1, 1, 1), (1, 0, 0)])
 
+        vmax = GenBaseModel.maxcolor(resolution)
+
+        if ran_color:
+            vmax = random_color()
+
         # 可视化
         plt.matshow(
             matrix,
             cmap=redmap,
             vmin=0,
-            vmax=GenBaseModel.maxcolor(resolution))
+            vmax=vmax)
 
         plt.axis('off')  # 去坐标轴
 
@@ -197,7 +204,7 @@ class GenBaseModel:
 
         return json.dumps(record)
 
-    def gen_png(self, resolution, a_start, a_end, b_start, b_end):
+    def gen_png(self, resolution, a_start, a_end, b_start, b_end, ran_color=False):
         """
         生成png
         Args:
@@ -206,6 +213,7 @@ class GenBaseModel:
             a_end: 互作图像左侧的结束位置
             b_start: 互作图像上侧的起始位置
             b_end: 互作图像上侧的结束位置
+            ran_color: 是否随机颜色
 
         Returns:
             None
@@ -227,7 +235,10 @@ class GenBaseModel:
         numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(a_start, a_end, b_start, b_end)
 
         # 互作图像生成
-        self.plot_hic_map(numpy_matrix_chr, resolution, temp_folder2)
+        if ran_color:
+            self.plot_hic_map(numpy_matrix_chr, resolution, temp_folder2, ran_color=True)
+        else:
+            self.plot_hic_map(numpy_matrix_chr, resolution, temp_folder2)
 
         # 构建记录字典
         temp_field = self.info_records(
