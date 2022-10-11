@@ -19,7 +19,7 @@ from matplotlib.colors import LinearSegmentedColormap
 
 from core.utils.logger import LoggerHandler
 from core.utils.get_conf import get_conf
-from tests.make_asy import random_color
+from assembly.make_asy import random_color
 
 
 class GenBaseModel:

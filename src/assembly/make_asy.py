@@ -68,7 +68,11 @@ def make_tran(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6
     order_list = [x for x in range(1, int(ays_info["ctg_number"]) + 1)]
 
     # 随机抽取易位ctg的序号
-    random_inv_list = random.sample(order_list, int(len(order_list) * random_p))
+    random_list = random.sample(order_list, int(len(order_list) * random_p))
+
+    tran_list = random_list[:int(len(random_list) * 0.5)]
+    insert_list = random_list[int(len(random_list) * 0.5):]
+    tran_dict = {stocks: prices for stocks, prices in zip(tran_list, insert_list)}
 
     with open(out_file_path, "w") as f:
 
@@ -81,22 +85,23 @@ def make_tran(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6
             temp_write_list = []
             for x in ctgs_order:
                 # 跟新需要切割的ctg顺序
-                if abs(int(x)) in random_inv_list:
-                    if int(x) > 0:
-                        temp_write_list.append(str(-int(x)))
-                    else:  # 反向
-                        temp_write_list.append(str(abs(int(x))))
+                if abs(int(x)) in tran_dict:
+                    temp_write_list.append(x)
+                    temp_write_list.append(str(tran_dict[abs(int(x))]))
+                elif abs(int(x)) in insert_list:
+                    continue
                 else:
                     temp_write_list.append(x)
             f.write(" ".join(temp_write_list) + "\n")
 
 
-def make_asy(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6) -> None:
-    print(random_p)
+def make_double(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6) -> None:
+    make_tran(asy_file, out_file_path, random_p)
+    make_inv(out_file_path, out_file_path, random_p)
 
 
 def main():
-    make_asy("/home/jzj/buffer/Np.0.assembly", "/home/jzj/buffer/Np_tran.assembly", 0.6)
+    make_inv("/home/jzj/buffer/Np_tran.assembly", "/home/jzj/buffer/Np_double.assembly", 0.6)
 
 
 if __name__ == "__main__":
