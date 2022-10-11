@@ -1,3 +1,13 @@
+# [0.7.0](https://github.com/Jwindler/HiC-OpenCV/compare/v0.6.1...v0.7.0) (2022-10-11)
+
+
+### Features
+
+* add random inv gen png and random colorrange ([c72f7d9](https://github.com/Jwindler/HiC-OpenCV/commit/c72f7d92b298611e29ee11fecebd725d61ebb81e))
+* add random tran and double ([4c05300](https://github.com/Jwindler/HiC-OpenCV/commit/4c053009e8e2fa10dca23e08764eb29b0e52e6f8))
+
+
+
 ## [0.6.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.6.0...v0.6.1) (2022-10-07)
 
 
