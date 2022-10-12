@@ -33,7 +33,7 @@ def write_records(records):
         f.writelines(records)
 
 
-def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10, _resolution=None, ran_color=False):
+def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10, _resolution=None, ran_color=True):
     """
     多进程生成互作图片
     Args:
@@ -109,8 +109,7 @@ def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10,
     pool.close()  # 关闭进程池，不再接受新的进程
     pool.join()  # 主进程阻塞等待子进程的退出
 
-
-logger.info("Multiple Process Finished ...")
+    logger.info("Multiple Process Finished ...")
 
 
 def main():
