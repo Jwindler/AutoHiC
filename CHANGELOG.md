@@ -1,3 +1,12 @@
+## [0.7.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.7.0...v0.7.1) (2022-10-12)
+
+
+### Bug Fixes
+
+* fix logging error ([1cdfb63](https://github.com/Jwindler/HiC-OpenCV/commit/1cdfb63b51bcec1a33e2acaa31aa9ffa21d7820c))
+
+
+
 # [0.7.0](https://github.com/Jwindler/HiC-OpenCV/compare/v0.6.1...v0.7.0) (2022-10-11)
 
 
