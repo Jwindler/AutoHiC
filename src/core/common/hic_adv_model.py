@@ -17,9 +17,9 @@ import hicstraw
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
-from core.utils.logger import LoggerHandler
-from core.utils.get_conf import get_conf
-from assembly.make_asy import random_color
+from src.core.utils.logger import LoggerHandler
+from src.core.utils.get_conf import get_conf
+from src.assembly.make_asy import random_color
 
 
 class GenBaseModel:

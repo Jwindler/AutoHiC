@@ -721,7 +721,7 @@ reference = "tsinghua-source"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "4ac22e2b0bcfeb0743c51705665e51dd0f36be4663115f76eeab60193de68701"
+content-hash = "c58959790bc75414126eec43796827e376eb87beeb9e9fa24127801d6e2d5910"
 
 [metadata.files]
 click = [
