@@ -1,3 +1,13 @@
+## [0.7.2](https://github.com/Jwindler/HiC-OpenCV/compare/v0.7.1...v0.7.2) (2022-10-17)
+
+
+### Bug Fixes
+
+* fix import error and update lock and toml ([78ad1b2](https://github.com/Jwindler/HiC-OpenCV/commit/78ad1b2f28a0509ee29e1301d5d4941fb2b7afec))
+* modify config and test ColorRange ([5a5ac0f](https://github.com/Jwindler/HiC-OpenCV/commit/5a5ac0f57c02fabc31156b1728374da213b78aa3))
+
+
+
 ## [0.7.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.7.0...v0.7.1) (2022-10-12)
 
 
