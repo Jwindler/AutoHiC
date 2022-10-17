@@ -26,13 +26,12 @@ def mul_gen_png(hic_file: str = typer.Option(..., "--hic-file", "-h", help="`.hi
                 out_path: str = typer.Option("./", "--out-path", "-o", help="输出结果的文件夹路径",
                                              rich_help_panel="Secondary Arguments"),
 
-                methods: str = typer.Option("diagonal", "--methods", "-m", help="互作图的生成方法，global 全局，diagonal 对角线",
+                methods: str = typer.Option("diagonal", "--methods", "-m",
+                                            help="互作图的生成方法，global 全局，diagonal 对角线",
                                             rich_help_panel="Secondary Arguments"),
 
                 process_num: int = typer.Option(10, "--process-num", "-p", help="进程数，默认10",
-                                                rich_help_panel="Secondary Arguments"),
-                ran_color: bool = typer.Option("False", "--random-color", "-r", help="是否随机颜色",
-                                               rich_help_panel="Secondary Arguments")):
+                                                rich_help_panel="Secondary Arguments")):
     """
     多进程生成互作图片
     """

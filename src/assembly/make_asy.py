@@ -23,7 +23,7 @@ def random_color(maxcolor: int = 6000) -> int:
 
     """
 
-    return random.randrange(maxcolor)
+    return random.randrange(1, maxcolor)
 
 
 def make_inv(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6) -> None:
