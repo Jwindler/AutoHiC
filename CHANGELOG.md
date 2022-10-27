@@ -1,3 +1,13 @@
+## [0.7.3](https://github.com/Jwindler/HiC-OpenCV/compare/v0.7.2...v0.7.3) (2022-10-27)
+
+
+### Features
+
+* add error structure class and logo ([7c6b015](https://github.com/Jwindler/HiC-OpenCV/commit/7c6b0155f9c5eff739495c3b2cc216c4214f229e))
+* add random copy file ([1774979](https://github.com/Jwindler/HiC-OpenCV/commit/1774979d445f50dee092006766d082b7416a6c3a))
+
+
+
 ## [0.7.2](https://github.com/Jwindler/HiC-OpenCV/compare/v0.7.1...v0.7.2) (2022-10-17)
 
 
