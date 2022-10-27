@@ -8,8 +8,10 @@
 @time: 6/23/22 5:35 PM
 @function: 根据目标检测模型的结果，获取错误的染色体位置
 """
+from typing import List
 
-result = inference_detector(model, img)
+# result = inference_detector(model, img)
+result = List
 
 # 推断图片的高宽
 img_size = (1605, 1070)

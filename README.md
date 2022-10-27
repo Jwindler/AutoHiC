@@ -4,19 +4,31 @@
 
 > Note: the [iterated](https://github.com/Jwindler/AutoHiC/tree/main/iterated) folder is deprecated
 
+![image-20221027210512819](https://swindler-typora.oss-cn-chengdu.aliyuncs.com/typora_imgs/image-20221027210512819.png)
+
 
 
 ## Usage
 
 ### Installation
 
-### platform
+
+
+### 
+
+
 
 ## Citing
 
 ## Contact
 
+**Please free to open an issue, when you encounter any problems.**
+
+
+
 ## LICENSE
+
+
 
 ## Updates
 
