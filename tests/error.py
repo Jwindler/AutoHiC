@@ -41,21 +41,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-"""
-errors_dict
-    "info_file": str
-    "errors": errors
 
-errors{
-    chrs: List
-        id: int
-        image_id: str
-        bbox: List
-        score: int
-    invs: List
-    trans: List
-    debris: List
-}
-
-
-"""
