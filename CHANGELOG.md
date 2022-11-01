@@ -1,3 +1,18 @@
+## [0.8.4](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.3...v0.8.4) (2022-11-01)
+
+
+### Bug Fixes
+
+* delete iterated folder ([cde78dd](https://github.com/Jwindler/HiC-OpenCV/commit/cde78dd13b7d78f09890ad04acb06f69fe2ce552))
+
+
+### Features
+
+* add ERROR_structure and design data_structure ([a134280](https://github.com/Jwindler/HiC-OpenCV/commit/a134280e247f23fb20b4b230f598f83ddf8f8051))
+* realize error dict structre and bbox2hic ([0db3fa6](https://github.com/Jwindler/HiC-OpenCV/commit/0db3fa69dbd622ac3b99ce389eb43bdd23bc83e3))
+
+
+
 ## [0.7.3](https://github.com/Jwindler/HiC-OpenCV/compare/v0.7.2...v0.7.3) (2022-10-27)
 
 
