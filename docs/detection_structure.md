@@ -59,7 +59,6 @@ wait for explore
 error_dict: tuple
     info: dict
         "info_file": str
-        "errors": errors
         
     errors: dict
         chrs: List
@@ -67,6 +66,11 @@ error_dict: tuple
             image_id: str
             bbox: List
             score: int
+            hic_loci: List
+            	start_a: int
+            	end_a: int
+            	start_b: int
+            	end_b: int
         invs: List
         trans: List
         debris: List
