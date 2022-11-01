@@ -9,14 +9,26 @@
 @function: 
 """
 
-import pickle
-
-file = "/home/jzj/Jupyter-Docker/buffer/Axis.pkl"
-
-with open(file, 'rb') as f:  # 打开文件
-    result = pickle.load(f)  # 将二进制文件对象转换成 Python 对象
-
-print("Done")
+from typing import List
 
 
-info
+def eraseoverlapintervals(intervals: List[List[int]]) -> int:
+    if not intervals:
+        return 0
+
+    intervals.sort()
+    n = len(intervals)
+    f = [1]
+
+    for i in range(1, n):
+        f.append(max((f[j] for j in range(i) if intervals[j][1] <= intervals[i][0]), default=0) + 1)
+
+    return n - max(f)
+
+
+def main():
+    pass
+
+
+if __name__ == "__main__":
+    main()
