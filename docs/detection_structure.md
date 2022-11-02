@@ -66,6 +66,7 @@ error_dict: tuple
             image_id: str
             bbox: List
             score: int
+            resolution: int
             hic_loci: List
             	start_a: int
             	end_a: int

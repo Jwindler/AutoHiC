@@ -39,6 +39,7 @@ class ERRORS:
                 temp_dict["image_id"] = list(img_info.keys())[0]
                 temp_dict["bbox"] = error[0:4]
                 temp_dict["score"] = error[4]
+                temp_dict["resolution"] = img_info[list(img_info.keys())[0]]["resolution"]
                 temp_dict["hic_loci"] = self.bbox2hic(error[0:4], img_info)
                 self.errors[classes].append(temp_dict)
         return self.errors
@@ -71,12 +72,19 @@ class ERRORS:
         return hic_loci
 
     # TODO: 过滤错误，根据score
-    def filter_error(self, score: float = 0.9):
-        filter_errors = self.errors
-        for key in filter_errors:
-            filter_errors[key] = list(filter(lambda x: x["score"] > score, filter_errors[key]))
+    def filter_all_errors(self, score: float = 0.9):
+        filtered_errors = self.errors
+        for key in filtered_errors:
+            filtered_errors[key] = list(filter(lambda x: x["score"] > score, filtered_errors[key]))
 
-        return filter_errors
+        return filtered_errors
+
+    # TODO: 仅过滤指定类别错误
+    def filter_cls_errors(self, class_: str, score: float = 0.9):
+        filtered_cls_errors = self.errors
+        filtered_cls_errors[class_] = list(filter(lambda x: x["score"] > score, filtered_cls_errors[class_]))
+
+        return filtered_cls_errors
 
     # TODO: 去除同类错误相交错误
     def de_same_overlap(self):
@@ -104,6 +112,7 @@ def main():
     classes = ("translocation", "inversion", "debris", "chromosome")
     temp = ERRORS(classes, img_info)
     errors = temp.create_structure(img_info, result)
+    print(errors)
 
 
 if __name__ == "__main__":

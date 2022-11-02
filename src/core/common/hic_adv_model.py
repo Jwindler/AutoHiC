@@ -184,6 +184,7 @@ class GenBaseModel:
     def info_records(
             temp_folder2,
             genome_id,
+            resolution,
             chr_a,
             chr_a_s,
             chr_a_e,
@@ -193,6 +194,7 @@ class GenBaseModel:
         record = {
             temp_folder2: {
                 "genome_id": genome_id,
+                "resolution": resolution,
                 "chr_A": chr_a,
                 "chr_A_start": chr_a_s,
                 "chr_A_end": chr_a_e,
@@ -244,6 +246,7 @@ class GenBaseModel:
         temp_field = self.info_records(
             temp_folder2,
             self.genome_id,
+            resolution,
             "assembly",
             a_start,
             a_end,
