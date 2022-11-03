@@ -14,20 +14,29 @@ from typing import List
 from collections import OrderedDict
 
 
-def merge(intervals):
-    ans = []
+def cal_iou_xyxy(box1, box2):
+    x1min, y1min, x1max, y1max = box1[0], box1[1], box1[2], box1[3]
+    x2min, y2min, x2max, y2max = box2[0], box2[1], box2[2], box2[3]
 
-    for p in sorted(intervals, key=lambda x: x[0]):
+    # calculate box area
+    s1 = (y1max - y1min + 1.) * (x1max - x1min + 1.)
+    s2 = (y2max - y2min + 1.) * (x2max - x2min + 1.)
 
-        if ans and p[0] <= ans[-1][1]:
+    # calculate overlap area
+    xmin = max(x1min, x2min)
+    ymin = max(y1min, y2min)
+    xmax = min(x1max, x2max)
+    ymax = min(y1max, y2max)
 
-            ans[-1][1] = max(ans[-1][1], p[1])
+    inter_h = max(ymax - ymin + 1, 0)
+    inter_w = max(xmax - xmin + 1, 0)
 
-        else:
+    intersection = inter_h * inter_w
+    union = s1 + s2 - intersection
 
-            ans.append(p)  # ans+=p, # 另一种写法，其中p加逗号变为tuple，列表可以用+=将tuple加入其中
-
-    return ans
+    # calculate iou
+    iou = intersection / union
+    return iou
 
 
 def de_same_overlap(errors_dict: dict, similarity: float = 0.9):
@@ -57,7 +66,9 @@ def de_same_overlap(errors_dict: dict, similarity: float = 0.9):
                         remove_list.append((error, ans[-1]))
                 else:  # not same error but have overlap
                     # TODO: 添加处理
-                    ans.append(error)
+                    print(error)
+                    print(ans[-1])
+                    raise NotImplementedError("Not same error but have overlap, wait to solve")
             else:  # nought overlap
                 ans.append(error)
 

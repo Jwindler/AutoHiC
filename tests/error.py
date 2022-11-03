@@ -67,7 +67,8 @@ class ERRORS:
         a_e = w * w_ration + img_chr_a_s
         b_s = y * h_ration + img_chr_b_s
         b_e = h * h_ration + img_chr_b_s
-        hic_loci = [a_s, a_e, b_s, b_e]
+
+        hic_loci = list(map(lambda x: int(x), [a_s, a_e, b_s, b_e]))
 
         return hic_loci
 

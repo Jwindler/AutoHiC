@@ -38,7 +38,7 @@ def mul_gen_png(hic_file: str = typer.Option(..., "--hic-file", "-h", help="`.hi
 
     if result_name is None:
         result_name = os.path.basename(hic_file).split(".")[0]
-    mul_process(hic_file, result_name, out_path, methods, process_num, ran_color=True)
+    mul_process(hic_file, result_name, out_path, methods, process_num, ran_color=False)
 
 
 if __name__ == "__main__":
