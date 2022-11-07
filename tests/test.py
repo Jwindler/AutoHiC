@@ -10,11 +10,9 @@
 """
 
 import pickle
-from typing import List
-from collections import OrderedDict
 
 
-def cal_iou_xyxy(box1, box2):
+def cal_iou(box1, box2):
     x1min, y1min, x1max, y1max = box1[0], box1[1], box1[2], box1[3]
     x2min, y2min, x2max, y2max = box2[0], box2[1], box2[2], box2[3]
 
@@ -23,13 +21,13 @@ def cal_iou_xyxy(box1, box2):
     s2 = (y2max - y2min + 1.) * (x2max - x2min + 1.)
 
     # calculate overlap area
-    xmin = max(x1min, x2min)
-    ymin = max(y1min, y2min)
-    xmax = min(x1max, x2max)
-    ymax = min(y1max, y2max)
+    x_min = max(x1min, x2min)
+    y_min = max(y1min, y2min)
+    x_max = min(x1max, x2max)
+    y_max = min(y1max, y2max)
 
-    inter_h = max(ymax - ymin + 1, 0)
-    inter_w = max(xmax - xmin + 1, 0)
+    inter_h = max(y_max - y_min + 1, 0)
+    inter_w = max(x_max - x_min + 1, 0)
 
     intersection = inter_h * inter_w
     union = s1 + s2 - intersection
@@ -39,25 +37,40 @@ def cal_iou_xyxy(box1, box2):
     return iou
 
 
-def de_same_overlap(errors_dict: dict, similarity: float = 0.9):
-    de_overlap_dict = dict()
+def transform_bbox(detection_bbox):
+    """
+    transform bbox to [x1, y1, x2, y2]
+    :param detection_bbox: [x, y, w, h]
+    :return:
+    """
+    x1 = detection_bbox[0]
+    y1 = detection_bbox[1]
+    x2 = detection_bbox[0] + detection_bbox[2]
+    y2 = detection_bbox[1] + detection_bbox[3]
+    return [x1, y1, x2, y2]
+
+
+def de_same_overlap(errors_dict: dict, iou_score: float = 0.9):
+    sorted_errors_dict = dict()
     remove_list = list()  # save the key of the errors_dict which has been removed
-    threshold = (similarity, 1 / similarity)
+    ans = []  # store de_overlap errors
     for class_ in errors_dict:  # loop classes
 
         # loop errors
-        de_overlap_dict[class_] = sorted(errors_dict[class_], key=lambda itme: itme["hic_loci"][0], reverse=False)
-        ans = []  # store de_overlap errors
-        for error in de_overlap_dict[class_]:
+        sorted_errors_dict[class_] = sorted(errors_dict[class_], key=lambda itme: itme["hic_loci"][0], reverse=False)
+
+        for error in sorted_errors_dict[class_]:
 
             # whether there is overlap
             if ans and error["hic_loci"][0] <= ans[-1]["hic_loci"][1]:
 
                 # calculate overlap ratio
-                len_similarity = (error["hic_loci"][1] - error["hic_loci"][0]) / (
-                        ans[-1]["hic_loci"][1] - ans[-1]["hic_loci"][0])
-                if threshold[0] < len_similarity < threshold[1]:
-                    if error["resolution"] == ans[-1]["resolution"]:  # select the highest score
+                bbox1 = transform_bbox(error["bbox"])
+                bbox2 = transform_bbox(ans[-1]["bbox"])
+                counted_score = cal_iou(bbox1, bbox2)
+                if counted_score > iou_score:
+                    # judge which one's resolution is higher
+                    if error["resolution"] == ans[-1]["resolution"]:
                         ans.append(max(error, ans[-1], key=lambda item: item["score"]))
                         remove_list.append((error, ans[-1]))
                     else:
@@ -65,25 +78,41 @@ def de_same_overlap(errors_dict: dict, similarity: float = 0.9):
                         ans.append(max(error, ans[-1], key=lambda item: item["resolution"]))
                         remove_list.append((error, ans[-1]))
                 else:  # not same error but have overlap
-                    # TODO: 添加处理
-                    print(error)
-                    print(ans[-1])
-                    raise NotImplementedError("Not same error but have overlap, wait to solve")
+                    # FIXME: not same error but have overlap
+                    # Select the middle position of the two errors
+                    last_copy = ans[-1]
+                    error_copy = error
+                    last_copy["hic_loci"][1] = error_copy["hic_loci"][0] + int(
+                        (last_copy["hic_loci"][1] - error_copy["hic_loci"][0]) / 2) - 1
+
+                    error_copy["hic_loci"][0] = last_copy["hic_loci"][1] + 1
+
+                    last_copy["hic_loci"][3] = error_copy["hic_loci"][2] + int(
+                        (last_copy["hic_loci"][3] - error_copy["hic_loci"][2]) / 2) - 1
+
+                    error_copy["hic_loci"][2] = last_copy["hic_loci"][3] + 1
+
+                    ans.append(last_copy)
+                    ans.append(error_copy)
+                    remove_list.append((error, ans[-1]))
+                    # raise NotImplementedError("Not same error but have overlap, wait to solve")
             else:  # nought overlap
                 ans.append(error)
 
-        print("test done")
+    print("Filter same error category Done")
+    return ans
+
+
+def de_diff_overlap():
+    pass
 
 
 def main():
-    intervals = [[1, 3], [2, 4], [4, 7], [5, 6]]
-
     with open("/home/jzj/Jupyter-Docker/error-detection/swin/ex.pkl", 'rb') as file:
-        object = pickle.loads(file.read())
-    # print(merge(intervals))
+        error_object = pickle.loads(file.read())
 
-    classes = ("translocation", "inversion", "debris", "chromosome")
-    de_result = de_same_overlap(object)
+    de_result = de_same_overlap(error_object)
+    print(de_result)
 
 
 if __name__ == "__main__":

@@ -26,7 +26,7 @@ class ERRORS:
             self.counter[class_] = 0
             self.errors[class_] = []
 
-    # TODO: 生成错误结构
+    # 生成错误结构
     def create_structure(self, img_info, detection_result):
 
         for category, classes in zip(detection_result[0], self.classes):
@@ -44,6 +44,7 @@ class ERRORS:
                 self.errors[classes].append(temp_dict)
         return self.errors
 
+    # 将bbox转换为hic坐标
     def bbox2hic(self, bbox, img_info):
         img_size = self.img_size
         key = list(img_info.keys())[0]
@@ -72,20 +73,15 @@ class ERRORS:
 
         return hic_loci
 
-    # TODO: 过滤错误，根据score
-    def filter_all_errors(self, score: float = 0.9):
+    # 根据score，过滤错误
+    def filter_all_errors(self, score: float = 0.9, filter_cls=None):
+        if filter_cls is None:
+            filter_cls = self.classes
         filtered_errors = self.errors
-        for key in filtered_errors:
+        for key in filter_cls:
             filtered_errors[key] = list(filter(lambda x: x["score"] > score, filtered_errors[key]))
 
         return filtered_errors
-
-    # TODO: 仅过滤指定类别错误
-    def filter_cls_errors(self, class_: str, score: float = 0.9):
-        filtered_cls_errors = self.errors
-        filtered_cls_errors[class_] = list(filter(lambda x: x["score"] > score, filtered_cls_errors[class_]))
-
-        return filtered_cls_errors
 
     # TODO: 去除同类错误相交错误
     def de_same_overlap(self):
