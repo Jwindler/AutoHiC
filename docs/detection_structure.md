@@ -64,6 +64,7 @@ error_dict: tuple
         chrs: List
             id: int
             image_id: str
+            category: str
             bbox: List
             score: int
             resolution: int

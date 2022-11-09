@@ -29,10 +29,10 @@ class ERRORS:
             for index, error in enumerate(category):
                 error = error.tolist()
                 temp_dict = dict()
-
                 self.counter[classes] += 1
                 temp_dict["id"] = self.counter[classes]
                 temp_dict["image_id"] = list(img_info.keys())[0]
+                temp_dict["category"] = classes
                 temp_dict["bbox"] = error[0:4]
                 temp_dict["score"] = error[4]
                 temp_dict["resolution"] = img_info[list(img_info.keys())[0]]["resolution"]
@@ -120,6 +120,7 @@ class ERRORS:
     def de_diff_overlap(self, errors_dict: dict, iou_score: float = 0.9):
         remove_list = list()  # save the key of the errors_dict which has been removed
         ans = []  # store de_overlap errors
+        ans_dict = {}  # store de_overlap errors
         all_errors = []
         for class_ in errors_dict:  # loop classes
             all_errors += errors_dict[class_]
@@ -166,8 +167,11 @@ class ERRORS:
             else:  # nought overlap
                 ans.append(error)
 
+        for _ in ans:
+            ans_dict[_["category"]] = _
+
         print("Filter all error category Done")
-        return ans
+        return ans_dict
 
 
 def main():
