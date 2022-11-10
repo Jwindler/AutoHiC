@@ -1,3 +1,19 @@
+## [0.8.5](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.4...v0.8.5) (2022-11-10)
+
+
+### Bug Fixes
+
+* fix de_all_overlap_error bug ([71a4fb4](https://github.com/Jwindler/HiC-OpenCV/commit/71a4fb45f4cb5e0f7347421e00efe45b8155069e))
+* fix result error, duplicated save, chromosome detection epoch flag and de_error function ([3f3a911](https://github.com/Jwindler/HiC-OpenCV/commit/3f3a911d462578081b5fd92711d9eec8d0b5fa7a))
+* fix some litter error ([1676780](https://github.com/Jwindler/HiC-OpenCV/commit/1676780f283258809c8796e115092e89bde08aae))
+
+
+### Features
+
+* add resolution to structure and remove duplicate errors ([f7305b6](https://github.com/Jwindler/HiC-OpenCV/commit/f7305b67a86a13bf4e254a8ddf368cce3161934f))
+
+
+
 ## [0.8.4](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.3...v0.8.4) (2022-11-01)
 
 
