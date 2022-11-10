@@ -9,6 +9,8 @@
 @function: 
 """
 
+from collections import defaultdict
+
 
 class ERRORS:
     def __init__(self, classes, info_file, img_size=(1110, 1100)):
@@ -22,10 +24,12 @@ class ERRORS:
             self.counter[class_] = 0
             self.errors[class_] = []
 
-    # 生成错误结构
-    def create_structure(self, img_info, detection_result, epoch_flag=None):
-        # TODO: epoch_flag used to distinguish whether the epoch is latest or not
+    # generate error structure
+    def create_structure(self, img_info, detection_result, epoch_flag=0):
         for category, classes in zip(detection_result[0], self.classes):
+            if epoch_flag == 0 and classes == "chromosome":
+                continue  # skip chromosome when epoch is 0
+
             for index, error in enumerate(category):
                 error = error.tolist()
                 temp_dict = dict()
@@ -40,7 +44,7 @@ class ERRORS:
                 self.errors[classes].append(temp_dict)
         return self.errors
 
-    # 将bbox转换为hic坐标
+    # convert bbox coordinate to hic coordinate
     def bbox2hic(self, bbox, img_info):
         img_size = self.img_size
         key = list(img_info.keys())[0]
@@ -94,7 +98,7 @@ class ERRORS:
         iou = intersection / union
         return iou
 
-    # 根据score，过滤错误
+    # filter error according to score
     def filter_all_errors(self, score: float = 0.9, filter_cls=None):
         if filter_cls is None:
             filter_cls = self.classes
@@ -117,10 +121,11 @@ class ERRORS:
         y2 = detection_bbox[1] + detection_bbox[3]
         return [x1, y1, x2, y2]
 
+    # filter error according to overlap and iou
     def de_diff_overlap(self, errors_dict: dict, iou_score: float = 0.9):
         remove_list = list()  # save the key of the errors_dict which has been removed
         ans = []  # store de_overlap errors
-        ans_dict = {}  # store de_overlap errors
+        ans_dict = defaultdict()  # store de_overlap errors
         all_errors = []
         for class_ in errors_dict:  # loop classes
             all_errors += errors_dict[class_]
@@ -131,7 +136,7 @@ class ERRORS:
 
             # whether there is overlap
             if ans and error["hic_loci"][0] <= ans[-1]["hic_loci"][1]:
-
+                remove_list.append((error, ans[-1]))  # save the error which has overlap
                 # calculate overlap ratio
                 bbox1 = self.transform_bbox(error["bbox"])
                 bbox2 = self.transform_bbox(ans[-1]["bbox"])
@@ -140,58 +145,43 @@ class ERRORS:
                     # judge which one's resolution is higher
                     if error["resolution"] == ans[-1]["resolution"]:
                         ans.append(max(error, ans[-1], key=lambda item: item["score"]))
-                        remove_list.append((error, ans[-1]))
+
                     else:
                         # select the error with the highest resolution
                         ans.append(max(error, ans[-1], key=lambda item: item["resolution"]))
-                        remove_list.append((error, ans[-1]))
+
                 else:  # not same error but have overlap
                     # FIXME: not same error but have overlap
                     # Select the middle position of the two errors
-                    last_copy = ans[-1]
                     error_copy = error
-                    last_copy["hic_loci"][1] = error_copy["hic_loci"][0] + int(
-                        (last_copy["hic_loci"][1] - error_copy["hic_loci"][0]) / 2) - 1
 
-                    error_copy["hic_loci"][0] = last_copy["hic_loci"][1] + 1
+                    ans[-1]["hic_loci"][1] = error_copy["hic_loci"][0] + int(
+                        (ans[-1]["hic_loci"][1] - error_copy["hic_loci"][0]) / 2) - 1
 
-                    last_copy["hic_loci"][3] = error_copy["hic_loci"][2] + int(
-                        (last_copy["hic_loci"][3] - error_copy["hic_loci"][2]) / 2) - 1
+                    error_copy["hic_loci"][0] = ans[-1]["hic_loci"][1] + 1
 
-                    error_copy["hic_loci"][2] = last_copy["hic_loci"][3] + 1
+                    ans[-1]["hic_loci"][3] = error_copy["hic_loci"][2] + int(
+                        (ans[-1]["hic_loci"][3] - error_copy["hic_loci"][2]) / 2) - 1
 
-                    ans.append(last_copy)
+                    error_copy["hic_loci"][2] = ans[-1]["hic_loci"][3] + 1
+
                     ans.append(error_copy)
-                    remove_list.append((error, ans[-1]))
+
                     # raise NotImplementedError("Not same error but have overlap, wait to solve")
             else:  # nought overlap
                 ans.append(error)
 
+        # regenerate error structure
         for _ in ans:
-            ans_dict[_["category"]] = _
+            # ans_dict[_["category"]] = _
+            ans_dict.setdefault(_["category"], []).append(_)
 
         print("Filter all error category Done")
+
         return ans_dict
 
 
 def main():
-    # file = "/home/jzj/Jupyter-Docker/buffer/Axis.pkl"
-    #
-    # with open(file, 'rb') as f:  # 打开文件
-    #     result = pickle.load(f)  # 将二进制文件对象转换成 Python 对象
-    #
-    # img_info = {
-    #     "/root/7.png/png/Aa_inv/2500000/4e93744fcaad4c75936af4f2345db586.jpg": {"genome_id": "Aa_inv",
-    #                                                                             "chr_A": "assembly",
-    #                                                                             "chr_A_start": 230700000,
-    #                                                                             "chr_A_end": 326650000,
-    #                                                                             "chr_B": "assembly",
-    #                                                                             "chr_B_start": 248650000,
-    #                                                                             "chr_B_end": 302750000}}
-    # classes = ("translocation", "inversion", "debris", "chromosome")
-    # temp = ERRORS(classes, img_info)
-    # errors = temp.create_structure(img_info, result)
-    # print(errors)
     pass
 
 

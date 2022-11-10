@@ -19,10 +19,9 @@ def inference_detector(model, img):
 
 def main():
     # Opening JSON file
-    f = open('/home/jzj/Downloads/news_json.json', )
+    f = open('/home/jzj/Downloads/0_raw.json', )
 
-    # returns JSON object as
-    # a dictionary
+    # load json file
     result_json = json.load(f)
 
     classes = ("translocation", "inversion", "debris", "chromosome")
@@ -32,7 +31,7 @@ def main():
     temp.errors = result_json
     filter_score = temp.filter_all_errors()
 
-    filter_overlap = temp.de_diff_overlap(filter_score, iou_score=0.9)
+    temp.de_diff_overlap(filter_score, iou_score=0.9)
 
     print("Done")
 
