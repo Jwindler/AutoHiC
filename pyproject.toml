@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "auto-hic"
-version = "0.1.0"
+version = "0.8.5"
 description = "A tool to rectify hic assembly."
 authors = ["Swindler <“1033199817@qq.com”>"]
 license = "MIT"
@@ -22,6 +22,10 @@ rich = "^12.5.1"
 configobj = "^5.0.6"
 
 [tool.poetry.dev-dependencies]
+
+[tool.poetry.group.dev.dependencies]
+memory-profiler = "^0.60.0"
+line-profiler = "^3.5.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

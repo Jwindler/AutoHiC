@@ -61,19 +61,19 @@ def rectify_flow(filtered_errors, hic_file, assembly_file, modified_assembly_fil
 
     # inversion rectify
     for inv_error in filtered_errors["inversion"]:
-        translocation_queue[inv_error["id"]] = {
+        inversion_queue[inv_error["id"]] = {
             "start": inv_error["hic_loci"][0],
             "end": inv_error["hic_loci"][1],
         }
-    adjust_inversion(filtered_errors["inversion"], hic_file, assembly_file, modified_assembly_file)
+    adjust_inversion(inversion_queue, hic_file, assembly_file, modified_assembly_file)
 
     # debris rectify
     for deb_error in filtered_errors["debris"]:
-        translocation_queue[deb_error["id"]] = {
+        debris_queue[deb_error["id"]] = {
             "start": deb_error["hic_loci"][0],
             "end": deb_error["hic_loci"][1],
         }
-    adjust_debris(filtered_errors["debris"], hic_file, assembly_file, modified_assembly_file)
+    adjust_debris(debris_queue, hic_file, assembly_file, modified_assembly_file)
 
 
 def main():

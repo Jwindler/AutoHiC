@@ -36,5 +36,25 @@ def main():
     print("Done")
 
 
+def test():
+    import json
+
+    info_file = "/home/jovyan/Download/Np/info.txt"
+    infos = []
+    with open(info_file, "r") as f:
+        for line in f.readlines():
+            info = json.loads(line)
+            infos.append(info)
+
+    classes = ("translocation", "inversion", "debris", "chromosome")
+    temp_class = ERRORS(classes, info_file)
+
+    # for info in infos:
+    for info in infos:
+        detection_result = inference_detector(model, list(info.keys())[0])
+        # infer_result = show_result_pyplot(model, list(info.keys())[0], detection_result)
+        temp_class.create_structure(info, detection_result)
+
+
 if __name__ == "__main__":
     main()

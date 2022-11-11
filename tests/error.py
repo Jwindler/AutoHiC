@@ -26,7 +26,7 @@ class ERRORS:
 
     # generate error structure
     def create_structure(self, img_info, detection_result, epoch_flag=0):
-        for category, classes in zip(detection_result[0], self.classes):
+        for category, classes in zip(detection_result, self.classes):
             if epoch_flag == 0 and classes == "chromosome":
                 continue  # skip chromosome when epoch is 0
 
@@ -105,6 +105,10 @@ class ERRORS:
         filtered_errors = self.errors
         for key in filter_cls:
             filtered_errors[key] = list(filter(lambda x: x["score"] > score, filtered_errors[key]))
+
+        # FIXME: modify below code and make it more efficient
+        for key in filter_cls:
+            filtered_errors[key] = list(filter(lambda x: x["hic_loci"][0] < x["hic_loci"][1], filtered_errors[key]))
 
         return filtered_errors
 

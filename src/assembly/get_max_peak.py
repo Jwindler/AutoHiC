@@ -134,8 +134,9 @@ def remove_peak(peaks_dict, know_peak):
     for i in know_peak:
         try:
             del peaks_dict[i]
+            # FIXME: solve the following problem
         except KeyError:  # 如果key不存在，则会抛出KeyError异常
-            logger.error("remove_peak error")
+            logger.error("remove_peak error: some self peak not in peaks_dict")
 
     return peaks_dict
 
@@ -156,7 +157,7 @@ def main():
 
     logger.info("交集最多的index为：{0}".format(many_key_name))
     logger.info("应该插入区间为：{0} - {1}".format(many_key_name *
-                                           resolution, (many_key_name + 1) * resolution))
+                                                  resolution, (many_key_name + 1) * resolution))
 
 
 if __name__ == "__main__":
