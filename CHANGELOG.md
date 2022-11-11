@@ -1,3 +1,12 @@
+## [0.8.6](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.5...v0.8.6) (2022-11-11)
+
+
+### Bug Fixes
+
+* fix too many error ([90d5a0a](https://github.com/Jwindler/HiC-OpenCV/commit/90d5a0ad56642fe4739fb0262b591694b2f63dd3))
+
+
+
 ## [0.8.5](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.4...v0.8.5) (2022-11-10)
 
 
