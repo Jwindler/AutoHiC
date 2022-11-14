@@ -16,11 +16,8 @@ from collections import OrderedDict
 import hicstraw
 
 from src.assembly import get_max_peak
-from src.core.utils.logger import LoggerHandler
+from src.core.utils.logger import logger
 from src.assembly.asy_operate import AssemblyOperate
-
-# 初始化日志
-logger = LoggerHandler()
 
 
 def search_right_site_v2(hic_file, assembly_file, ratio, error_site):

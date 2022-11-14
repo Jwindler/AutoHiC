@@ -12,12 +12,10 @@ import json
 import re
 from collections import OrderedDict
 
-from src.core.utils.logger import LoggerHandler
+from src.core.utils.logger import logger
 
 
 class AssemblyOperate(object):
-    # 初始化日志
-    logger = LoggerHandler()
 
     def __init__(self, assembly_file_path, ratio):
         # 初始化assembly文件路径
@@ -68,7 +66,7 @@ class AssemblyOperate(object):
 
         # 未传入查询字段
         if ctg_name is None and ctg_order is None:
-            self.logger.error("未传入查询字段 \n")
+            logger.error("未传入查询字段 \n")
             raise ValueError("ctg_name or ctg_order must be specified")
 
         ctgs_infos = {}  # ctg信息
@@ -424,9 +422,9 @@ class AssemblyOperate(object):
         genome_start = start * self.ratio
         genome_end = end * self.ratio
 
-        self.logger.info("查询真实位点为 ： {0} - {1} \n".format(genome_start, genome_end))
+        logger.info("查询真实位点为 ： {0} - {1} \n".format(genome_start, genome_end))
 
-        self.logger.info("该区域包含的contig : ")
+        logger.info("该区域包含的contig : ")
 
         with open(assembly_file_path, "r") as f:
             lines = f.readlines()
@@ -486,7 +484,7 @@ class AssemblyOperate(object):
             separators=(
                 ',',
                 ': '))
-        self.logger.info(contain_contig)
+        logger.info(contain_contig)
 
         return contain_contig
 

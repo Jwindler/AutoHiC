@@ -14,10 +14,7 @@ from collections import OrderedDict
 
 from src.assembly.asy_operate import AssemblyOperate
 from src.core.utils.get_ratio import get_ratio
-from src.core.utils.logger import LoggerHandler
-
-# 初始化日志
-logger = LoggerHandler()
+from src.core.utils.logger import logger
 
 
 def adjust_inversion(error_queue, hic_file, assembly_file, modified_assembly_file):

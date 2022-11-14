@@ -15,18 +15,17 @@ from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
 
 from conf import Pre_Config
-from src.core.utils.logger import LoggerHandler
+from src.core.utils.logger import logger
 
 
 class GenBaseModel:
-    logger = LoggerHandler()
     logger.info("Base Model Initiating ...")
 
     def __init__(self, hic_file, save_dir):
         self.hic_file = hic_file
         self.save_dir = save_dir
 
-        self.logger.info(
+        logger.info(
             "Execute File: {0} --当前进程：{1}".format(self.hic_file, os.getpid()))
 
     @staticmethod

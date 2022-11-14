@@ -9,15 +9,13 @@
 @function: 易位错误调整流程整合
 """
 import json
+import re
 from collections import OrderedDict
 
 from src.assembly.asy_operate import AssemblyOperate
 from src.assembly.search_right_site_V2 import search_right_site_v2
 from src.core.utils.get_ratio import get_ratio
-from src.core.utils.logger import LoggerHandler
-
-# 初始化日志
-logger = LoggerHandler()
+from src.core.utils.logger import logger
 
 
 def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file):
@@ -45,11 +43,21 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
 
     # 循环易位错误队列
     for error in error_queue:
+        if flag:
+            flag = False
+        else:
+            assembly_file = modified_assembly_file
+
         logger.info("开始计算 {0} 的调整信息：".format(error))
+        if error == "2430":
+            print("debug")
 
         # 查找易位错误区间中包含的ctgs
+        # 第一次查找旧文件，第二次查找新文件
+
         error_contain_ctgs = asy_operate.find_site_ctgs(assembly_file, error_queue[error]["start"],
                                                         error_queue[error]["end"])
+
         error_contain_ctgs = json.loads(error_contain_ctgs)  # 将字符串转换为字典
         error_contain_ctgs = list(error_contain_ctgs.items())  # 将字典转换为列表
 
@@ -63,25 +71,31 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
 
             cut_ctg_name_site[first_ctg[0]] = error_queue[error]["start"] * ratio
 
-            if flag:  # 第一次修改assembly文件
-                # {ctg_name: "cut_site"}
-                if "fragment" in first_ctg[0] or "debris" in first_ctg[0]:  # 是否二次切割
-                    asy_operate.recut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
-                else:
-                    asy_operate.cut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
-                flag = False  # 标记为已经第一次修改过
+            # {ctg_name: "cut_site"}
+            if "fragment" in first_ctg[0] or "debris" in first_ctg[0]:  # 是否二次切割
+                asy_operate.recut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
             else:
-                if "fragment" in first_ctg[0] or "debris" in first_ctg[0]:  # 是否二次切割
-                    asy_operate.recut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
-                else:
-                    asy_operate.cut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
+                asy_operate.cut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
 
             # 切割最后一个ctg
             last_ctg = error_contain_ctgs[-1]
+
             cut_ctg_name_site.clear()  # 清空字典(此处是一个BUG，没有报错是因为后一个函数做了处理)
             cut_ctg_name_site[last_ctg[0]] = error_queue[error]["end"] * ratio
 
             if "fragment" in last_ctg[0] or "debris" in last_ctg[0]:  # 是否二次切割
+                # FIXME: 当包含2个ctg时，且两个ctg同源，切割最后一个ctg时，切割位置应该是 位置+1
+                try:  # FIXME: 需要判断正负
+                    first_ctg_name_head = re.search(r"(.*_)(\d+)", first_ctg[0]).group(1)
+                    last_ctg_name_head = re.search(r"(.*_)(\d+)", last_ctg[0]).group(1)
+                    first_ctg_name_order = re.search(r"(.*_)(\d+)", first_ctg[0]).group(2)
+                    last_ctg_name_order = re.search(r"(.*_)(\d+)", last_ctg[0]).group(2)
+                    if first_ctg_name_head == last_ctg_name_head and first_ctg_name_order < last_ctg_name_order:
+                        renew_last_ctg_name = last_ctg_name_head + str(int(last_ctg_name_order) + 1)
+                        cut_ctg_name_site.clear()  # 清空字典(此处是一个BUG，没有报错是因为后一个函数做了处理)
+                        cut_ctg_name_site[renew_last_ctg_name] = error_queue[error]["end"] * ratio
+                except AttributeError:
+                    pass
                 asy_operate.recut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
             else:
                 asy_operate.cut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
@@ -97,58 +111,30 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
             # 判断该ctg的位置情况
             if _ctg_info["site"][0] == cut_ctg_site_start:  # 左边界重合，一切二即可
                 cut_ctg_name_site[_ctg[0]] = cut_ctg_site_end
-                if flag:  # 第一次修改文件
 
-                    # 将一个ctg切割为二个ctg
-                    if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # 是否二次切割
-                        asy_operate.recut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
-                    else:
-                        asy_operate.cut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
-                    flag = False  # 标记为已经第一次修改过
-
+                # 将一个ctg切割为二个ctg
+                if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # 是否二次切割
+                    asy_operate.recut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
                 else:
-                    # 将一个ctg切割为二个ctg
-                    if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # 是否二次切割
-                        asy_operate.recut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
-                    else:
-                        asy_operate.cut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
+                    asy_operate.cut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
 
             elif _ctg_info["site"][1] == cut_ctg_site_end:  # 右边界重合，一切二即可
                 cut_ctg_name_site[_ctg[0]] = cut_ctg_site_start
-                if flag:  # 第一次修改文件
-                    # 将一个ctg切割为二个ctg
-                    if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # 是否二次切割
-                        asy_operate.recut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
-                    else:
-                        asy_operate.cut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
-                    flag = False  # 标记为已经第一次修改过
 
+                # 将一个ctg切割为二个ctg
+                if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # 是否二次切割
+                    asy_operate.recut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
                 else:
-                    # 将一个ctg切割为二个ctg
-                    if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # 是否二次切割
-                        asy_operate.recut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
-                    else:
-                        asy_operate.cut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
+                    asy_operate.cut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
 
             else:  # 不存在边界情况，一切三
-                if flag:  # 第一次修改文件
-                    # 将一个ctg切割为三个ctg
-                    if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # 是否二次切割
-                        asy_operate.recut_ctg_to_3(assembly_file, _ctg[0], cut_ctg_site_start,
-                                                   cut_ctg_site_end, modified_assembly_file)
-                    else:
-                        asy_operate.cut_ctg_to_3(assembly_file, _ctg[0], cut_ctg_site_start,
-                                                   cut_ctg_site_end, modified_assembly_file)
-                    flag = False  # 标记为已经第一次修改过
-
+                # 将一个ctg切割为三个ctg
+                if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # 是否二次切割
+                    asy_operate.recut_ctg_to_3(assembly_file, _ctg[0], cut_ctg_site_start,
+                                               cut_ctg_site_end, modified_assembly_file)
                 else:
-                    # 将一个ctg切割为三个ctg
-                    if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # 是否二次切割
-                        asy_operate.recut_ctg_to_3(modified_assembly_file, _ctg[0], cut_ctg_site_start,
-                                                   cut_ctg_site_end, modified_assembly_file)
-                    else:
-                        asy_operate.cut_ctg_to_3(modified_assembly_file, _ctg[0], cut_ctg_site_start,
-                                                 cut_ctg_site_end, modified_assembly_file)
+                    asy_operate.cut_ctg_to_3(assembly_file, _ctg[0], cut_ctg_site_start,
+                                             cut_ctg_site_end, modified_assembly_file)
 
         logger.info("易位错误的边界ctgs切割完成 \n")
 
@@ -162,19 +148,19 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
 
         logger.info("开始查询易位错误的插入位点：")
         # 依次获取错误的插入ctg位点
-        error_site = (error_queue[error]["start"], error_queue[error]["end"])
-        temp_result, insert_left = search_right_site_v2(hic_file, assembly_file, ratio, error_site)
-        error_mdy_info[error] = {
-            "move_ctgs": new_error_contain_ctgs,
-            "insert_site": temp_result,
-            "direction": insert_left
-        }
+        # error_site = (error_queue[error]["start"], error_queue[error]["end"])
+        # temp_result, insert_left = search_right_site_v2(hic_file, assembly_file, ratio, error_site)
+        # error_mdy_info[error] = {
+        #     "move_ctgs": new_error_contain_ctgs,
+        #     "insert_site": temp_result,
+        #     "direction": insert_left
+        # }
         logger.info("易位错误的插入位点查询完成 \n")
 
     logger.info("开始对所有易位错误进行调整：")
 
     # 开始移动记录的ctgs
-    asy_operate.move_ctgs(modified_assembly_file, error_mdy_info, modified_assembly_file)
+    # asy_operate.move_ctgs(modified_assembly_file, error_mdy_info, modified_assembly_file)
     logger.info("所有易位错误调整完成 \n")
 
     logger.info("所有易位错误的调整信息： %s \n", error_mdy_info)

@@ -17,19 +17,19 @@ import hicstraw
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
-from src.core.utils.logger import LoggerHandler
+from src.core.utils.logger import logger
 from src.core.utils.get_conf import get_conf
 from src.assembly.make_asy import random_color
 
 
 class GenBaseModel:
-    logger = LoggerHandler()
+
 
     # 获取配置字典
     cfg = get_conf()
 
     def __init__(self, hic_file, genome_id, out_file):
-        self.logger.info("Base Model Initiating ...")
+        logger.info("Base Model Initiating ...")
         self.hic_file = hic_file  # 原始hic文件路径
         self.genome_id = genome_id  # 基因组id
         self.out_file = out_file  # 输出文件路径
@@ -40,7 +40,7 @@ class GenBaseModel:
 
         # 父文件夹
         self.genome_folder = os.path.join(self.out_file, self.genome_id)
-        self.logger.info("Create Genome Folder: %s" % self.genome_folder)
+        logger.info("Create Genome Folder: %s" % self.genome_folder)
         self.create_folder(self.genome_folder)
 
     def get_resolutions(self):

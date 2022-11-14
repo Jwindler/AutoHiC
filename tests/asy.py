@@ -17,7 +17,7 @@ hic_file = "/home/jzj/Data/Test/raw_data/Np/Np.0.hic"
 assembly_file = "/home/jzj/Data/Test/raw_data/Np/Np.0.assembly"
 modified_assembly_file = "/home/jzj/Jupyter-Docker/Download/test.assembly"
 
-with open("/home/jzj/Jupyter-Docker/Download/tran_error.json", "r") as outfile:
+with open("/home/jzj/Jupyter-Docker/Download/new_tran_error.json", "r") as outfile:
     translocation_queue = outfile.read()
     translocation_queue = json.loads(translocation_queue)
 
@@ -32,6 +32,8 @@ with open("/home/jzj/Jupyter-Docker/Download/deb_error.json", "r") as outfile:
 # rectify all category errors
 # translocation rectify
 adjust_translocation(translocation_queue, hic_file, assembly_file, modified_assembly_file)
+
+print("translocation rectify done")
 
 # inversion rectify
 adjust_inversion(inversion_queue, hic_file, assembly_file, modified_assembly_file)

@@ -14,15 +14,14 @@ import os
 import hicstraw
 
 from src.core.common.hic_base_model import GenBaseModel
-from src.core.utils.logger import LoggerHandler
+from src.core.utils.logger import logger
 
 
 class GsmAll(GenBaseModel):
-    logger = LoggerHandler()
 
     def run_parsing_hic(self):
-        self.logger.info("Parsing HiC File With Translational Motion Start")
-        self.logger.info("Execute File: %s" % self.hic_file)
+        logger.info("Parsing HiC File With Translational Motion Start")
+        logger.info("Execute File: %s" % self.hic_file)
         num = 1  # 图片起始名称
 
         # HiC对象
@@ -36,7 +35,7 @@ class GsmAll(GenBaseModel):
 
         # 父文件夹
         genome_folder = os.path.join(self.save_dir, father_file)
-        self.logger.debug("Create Genome Folder: %s" % genome_folder)
+        logger.debug("Create Genome Folder: %s" % genome_folder)
         self.create_folder(genome_folder)
 
         # 分辨率数组
@@ -50,7 +49,7 @@ class GsmAll(GenBaseModel):
         try:
             del chromosomes['MT']  # 去除"MT" 线粒体
         except KeyError:
-            self.logger.info("No MT Chromosome")
+            logger.info("No MT Chromosome")
 
         info_file = os.path.join(genome_folder, "info.txt")  # 记录坐标信息
         with open(info_file, 'a+') as f:
@@ -63,7 +62,7 @@ class GsmAll(GenBaseModel):
 
                 # 创建分辨率文件夹
                 temp_folder = os.path.join(genome_folder, str(resolution))
-                self.logger.debug("Create Resolution Folder: %s" % temp_folder)
+                logger.debug("Create Resolution Folder: %s" % temp_folder)
                 self.create_folder(temp_folder)
 
                 # 循环染色体对
@@ -173,8 +172,8 @@ class GsmAll(GenBaseModel):
                         if flag:
                             break
                 # 分辨率logging
-                self.logger.info("Resolution: %s Done" % resolution)
-        self.logger.info("Parsing HiC File With Translational Motion Done")
+                logger.info("Resolution: %s Done" % resolution)
+        logger.info("Parsing HiC File With Translational Motion Done")
 
 
 def main():

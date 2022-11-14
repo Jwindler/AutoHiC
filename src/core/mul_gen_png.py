@@ -13,9 +13,9 @@ import os
 from multiprocessing import Pool
 
 from src.core.common.hic_adv_model import GenBaseModel
-from src.core.utils.logger import LoggerHandler
+from src.core.utils.logger import logger
 
-logger = LoggerHandler()
+
 
 info_path = ""  # define
 

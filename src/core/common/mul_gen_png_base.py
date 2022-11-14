@@ -16,12 +16,10 @@ from multiprocessing import Pool
 import hicstraw
 
 from src.core.common.hic_base_model import GenBaseModel
-from src.core.utils.logger import LoggerHandler
+from src.core.utils.logger import logger
 
 
 class GsmAll(GenBaseModel):
-    logger = LoggerHandler(level="INFO")
-
     logger.info(
         "Parsing HiC File With Translational Motion Start --当前进程：{}".format(os.getpid()))
 
@@ -40,7 +38,7 @@ class GsmAll(GenBaseModel):
 
         # 父文件夹
         genome_folder = os.path.join(self.save_dir, father_file)
-        self.logger.debug(
+        logger.debug(
             "Create Genome Folder: {0} --当前进程：{1}".format(genome_folder, os.getpid()))
         self.create_folder(genome_folder)
 
@@ -52,7 +50,7 @@ class GsmAll(GenBaseModel):
         try:
             del chromosomes['MT']  # 去除"MT" 线粒体
         except KeyError:
-            self.logger.debug("No MT Chromosome")
+            logger.debug("No MT Chromosome")
 
         temp_info_file = str(resolution) + "_info.txt"
         info_file = os.path.join(genome_folder, temp_info_file)  # 记录坐标信息
@@ -63,7 +61,7 @@ class GsmAll(GenBaseModel):
 
             # 创建分辨率文件夹
             temp_folder = os.path.join(genome_folder, str(resolution))
-            self.logger.debug(
+            logger.debug(
                 "Create Resolution Folder: {0} --当前进程：{1}".format(temp_folder, os.getpid()))
             self.create_folder(temp_folder)
 
@@ -173,8 +171,8 @@ class GsmAll(GenBaseModel):
                 if flag:
                     break
         # 分辨率logging
-        self.logger.debug("Resolution: %s Done" % resolution)
-        self.logger.debug("Parsing HiC File With Translational Motion Done")
+        logger.debug("Resolution: %s Done" % resolution)
+        logger.debug("Parsing HiC File With Translational Motion Done")
 
 
 def main():

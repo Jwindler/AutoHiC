@@ -14,22 +14,21 @@ import os
 import shutil
 import glob
 
-from src.core.utils.logger import LoggerHandler
+from src.core.utils.logger import logger
 
 
 class PngTypeMove:
-    logger = LoggerHandler()
 
     def __init__(self, png_path, save_path):
         self.png_path = png_path
         self.save_path = save_path
 
     def move_png(self):
-        self.logger.info("Start to move png...")
+        logger.info("Start to move png...")
 
         if isinstance(self.png_path, list):  # 如果是列表，则需要遍历
             for one_png_path in self.png_path:
-                self.logger.info("Start to move file: {}".format(one_png_path))
+                logger.info("Start to move file: {}".format(one_png_path))
 
                 one_png_path = os.path.join(one_png_path, "type")
 
@@ -48,11 +47,11 @@ class PngTypeMove:
                             destination = os.path.join(destination, temp_name)
                             # 移动
                             shutil.move(src_file, destination)
-                self.logger.info("Move file: {} done!".format(one_png_path))
+                logger.info("Move file: {} done!".format(one_png_path))
         else:
 
             one_png_path = os.path.join(self.png_path, "type")
-            self.logger.info("Start to move file: {}".format(one_png_path))
+            logger.info("Start to move file: {}".format(one_png_path))
             for folder in os.listdir(one_png_path):
                 source = os.path.join(one_png_path, folder)  # 原地址
                 destination = os.path.join(self.save_path, folder)  # 目的地
@@ -69,8 +68,8 @@ class PngTypeMove:
                         # 移动
                         shutil.move(src_file, destination)
 
-            self.logger.info("Move file: {} done!".format(one_png_path))
-        self.logger.info("All Files Done")
+            logger.info("Move file: {} done!".format(one_png_path))
+        logger.info("All Files Done")
 
 
 def main():

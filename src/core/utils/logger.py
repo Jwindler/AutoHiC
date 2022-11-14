@@ -56,6 +56,9 @@ class LoggerHandler(logging.Logger):
         stream_handler.setFormatter(console_formatter)
 
 
+# 初始化日志
+logger = LoggerHandler(file="/home/jzj/Jupyter-Docker/Download/log.txt")
+
 if __name__ == '__main__':
     logger = LoggerHandler()
     logger.debug('debug')
