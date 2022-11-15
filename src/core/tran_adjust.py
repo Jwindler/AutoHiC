@@ -49,7 +49,7 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
             assembly_file = modified_assembly_file
 
         logger.info("开始计算 {0} 的调整信息：".format(error))
-        if error == "2430":
+        if error == "1060":
             print("debug")
 
         # 查找易位错误区间中包含的ctgs
@@ -90,7 +90,8 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
                     last_ctg_name_head = re.search(r"(.*_)(\d+)", last_ctg[0]).group(1)
                     first_ctg_name_order = re.search(r"(.*_)(\d+)", first_ctg[0]).group(2)
                     last_ctg_name_order = re.search(r"(.*_)(\d+)", last_ctg[0]).group(2)
-                    if first_ctg_name_head == last_ctg_name_head and first_ctg_name_order < last_ctg_name_order:
+                    if first_ctg_name_head == last_ctg_name_head and int(first_ctg_name_order) < int(
+                            last_ctg_name_order):
                         renew_last_ctg_name = last_ctg_name_head + str(int(last_ctg_name_order) + 1)
                         cut_ctg_name_site.clear()  # 清空字典(此处是一个BUG，没有报错是因为后一个函数做了处理)
                         cut_ctg_name_site[renew_last_ctg_name] = error_queue[error]["end"] * ratio
@@ -148,13 +149,13 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
 
         logger.info("开始查询易位错误的插入位点：")
         # 依次获取错误的插入ctg位点
-        # error_site = (error_queue[error]["start"], error_queue[error]["end"])
-        # temp_result, insert_left = search_right_site_v2(hic_file, assembly_file, ratio, error_site)
-        # error_mdy_info[error] = {
-        #     "move_ctgs": new_error_contain_ctgs,
-        #     "insert_site": temp_result,
-        #     "direction": insert_left
-        # }
+        error_site = (error_queue[error]["start"], error_queue[error]["end"])
+        temp_result, insert_left = search_right_site_v2(hic_file, assembly_file, ratio, error_site)
+        error_mdy_info[error] = {
+            "move_ctgs": new_error_contain_ctgs,
+            "insert_site": temp_result,
+            "direction": insert_left
+        }
         logger.info("易位错误的插入位点查询完成 \n")
 
     logger.info("开始对所有易位错误进行调整：")

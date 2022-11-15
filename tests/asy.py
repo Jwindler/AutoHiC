@@ -25,7 +25,7 @@ with open("/home/jzj/Jupyter-Docker/Download/inv_error.json", "r") as outfile:
     inversion_queue = outfile.read()
     inversion_queue = json.loads(inversion_queue)
 
-with open("/home/jzj/Jupyter-Docker/Download/deb_error.json", "r") as outfile:
+with open("/home/jzj/Jupyter-Docker/Download/new_deb_error.json", "r") as outfile:
     debris_queue = outfile.read()
     debris_queue = json.loads(debris_queue)
 
@@ -36,7 +36,11 @@ adjust_translocation(translocation_queue, hic_file, assembly_file, modified_asse
 print("translocation rectify done")
 
 # inversion rectify
-adjust_inversion(inversion_queue, hic_file, assembly_file, modified_assembly_file)
+adjust_inversion(inversion_queue, hic_file, modified_assembly_file, modified_assembly_file)
+
+print("inversion rectify done")
 
 # debris rectify
-adjust_debris(debris_queue, hic_file, assembly_file, modified_assembly_file)
+adjust_debris(debris_queue, hic_file, modified_assembly_file, modified_assembly_file)
+
+print("debris rectify done")

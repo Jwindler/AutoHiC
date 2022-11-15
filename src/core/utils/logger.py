@@ -28,7 +28,6 @@ class LoggerHandler(logging.Logger):
             name="root",
             level='DEBUG',
             file=None):
-        # logger = logging.gerLogger(name)
         super().__init__(name)
 
         # 设置级别
@@ -60,7 +59,7 @@ class LoggerHandler(logging.Logger):
 logger = LoggerHandler(file="/home/jzj/Jupyter-Docker/Download/log.txt")
 
 if __name__ == '__main__':
-    logger = LoggerHandler()
+    logger = LoggerHandler(file="/home/jzj/bprojects/abroad/test.log")
     logger.debug('debug')
     logger.info('info')
     logger.warning('warning')
