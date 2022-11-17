@@ -20,17 +20,21 @@ from src.core.utils.logger import logger
 from src.assembly.asy_operate import AssemblyOperate
 
 
-def search_right_site_v2(hic_file, assembly_file, ratio, error_site):
+def search_right_site_v2(hic_file, assembly_file, ratio, error_site: tuple):
     """
     精确查找易位错误的插入位点
-    :param hic_file: hic文件路径
-    :param assembly_file: assembly文件路径
-    :param ratio: 染色体长度比例
-    :param error_site: 易位错误的位置
-    :return: 插入的位点 + 方向
+    Args:
+        hic_file: hic文件路径
+        assembly_file: assembly文件路径
+        ratio: 染色体长度比例
+        error_site: 易位错误的位置
+
+    Returns:
+            插入的位点 + 方向
+
     """
 
-    # 实例化AssemblyOperate类
+    # Instantiating AssemblyOperate Class
     asy_operate = AssemblyOperate(assembly_file, ratio)
 
     error_site_copy = error_site  # 将错误位点复制一份，用于后续查找插入位点时，排除自身位点
@@ -52,8 +56,8 @@ def search_right_site_v2(hic_file, assembly_file, ratio, error_site):
         logger.info("Search resolution: %s \n", resolution)
 
         # FIXME: 查找区间小于分辨率时，自动查找下一个分辨率
-        if error_site[1] - error_site[0] < resolution:
-            continue
+        # if error_site[1] - error_site[0] < resolution:
+        #     continue
 
         # 第一次查找
         if flag_of_first_insert:

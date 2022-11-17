@@ -13,7 +13,7 @@ from collections import defaultdict
 
 
 class ERRORS:
-    def __init__(self, classes, info_file, img_size=(1110, 1100)):
+    def __init__(self, classes, info_file, img_size=(1110, 1110)):
         self.info_file = info_file
         self.classes = classes
         self.img_size = img_size
@@ -106,10 +106,6 @@ class ERRORS:
         for key in filter_cls:
             filtered_errors[key] = list(filter(lambda x: x["score"] > score, filtered_errors[key]))
 
-        # FIXME: modify below code and make it more efficient
-        for key in filter_cls:
-            filtered_errors[key] = list(filter(lambda x: x["hic_loci"][0] < x["hic_loci"][1], filtered_errors[key]))
-
         return filtered_errors
 
     @staticmethod
@@ -140,6 +136,8 @@ class ERRORS:
 
             # whether there is overlap
             if ans and error["hic_loci"][0] <= ans[-1]["hic_loci"][1]:
+
+                # FIXME: save below var to file
                 remove_list.append((error, ans[-1]))  # save the error which has overlap
                 # calculate overlap ratio
                 bbox1 = self.transform_bbox(error["bbox"])

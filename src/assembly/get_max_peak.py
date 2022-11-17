@@ -54,18 +54,33 @@ def get_error_matrix(
     # 保存错误区间的 index，用于排除自身查找位置
     bin_index = np.arange(true_start_bin, true_end_bin)
 
+    # maybe true_start_bin = true_end_bin lead to no return
+    if true_start_bin == true_end_bin:
+        bin_index = true_start_bin
+
     logger.info("获取互作矩阵的分辨率为： %s", resolution)
     logger.info("易位错误的范围（hic）：{0} - {1} ".format(error_site[0], error_site[1]))
 
+    # maybe error loci less than resolution
+    if error_site[1] - error_site[0] < resolution:
+        middle_resolution = round((resolution - (error_site[1] - error_site[0])) / 2)
+
+        # FIXME: error_site[0] - middle_resolution < 0
+        search_site_a = error_site[0] - middle_resolution
+        search_site_b = error_site[1] + middle_resolution
+    else:
+        search_site_a = error_site[0]
+        search_site_b = error_site[1]
+
     if flag_of_site:  # 第一次查找，查寻错误区间为总长度
         error_matrix_object = chr_matrix_object.getRecordsAsMatrix(
-            error_site[0], error_site[1], search_site[0], assembly_len)
+            search_site_a, search_site_b, search_site[0], assembly_len)
         logger.debug("插入位点查询区间(hic)：{0} - {1}".format(search_site[0], assembly_len))
     else:
         logger.debug("插入位点查询区间(hic)：{0} - {1}".format(search_site[0], search_site[1]))
 
         error_matrix_object = chr_matrix_object.getRecordsAsMatrix(
-            error_site[0], error_site[1], search_site[0], search_site[1])
+            search_site_a, search_site_b, search_site[0], search_site[1])
     return error_matrix_object, bin_index
 
 
@@ -95,7 +110,7 @@ def find_error_peaks(numpy_matrix):
 
         logger.info("第{0}个矩阵的峰值点信息：".format(i + 1))
         logger.info("index：{0}".format(peaks_index))
-        logger.info("value：{0} \n".format(peaks_height))
+        logger.debug("value：{0} \n".format(peaks_height))
 
         for peak_index, peak_height in zip(peaks_index, peaks_height):
             if peak_index not in peaks_dict:
