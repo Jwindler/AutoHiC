@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "auto-hic"
-version = "0.8.5"
+version = "0.8.7"
 description = "A tool to rectify hic assembly."
 authors = ["Swindler <“1033199817@qq.com”>"]
 license = "MIT"
