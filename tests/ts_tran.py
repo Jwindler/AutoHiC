@@ -1,13 +1,14 @@
-#!/usr/scripts/env python
+#!/usr/bin/env python3
 # encoding: utf-8 
 
 """
-@author: Swindler
-@contact: 1033199817@qq.com
-@file: tran_adjust.py
-@time: 10/7/22 10:27 AM
-@function: 易位错误调整流程整合
+@author: jzj
+@contact: jzjlab@163.com
+@file: ts_tran.py
+@time: 11/19/22 10:24 AM
+@function: 
 """
+
 import json
 import re
 from collections import OrderedDict
@@ -140,6 +141,7 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
 
         logger.info("易位错误的边界ctgs切割完成 \n")
 
+    for error in error_queue:
         logger.info("重新查询易位错误区间包含的ctgs")
         new_error_contain_ctgs = asy_operate.find_site_ctgs(modified_assembly_file, error_queue[error]["start"],
                                                             error_queue[error]["end"])
@@ -162,37 +164,8 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
     logger.info("开始对所有易位错误进行调整：")
 
     # 开始移动记录的ctgs
-    # asy_operate.move_ctgs(modified_assembly_file, error_mdy_info, modified_assembly_file)
+    asy_operate.move_ctgs(modified_assembly_file, error_mdy_info, modified_assembly_file)
     logger.info("所有易位错误调整完成 \n")
 
     logger.info("所有易位错误的调整信息： %s \n", error_mdy_info)
     logger.info("All Done! \n")
-
-
-def main():
-    # 错误队列，其中的start和end是基于hic文件上的位置，没有转换为基因组上的位置
-    error_queue = {
-        "error_1": {
-            "start": 250081212,
-            "end": 254212374
-        }
-        # "error_2": {
-        #     "start": 453010131,
-        #     "end": 455241282
-        # }
-    }
-
-    # hic文件路径
-    hic_file = "/home/jzj/Data/Test/raw_data/Aa/Aa.2.hic"
-
-    # assembly文件路径
-    assembly_file = "/home/jzj/Data/Test/raw_data/Aa/Aa.2.assembly"
-
-    # 修改后assembly文件路径
-    modified_assembly_file = "/home/jzj/buffer/test.assembly"
-
-    adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file)
-
-
-if __name__ == "__main__":
-    main()

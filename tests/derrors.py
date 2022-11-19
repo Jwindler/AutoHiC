@@ -34,7 +34,6 @@ def gen_errors(model, classes, info_file, epoch_flag=0):
         # inference
         detection_result = inference_detector(model, list(info.keys())[0])
 
-        # FIXME: 个人主机上 内存可能不够， 服务区上可以没有显卡
         # create error structure
         instance_class.create_structure(info, detection_result, epoch_flag)
 

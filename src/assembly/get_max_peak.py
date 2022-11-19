@@ -168,8 +168,7 @@ def main():
     many_key_name = max(temp_3, key=temp_3.get)
 
     logger.info("交集最多的index为：{0}".format(many_key_name))
-    logger.info("应该插入区间为：{0} - {1}".format(many_key_name *
-                                                  resolution, (many_key_name + 1) * resolution))
+    logger.info("应该插入区间为：{0} - {1}".format(many_key_name * resolution, (many_key_name + 1) * resolution))
 
 
 if __name__ == "__main__":

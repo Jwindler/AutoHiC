@@ -11,13 +11,15 @@
 import json
 from src.core.deb_adjust import adjust_debris
 from src.core.inv_adjust import adjust_inversion
-from src.core.tran_adjust import adjust_translocation
+from tests.ts_tran import adjust_translocation
+# from src.core.tran_adjust import adjust_translocation
+
 
 hic_file = "/home/jzj/Data/Test/asy_test/double/Np/Np.final.hic"
 assembly_file = "/home/jzj/Data/Test/asy_test/double/Np/Np_double.assembly"
 modified_assembly_file = "/home/jzj/Jupyter-Docker/Download/test.assembly"
 
-with open("/home/jzj/Jupyter-Docker/Download/new_tran_error.json", "r") as outfile:
+with open("/home/jzj/Jupyter-Docker/Download/tran_error.json", "r") as outfile:
     translocation_queue = outfile.read()
     translocation_queue = json.loads(translocation_queue)
 
@@ -25,7 +27,7 @@ with open("/home/jzj/Jupyter-Docker/Download/inv_error.json", "r") as outfile:
     inversion_queue = outfile.read()
     inversion_queue = json.loads(inversion_queue)
 
-with open("/home/jzj/Jupyter-Docker/Download/new_deb_error.json", "r") as outfile:
+with open("/home/jzj/Jupyter-Docker/Download/deb_error.json", "r") as outfile:
     debris_queue = outfile.read()
     debris_queue = json.loads(debris_queue)
 
