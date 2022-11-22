@@ -75,8 +75,8 @@ class ERRORS:
 
     @staticmethod
     def cal_iou(box1, box2):
-        x1min, y1min, x1max, y1max = box1[0], box1[1], box1[2], box1[3]
-        x2min, y2min, x2max, y2max = box2[0], box2[1], box2[2], box2[3]
+        x1min, y1min, x1max, y1max = box1[0], box1[2], box1[1], box1[3]
+        x2min, y2min, x2max, y2max = box2[0], box2[2], box2[1], box2[3]
 
         # calculate box area
         s1 = (y1max - y1min + 1.) * (x1max - x1min + 1.)
@@ -122,7 +122,7 @@ class ERRORS:
         return [x1, y1, x2, y2]
 
     # filter error according to overlap and iou
-    def de_diff_overlap(self, errors_dict: dict, iou_score: float = 0.9):
+    def de_diff_overlap(self, errors_dict: dict, iou_score: float = 0.8):
         remove_list = list()  # save the key of the errors_dict which has been removed
         ans = []  # store de_overlap errors
         ans_dict = defaultdict()  # store de_overlap errors
@@ -140,8 +140,8 @@ class ERRORS:
                 # FIXME: save below var to file
                 remove_list.append((error, ans[-1]))  # save the error which has overlap
                 # calculate overlap ratio
-                bbox1 = self.transform_bbox(error["bbox"])
-                bbox2 = self.transform_bbox(ans[-1]["bbox"])
+                bbox1 = self.transform_bbox(error["hic_loci"])
+                bbox2 = self.transform_bbox(ans[-1]["hic_loci"])
                 counted_score = self.cal_iou(bbox1, bbox2)
                 if float(counted_score) > float(iou_score):
                     # judge which one's resolution is higher
@@ -189,7 +189,7 @@ def main():
     temp_class = ERRORS(classes, info_file)
     with open("/home/jzj/Jupyter-Docker/Download/score_filtered_errors.json", "r") as f:
         score_filtered_errors = json.load(f)
-    overlap_filtered_errors = temp_class.de_diff_overlap(score_filtered_errors, iou_score=0.9)
+    temp_class.de_diff_overlap(score_filtered_errors, iou_score=0.9)
 
 
 if __name__ == "__main__":

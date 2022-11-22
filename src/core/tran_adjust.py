@@ -49,8 +49,6 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
             assembly_file = modified_assembly_file
 
         logger.info("开始计算 {0} 的调整信息：".format(error))
-        if error == "1060":
-            print("debug")
 
         # 查找易位错误区间中包含的ctgs
         # 第一次查找旧文件，第二次查找新文件
@@ -140,7 +138,8 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
 
         logger.info("易位错误的边界ctgs切割完成 \n")
 
-        logger.info("重新查询易位错误区间包含的ctgs")
+    logger.info("重新查询易位错误区间包含的ctgs")
+    for error in error_queue:
         new_error_contain_ctgs = asy_operate.find_site_ctgs(modified_assembly_file, error_queue[error]["start"],
                                                             error_queue[error]["end"])
 

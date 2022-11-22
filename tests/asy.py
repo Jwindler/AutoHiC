@@ -11,8 +11,7 @@
 import json
 from src.core.deb_adjust import adjust_debris
 from src.core.inv_adjust import adjust_inversion
-from tests.ts_tran import adjust_translocation
-# from src.core.tran_adjust import adjust_translocation
+from src.core.tran_adjust import adjust_translocation
 
 
 hic_file = "/home/jzj/Data/Test/asy_test/double/Np/Np.final.hic"

@@ -15,7 +15,7 @@ from src.core.deb_adjust import adjust_debris
 from src.core.inv_adjust import adjust_inversion
 from src.core.tran_adjust import adjust_translocation
 from tests.error import ERRORS
-from tests.test import inference_detector
+from tests.infer import inference_detector
 
 
 def gen_errors(model, classes, info_file, epoch_flag=0):
