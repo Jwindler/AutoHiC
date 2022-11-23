@@ -138,9 +138,8 @@ def adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file):
 
     logger.info("开始对所有冗余错误进行调整：")
 
-    # 开始翻转记录的ctgs
-    # for error in error_deb_info:
-    #     asy_operate.move_deb_to_end(modified_assembly_file, error_deb_info[error]["deb_ctgs"], modified_assembly_file)
+    # 开始移动记录的ctgs
+    asy_operate.move_deb_to_end(modified_assembly_file, error_deb_info, modified_assembly_file)
 
     logger.info("所有冗余错误调整完成 \n")
 

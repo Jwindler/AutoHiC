@@ -139,9 +139,9 @@ def adjust_inversion(error_queue, hic_file, assembly_file, modified_assembly_fil
     logger.info("开始对所有反转错误进行调整：")
 
     # 开始翻转记录的ctgs
-    # for error in error_inv_info:
-    #     for inv_ctg in error_inv_info[error]["inv_ctgs"]:
-    #         asy_operate.inv_ctg(inv_ctg, modified_assembly_file, modified_assembly_file)
+    for error in error_inv_info:
+        for inv_ctg in error_inv_info[error]["inv_ctgs"]:
+            asy_operate.inv_ctg(inv_ctg, modified_assembly_file, modified_assembly_file)
 
     logger.info("所有反转错误调整完成 \n")
 

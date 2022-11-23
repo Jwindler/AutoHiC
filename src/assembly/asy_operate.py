@@ -732,12 +732,12 @@ class AssemblyOperate(object):
                 f.write(" ".join(temp_write_list) + "\n")
 
     def move_deb_to_end(self, assembly_file_path, move_ctgs, out_file_path):
-        move_ctgs_order = OrderedDict()
         deb_ctgs_order = []
-        for move_ctg in move_ctgs:
-            temp = self.get_ctg_info(ctg_name=move_ctg, new_asy_file=assembly_file_path)
-            move_ctgs_order[move_ctg] = temp["ctg_order"]
-            deb_ctgs_order.append(str(temp["ctg_order"]))
+
+        for i in move_ctgs:
+            for j in move_ctgs[i]["deb_ctgs"]:
+                temp = self.get_ctg_info(ctg_name=j, new_asy_file=assembly_file_path)
+                deb_ctgs_order.append(str(temp["ctg_order"]))
 
         # 获取assembly_file_path中 ctgs 序号信息
         ctgs, ctgs_orders = AssemblyOperate._get_ctgs_orders(assembly_file_path)
@@ -752,7 +752,7 @@ class AssemblyOperate(object):
             for ctgs_order in ctgs_orders:
                 temp_write_list = []
                 for x in ctgs_order:
-                    if int(x) in deb_ctgs_order:
+                    if str(x) in deb_ctgs_order:
                         continue
                     else:
                         temp_write_list.append(str(x))
