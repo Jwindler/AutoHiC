@@ -121,6 +121,14 @@ class ERRORS:
         y2 = detection_bbox[1] + detection_bbox[3]
         return [x1, y1, x2, y2]
 
+    @staticmethod
+    def if_include(bbox1, bbox2):
+        # default bbox1 is previous bbox
+        if bbox2[1] <= bbox1[1] and bbox2[2] >= bbox1[2] and bbox2[3] <= bbox1[3]:
+            return True
+        else:
+            return False
+
     # filter error according to overlap and iou
     def de_diff_overlap(self, errors_dict: dict, iou_score: float = 0.8):
         remove_list = list()  # save the key of the errors_dict which has been removed
@@ -131,47 +139,41 @@ class ERRORS:
             all_errors += errors_dict[class_]
             # loop errors
         sorted_errors_dict = sorted(all_errors, key=lambda itme: itme["hic_loci"][0], reverse=False)
-
+        temp_compare = None  # first error to compare
         for error in sorted_errors_dict:
-
             # whether there is overlap
-            if ans and error["hic_loci"][0] <= ans[-1]["hic_loci"][1]:
+            if ans and error["hic_loci"][0] <= temp_compare["hic_loci"][1]:
 
                 # FIXME: save below var to file
-                remove_list.append((error, ans[-1]))  # save the error which has overlap
+                remove_list.append((error, temp_compare))  # save the error which has overlap
+
                 # calculate overlap ratio
-                bbox1 = self.transform_bbox(error["hic_loci"])
-                bbox2 = self.transform_bbox(ans[-1]["hic_loci"])
+                bbox1 = error["hic_loci"]
+                bbox2 = temp_compare["hic_loci"]
                 counted_score = self.cal_iou(bbox1, bbox2)
                 if float(counted_score) > float(iou_score):
                     # judge which one's resolution is higher
-                    if int(error["resolution"]) == int(ans[-1]["resolution"]):
-                        ans.append(max(error, ans[-1], key=lambda item: item["score"]))
-
+                    if int(error["resolution"]) == int(temp_compare["resolution"]):
+                        insert_result = max(error, temp_compare, key=lambda item: item["score"])
                     else:
                         # select the error with the highest resolution
-                        ans.append(max(error, ans[-1], key=lambda item: item["resolution"]))
+                        insert_result = min(error, temp_compare, key=lambda item: item["resolution"])
+
+                    if insert_result == temp_compare:
+                        continue
+                    else:
+                        del ans[-1]
+                        ans.append(insert_result)
 
                 else:  # not same error but have overlap
-                    # FIXME: not same error but have overlap
-                    # Select the middle position of the two errors
-                    error_copy = error
-
-                    ans[-1]["hic_loci"][1] = error_copy["hic_loci"][0] + int(
-                        (ans[-1]["hic_loci"][1] - error_copy["hic_loci"][0]) / 2) - 1
-
-                    error_copy["hic_loci"][0] = ans[-1]["hic_loci"][1] + 1
-
-                    ans[-1]["hic_loci"][3] = error_copy["hic_loci"][2] + int(
-                        (ans[-1]["hic_loci"][3] - error_copy["hic_loci"][2]) / 2) - 1
-
-                    error_copy["hic_loci"][2] = ans[-1]["hic_loci"][3] + 1
-
-                    ans.append(error_copy)
-
-                    # raise NotImplementedError("Not same error but have overlap, wait to solve")
+                    error_len_1 = bbox1[1] - bbox1[0]
+                    temp_compare_len_2 = bbox2[1] - bbox2[0]
+                    if error_len_1 > temp_compare_len_2:
+                        del ans[-1]
+                        ans.append(error)
             else:  # nought overlap
                 ans.append(error)
+            temp_compare = ans[-1]
 
         # regenerate error structure
         for _ in ans:
