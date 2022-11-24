@@ -1,3 +1,34 @@
+## [0.8.8](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.7...v0.8.8) (2022-11-24)
+
+
+### Bug Fixes
+
+* update diff error remove duplicate ([8096cd5](https://github.com/Jwindler/HiC-OpenCV/commit/8096cd5771b3635a65932385909ba3762f6c0b82))
+* update move debris to end ([8ff9507](https://github.com/Jwindler/HiC-OpenCV/commit/8ff95078260ddc5dedbc69959759d2e07c8e342b))
+
+
+### Features
+
+* fix some error filter bug and add build environment module ([83234eb](https://github.com/Jwindler/HiC-OpenCV/commit/83234eb13ae3384dd186f752de7eb96062fd1318))
+* wait to debug ([a90b42f](https://github.com/Jwindler/HiC-OpenCV/commit/a90b42fcc70efcb20370c19cf7db5532d7acc53f))
+
+
+
+## [0.8.7](https://github.com/Jwindler/HiC-OpenCV/compare/0.8.7...v0.8.7) (2022-11-17)
+
+
+
+## [0.8.7](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.6...0.8.7) (2022-11-17)
+
+
+### Bug Fixes
+
+* fix all class error error in cut ctgs ([cfd1ec4](https://github.com/Jwindler/HiC-OpenCV/commit/cfd1ec4d1f5a7a51d3f49420608298693571110b))
+* fix loci size error and delete some filter code ([f76261c](https://github.com/Jwindler/HiC-OpenCV/commit/f76261c8974494b119aba21c6b0e7e677c5bc1af))
+* update logger module ([067c571](https://github.com/Jwindler/HiC-OpenCV/commit/067c571c85fed376d7b6d661c52ac81abbb54eca))
+
+
+
 ## [0.8.6](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.5...v0.8.6) (2022-11-11)
 
 
@@ -38,7 +69,7 @@
 
 
 
-## [0.7.3](https://github.com/Jwindler/HiC-OpenCV/compare/v0.7.2...v0.7.3) (2022-10-27)
+## [0.8.3](https://github.com/Jwindler/HiC-OpenCV/compare/v0.7.2...v0.8.3) (2022-10-27)
 
 
 ### Features
@@ -48,7 +79,11 @@
 
 
 
-## [0.7.2](https://github.com/Jwindler/HiC-OpenCV/compare/v0.7.1...v0.7.2) (2022-10-17)
+## [0.7.2](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.2...v0.7.2) (2022-10-17)
+
+
+
+## [0.8.2](https://github.com/Jwindler/HiC-OpenCV/compare/v0.7.1...v0.8.2) (2022-10-17)
 
 
 ### Bug Fixes
@@ -179,7 +214,7 @@
 
 
 
-# [0.3.0](https://github.com/Jwindler/HiC-OpenCV/compare/0.2.1...0.3.0) (2022-09-26)
+# [0.3.0](https://github.com/Jwindler/HiC-OpenCV/compare/0.2.1...v0.3.0) (2022-09-26)
 
 
 ### Features
@@ -188,7 +223,7 @@
 
 
 
-## [0.2.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.2.0...v0.2.1) (2022-09-23)
+## [0.2.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.2.0...0.2.1) (2022-09-23)
 
 
 ### Bug Fixes
@@ -197,7 +232,7 @@
 
 
 
-#  (2022-09-21)
+# [0.2.0](https://github.com/Jwindler/HiC-OpenCV/compare/9982d8b9ba53baf138356c08051fbc269878db4c...v0.2.0) (2022-09-21)
 
 
 ### Bug Fixes
