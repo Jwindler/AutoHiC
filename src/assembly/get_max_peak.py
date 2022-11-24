@@ -65,8 +65,10 @@ def get_error_matrix(
     if error_site[1] - error_site[0] < resolution:
         middle_resolution = round((resolution - (error_site[1] - error_site[0])) / 2)
 
-        # FIXME: error_site[0] - middle_resolution < 0
-        search_site_a = error_site[0] - middle_resolution
+        if error_site[0] - middle_resolution < 0:
+            search_site_a = 0
+        else:
+            search_site_a = error_site[0] - middle_resolution
         search_site_b = error_site[1] + middle_resolution
     else:
         search_site_a = error_site[0]
@@ -146,9 +148,8 @@ def remove_peak(peaks_dict, know_peak):
     for i in know_peak:
         try:
             del peaks_dict[i]
-            # FIXME: solve the following problem
         except KeyError:  # 如果key不存在，则会抛出KeyError异常
-            logger.error("remove_peak error: some self peak not in peaks_dict")
+            logger.error("remove_peak warning: self peak not in peaks_dict")
 
     return peaks_dict
 

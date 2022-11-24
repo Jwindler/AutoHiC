@@ -55,10 +55,6 @@ def search_right_site_v2(hic_file, assembly_file, ratio, error_site: tuple):
     for resolution in resolutions:
         logger.info("Search resolution: %s \n", resolution)
 
-        # FIXME: 查找区间小于分辨率时，自动查找下一个分辨率
-        # if error_site[1] - error_site[0] < resolution:
-        #     continue
-
         # 第一次查找
         if flag_of_first_insert:
             search_site = (0, 0)  # 初始化查找位点

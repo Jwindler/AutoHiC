@@ -18,7 +18,7 @@ from src.core.utils.get_ratio import get_ratio
 from src.core.utils.logger import logger
 
 
-def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file):
+def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file, move_flag=True):
     """
     易位错误调整
     :param error_queue: 易位错误队列
@@ -158,11 +158,12 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
         }
         logger.info("易位错误的插入位点查询完成 \n")
 
-    logger.info("开始对所有易位错误进行调整：")
+    if move_flag:
+        logger.info("开始对所有易位错误进行调整：")
 
-    # 开始移动记录的ctgs
-    asy_operate.move_ctgs(modified_assembly_file, error_mdy_info, modified_assembly_file)
-    logger.info("所有易位错误调整完成 \n")
+        # 开始移动记录的ctgs
+        asy_operate.move_ctgs(modified_assembly_file, error_mdy_info, modified_assembly_file)
+        logger.info("所有易位错误调整完成 \n")
 
     logger.info("所有易位错误的调整信息： %s \n", error_mdy_info)
     logger.info("All Done! \n")

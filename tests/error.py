@@ -130,7 +130,7 @@ class ERRORS:
             return False
 
     # filter error according to overlap and iou
-    def de_diff_overlap(self, errors_dict: dict, iou_score: float = 0.8):
+    def de_diff_overlap(self, errors_dict: dict, iou_score: float = 0.8, remove_error_file="./"):
         remove_list = list()  # save the key of the errors_dict which has been removed
         ans = []  # store de_overlap errors
         ans_dict = defaultdict()  # store de_overlap errors
@@ -143,8 +143,6 @@ class ERRORS:
         for error in sorted_errors_dict:
             # whether there is overlap
             if ans and error["hic_loci"][0] <= temp_compare["hic_loci"][1]:
-
-                # FIXME: save below var to file
                 remove_list.append((error, temp_compare))  # save the error which has overlap
 
                 # calculate overlap ratio
@@ -179,6 +177,10 @@ class ERRORS:
         for _ in ans:
             # ans_dict[_["category"]] = _
             ans_dict.setdefault(_["category"], []).append(_)
+
+        # save remove error to file
+        with open(remove_error_file, "w") as f:
+            f.write(str(remove_list))
 
         print("Filter all error category Done")
 

@@ -17,7 +17,7 @@ from src.core.utils.get_ratio import get_ratio
 from src.core.utils.logger import logger
 
 
-def adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file):
+def adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file, move_flag=False):
     logger.info("Start adjust debris \n")
 
     # 获取染色体长度比例
@@ -136,12 +136,12 @@ def adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file):
             "deb_ctgs": list(new_error_contain_ctgs.keys())
         }
 
-    logger.info("开始对所有冗余错误进行调整：")
+    if move_flag:
+        logger.info("开始对所有冗余错误进行调整：")
 
-    # 开始移动记录的ctgs
-    asy_operate.move_deb_to_end(modified_assembly_file, error_deb_info, modified_assembly_file)
-
-    logger.info("所有冗余错误调整完成 \n")
+        # 开始移动记录的ctgs
+        asy_operate.move_deb_to_end(modified_assembly_file, error_deb_info, modified_assembly_file)
+        logger.info("所有冗余错误调整完成 \n")
 
     logger.info("所有冗余错误的调整信息： %s \n", error_deb_info)
     logger.info("All Done! \n")
