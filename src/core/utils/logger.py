@@ -56,7 +56,7 @@ class LoggerHandler(logging.Logger):
 
 
 # 初始化日志
-logger = LoggerHandler(file="/home/jzj/Jupyter-Docker/Download/log.txt")
+logger = LoggerHandler(file="/home/jzj/Jupyter-Docker/Download/result/Ls/modify.log")
 
 if __name__ == '__main__':
     logger = LoggerHandler(file="/home/jzj/bprojects/abroad/test.log")

@@ -1,41 +1,21 @@
 import json
-from collections import defaultdict
-from tests.error import ERRORS
+import os
 
-info_file = "/home/jzj/Jupyter-Docker/Download/test.json"
+out_path = "/home/jzj/Jupyter-Docker/Download/result/Aa"
+with open("/home/jzj/Jupyter-Docker/Download/result/Aa/overlap_filtered_errors.json", "r") as outfile:
+    all_filtered_error = json.loads(outfile.read())
+
 classes = ("translocation", "inversion", "debris", "chromosome")
-temp_class = ERRORS(classes, info_file)
-
-with open("/home/jzj/Jupyter-Docker/Download/score_filtered_errors.json", "r") as outfile:
-    score_filter = json.load(outfile)
-
-overlap_filtered_errors = temp_class.de_diff_overlap(score_filter, iou_score=0.8)
-with open("/home/jzj/Downloads/overlap_filtered_errors.json", "w") as outfile:
-    json.dump(overlap_filtered_errors, outfile)
-
-translocation_queue, inversion_queue, debris_queue = dict(), dict(), dict()
-
-for tran_error in overlap_filtered_errors["translocation"]:
-    translocation_queue[tran_error["id"]] = {  # 存在一个 key 对应多个 value
-        "start": tran_error["hic_loci"][0],
-        "end": tran_error["hic_loci"][1],
-    }
-with open("/home/jzj/Downloads/new_tran_error.json", "w") as outfile:
-    json.dump(translocation_queue, outfile)
-
-for inv_error in overlap_filtered_errors["inversion"]:
-    inversion_queue[inv_error["id"]] = {
-        "start": inv_error["hic_loci"][0],
-        "end": inv_error["hic_loci"][1],
-    }
-with open("/home/jzj/Downloads/new_inv_error.json", "w") as outfile:
-    json.dump(inversion_queue, outfile)
-
-for deb_error in overlap_filtered_errors["debris"]:
-    debris_queue[deb_error["id"]] = {
-        "start": deb_error["hic_loci"][0],
-        "end": deb_error["hic_loci"][1],
-    }
-with open("/home/jzj/Downloads/new_deb_error.json", "w") as outfile:
-    json.dump(debris_queue, outfile)
-# jj 
+for _class in classes:
+    if _class in all_filtered_error.keys():
+        divided_error = dict()
+        for tran_error in all_filtered_error[_class]:
+            divided_error[tran_error["id"]] = {  # 存在一个 key 对应多个 value
+                "start": tran_error["hic_loci"][0],
+                "end": tran_error["hic_loci"][1],
+            }
+        with open(os.path.join(out_path, _class + "_error.json"), "w") as outfile:
+            json.dump(divided_error, outfile)
+    else:
+        continue
+print("Divide all error category Done")

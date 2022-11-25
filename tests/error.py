@@ -9,13 +9,16 @@
 @function: 
 """
 import json
+import os
+# from src.core.utils.logger import logger
 from collections import defaultdict
 
 
 class ERRORS:
-    def __init__(self, classes, info_file, img_size=(1110, 1110)):
+    def __init__(self, classes, info_file, out_path, img_size=(1110, 1110)):
         self.info_file = info_file
         self.classes = classes
+        self.out_path = out_path
         self.img_size = img_size
         self.errors, self.counter = dict(), dict()
         self.class_list = []
@@ -99,12 +102,15 @@ class ERRORS:
         return iou
 
     # filter error according to score
-    def filter_all_errors(self, score: float = 0.9, filter_cls=None):
+    def filter_all_errors(self, score: float = 0.9, out_path="score_filtered_errors.json", filter_cls=None):
         if filter_cls is None:
             filter_cls = self.classes
         filtered_errors = self.errors
         for key in filter_cls:
             filtered_errors[key] = list(filter(lambda x: x["score"] > score, filtered_errors[key]))
+
+        with open(os.path.join(self.out_path, out_path), "w") as outfile:
+            json.dump(filtered_errors, outfile)
 
         return filtered_errors
 
@@ -130,7 +136,8 @@ class ERRORS:
             return False
 
     # filter error according to overlap and iou
-    def de_diff_overlap(self, errors_dict: dict, iou_score: float = 0.8, remove_error_file="./"):
+    def de_diff_overlap(self, errors_dict: dict, iou_score: float = 0.8, out_path="overlap_filtered_errors.json",
+                        remove_error_path="remove_error.txt"):
         remove_list = list()  # save the key of the errors_dict which has been removed
         ans = []  # store de_overlap errors
         ans_dict = defaultdict()  # store de_overlap errors
@@ -179,22 +186,28 @@ class ERRORS:
             ans_dict.setdefault(_["category"], []).append(_)
 
         # save remove error to file
-        with open(remove_error_file, "w") as f:
+        with open(os.path.join(self.out_path, remove_error_path), "w") as f:
             f.write(str(remove_list))
 
+        with open(os.path.join(self.out_path, out_path), "w") as outfile:
+            json.dump(ans_dict, outfile)
+
+        # logger.info("Filter all error category Done")
         print("Filter all error category Done")
 
         return ans_dict
 
-
-def main():
-    classes = ("translocation", "inversion", "debris", "chromosome")
-    info_file = "/home/jzj/Jupyter-Docker/Download/Np/info.txt"
-    temp_class = ERRORS(classes, info_file)
-    with open("/home/jzj/Jupyter-Docker/Download/score_filtered_errors.json", "r") as f:
-        score_filtered_errors = json.load(f)
-    temp_class.de_diff_overlap(score_filtered_errors, iou_score=0.9)
-
-
-if __name__ == "__main__":
-    main()
+    def divide_error(self, all_filtered_error: dict):
+        for _class in self.classes:
+            if _class in all_filtered_error.keys():
+                divided_error = dict()
+                for tran_error in all_filtered_error[_class]:
+                    divided_error[tran_error["id"]] = {  # 存在一个 key 对应多个 value
+                        "start": tran_error["hic_loci"][0],
+                        "end": tran_error["hic_loci"][1],
+                    }
+                with open(os.path.join(self.out_path, _class + "_error.json"), "w") as outfile:
+                    json.dump(divided_error, outfile)
+            else:
+                continue
+        print("Divide all error category Done")

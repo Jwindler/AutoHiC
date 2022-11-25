@@ -14,21 +14,21 @@ from src.core.inv_adjust import adjust_inversion
 from src.core.tran_adjust import adjust_translocation
 
 
-hic_file = "/home/jzj/Data/Test/raw_data/Np/Np.0.hic"
-assembly_file = "/home/jzj/Data/Test/raw_data/Np/Np.0.assembly"
-modified_assembly_file = "/home/jzj/Downloads/Np_0_no_move.assembly"
+hic_file = "/home/jzj/Data/Test/raw_data/Ls/0/Ls.0.hic"
+assembly_file = "/home/jzj/Data/Test/raw_data/Ls/0/Ls.0.assembly"
+modified_assembly_file = "/home/jzj/Jupyter-Docker/Download/result/Ls/adjusted.assembly"
 
-with open("/home/jzj/Downloads/Np_0/tran_error.json", "r") as outfile:
+with open("/home/jzj/Jupyter-Docker/Download/result/Ls/translocation_error.json", "r") as outfile:
     translocation_queue = outfile.read()
     translocation_queue = json.loads(translocation_queue)
 
-with open("/home/jzj/Downloads/new_inv_error.json", "r") as outfile:
-    inversion_queue = outfile.read()
-    inversion_queue = json.loads(inversion_queue)
-
-with open("/home/jzj/Downloads/Np_0/deb_error.json", "r") as outfile:
-    debris_queue = outfile.read()
-    debris_queue = json.loads(debris_queue)
+# with open("/home/jzj/Downloads/inv_error.json", "r") as outfile:
+#     inversion_queue = outfile.read()
+#     inversion_queue = json.loads(inversion_queue)
+#
+# with open("/home/jzj/Downloads/deb_error.json", "r") as outfile:
+#     debris_queue = outfile.read()
+#     debris_queue = json.loads(debris_queue)
 
 # rectify all category errors
 # translocation rectify
@@ -37,11 +37,11 @@ adjust_translocation(translocation_queue, hic_file, assembly_file, modified_asse
 print("translocation rectify done")
 
 # inversion rectify
-adjust_inversion(inversion_queue, hic_file, modified_assembly_file, modified_assembly_file)
-
-print("inversion rectify done")
-
-# debris rectify
-adjust_debris(debris_queue, hic_file, modified_assembly_file, modified_assembly_file)
-
-print("debris rectify done")
+# adjust_inversion(inversion_queue, hic_file, modified_assembly_file, modified_assembly_file)
+#
+# print("inversion rectify done")
+#
+# # debris rectify
+# adjust_debris(debris_queue, hic_file, modified_assembly_file, modified_assembly_file)
+#
+# print("debris rectify done")

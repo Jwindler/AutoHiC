@@ -147,7 +147,7 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
 
         logger.info("需要移动的ctgs: %s \n", new_error_contain_ctgs)
 
-        logger.info("开始查询易位错误的插入位点：")
+        logger.info("开始查询 {0} 易位错误的插入位点：".format(error))
         # 依次获取错误的插入ctg位点
         error_site = (error_queue[error]["start"], error_queue[error]["end"])
         temp_result, insert_left = search_right_site_v2(hic_file, assembly_file, ratio, error_site)
