@@ -1,3 +1,17 @@
+## [0.8.9](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.8...v0.8.9) (2022-11-29)
+
+
+### Bug Fixes
+
+* fix find_peaks error and update self_bin_index ([8667423](https://github.com/Jwindler/HiC-OpenCV/commit/86674231a402d7a691e8bbe42556888689fecd9f))
+
+
+### Features
+
+* add divide error function ([19a6bd3](https://github.com/Jwindler/HiC-OpenCV/commit/19a6bd399d2127074071cea306deceb58388019a))
+
+
+
 ## [0.8.8](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.7...v0.8.8) (2022-11-24)
 
 
