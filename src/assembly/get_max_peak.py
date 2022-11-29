@@ -105,7 +105,7 @@ def find_error_peaks(numpy_matrix):
         # 查找峰值点
         # peak_id, peak_property = find_peaks(y, height=2000, distance=20)
         peak_id, peak_property = find_peaks(
-            y, height=np.median(numpy_matrix), distance=20)
+            y, height=np.median(numpy_matrix), distance=2)
 
         peaks_index = x[peak_id]  # 获取峰值点的索引
         peaks_height = peak_property['peak_heights']  # 获取峰值点的值

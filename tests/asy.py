@@ -8,40 +8,48 @@
 @time: 11/11/22 3:38 PM
 @function: 
 """
+import os
 import json
 from src.core.deb_adjust import adjust_debris
 from src.core.inv_adjust import adjust_inversion
 from src.core.tran_adjust import adjust_translocation
 
 
-hic_file = "/home/jzj/Data/Test/raw_data/Ls/0/Ls.0.hic"
-assembly_file = "/home/jzj/Data/Test/raw_data/Ls/0/Ls.0.assembly"
-modified_assembly_file = "/home/jzj/Jupyter-Docker/Download/result/Ls/adjusted.assembly"
+# 初始化日志
 
-with open("/home/jzj/Jupyter-Docker/Download/result/Ls/translocation_error.json", "r") as outfile:
+
+hic_file = "/home/jzj/Data/Test/asy_test/double/Np/Np.final.hic"
+assembly_file = "/home/jzj/Data/Test/asy_test/double/Np/Np.final.assembly"
+modified_assembly_file = "/home/jzj/Jupyter-Docker/Download/result/Np_double/2_score_0.9/adjusted.assembly"
+
+divided_error = "/home/jzj/Jupyter-Docker/Download/result/Np_double/2_score_0.9"
+
+with open(os.path.join(divided_error, "translocation_error.json"), "r") as outfile:
     translocation_queue = outfile.read()
     translocation_queue = json.loads(translocation_queue)
 
-# with open("/home/jzj/Downloads/inv_error.json", "r") as outfile:
-#     inversion_queue = outfile.read()
-#     inversion_queue = json.loads(inversion_queue)
+with open(os.path.join(divided_error, "inversion_error.json"), "r") as outfile:
+    inversion_queue = outfile.read()
+    inversion_queue = json.loads(inversion_queue)
 #
-# with open("/home/jzj/Downloads/deb_error.json", "r") as outfile:
-#     debris_queue = outfile.read()
-#     debris_queue = json.loads(debris_queue)
+with open(os.path.join(divided_error, "debris_error.json"), "r") as outfile:
+    debris_queue = outfile.read()
+    debris_queue = json.loads(debris_queue)
 
 # rectify all category errors
 # translocation rectify
+# adjust_translocation(translocation_queue, hic_file, assembly_file, modified_assembly_file, move_flag=False)
 adjust_translocation(translocation_queue, hic_file, assembly_file, modified_assembly_file)
 
 print("translocation rectify done")
 
 # inversion rectify
-# adjust_inversion(inversion_queue, hic_file, modified_assembly_file, modified_assembly_file)
+adjust_inversion(inversion_queue, hic_file, modified_assembly_file, modified_assembly_file)
+
+print("inversion rectify done")
 #
-# print("inversion rectify done")
-#
-# # debris rectify
+# debris rectify
 # adjust_debris(debris_queue, hic_file, modified_assembly_file, modified_assembly_file)
-#
-# print("debris rectify done")
+adjust_debris(debris_queue, hic_file, modified_assembly_file, modified_assembly_file, move_flag=True)
+
+print("debris rectify done")
