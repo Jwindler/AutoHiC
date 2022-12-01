@@ -140,6 +140,7 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
 
     logger.info("重新查询易位错误区间包含的ctgs")
     for error in error_queue:
+        logger.info("开始计算 {0} 的插入信息：".format(error))
         new_error_contain_ctgs = asy_operate.find_site_ctgs(modified_assembly_file, error_queue[error]["start"],
                                                             error_queue[error]["end"])
 

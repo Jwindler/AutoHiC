@@ -10,7 +10,7 @@
 """
 import json
 import os
-# from src.core.utils.logger import logger
+# from src.core.utils.logger import logger  # FIXME: update logger when to use
 from collections import defaultdict
 
 
@@ -103,16 +103,39 @@ class ERRORS:
 
     # filter error according to score
     def filter_all_errors(self, score: float = 0.9, out_path="score_filtered_errors.json", filter_cls=None):
+        score_filtered_errors_counter = dict()  # record the number of filtered errors
         if filter_cls is None:
             filter_cls = self.classes
         filtered_errors = self.errors
+
         for key in filter_cls:
             filtered_errors[key] = list(filter(lambda x: x["score"] > score, filtered_errors[key]))
+            score_filtered_errors_counter[key] = 0  # error counter
+
+        # count the number of errors
+        for scored_class in filtered_errors:
+            for error in filtered_errors[scored_class]:
+                score_filtered_errors_counter[scored_class] += 1
 
         with open(os.path.join(self.out_path, out_path), "w") as outfile:
             json.dump(filtered_errors, outfile)
 
-        return filtered_errors
+        return filtered_errors, score_filtered_errors_counter
+
+    # FIXME: update the function
+    def score_filter_specific_class(self, errors_dict: dict, score: float = 0.9,
+                                    out_path="_score_filter_specific_class.json", filter_cls=None):
+        if filter_cls is None:
+            raise ValueError("Please specify the class to filter")
+        else:
+            errors_dict[filter_cls] = list(filter(lambda x: x["score"] > score, errors_dict[filter_cls]))
+            with open(os.path.join(self.out_path, filter_cls + out_path), "w") as outfile:
+                json.dump(errors_dict[filter_cls], outfile)
+
+        # count the score_filter_specific_class_counter
+        score_filter_specific_class_counter = len(errors_dict[filter_cls])
+
+        return errors_dict[filter_cls]
 
     @staticmethod
     def transform_bbox(detection_bbox):
@@ -142,9 +165,15 @@ class ERRORS:
         ans = []  # store de_overlap errors
         ans_dict = defaultdict()  # store de_overlap errors
         all_errors = []
+
+        # record the number of overlap filtered errors
+        overlap_filtered_errors_counter = dict()
+
         for class_ in errors_dict:  # loop classes
             all_errors += errors_dict[class_]
-            # loop errors
+            overlap_filtered_errors_counter[class_] = 0  # error counter
+
+        # loop errors
         sorted_errors_dict = sorted(all_errors, key=lambda itme: itme["hic_loci"][0], reverse=False)
         temp_compare = None  # first error to compare
         for error in sorted_errors_dict:
@@ -185,6 +214,9 @@ class ERRORS:
             # ans_dict[_["category"]] = _
             ans_dict.setdefault(_["category"], []).append(_)
 
+            # count the number of errors
+            overlap_filtered_errors_counter[_["category"]] += 1
+
         # save remove error to file
         with open(os.path.join(self.out_path, remove_error_path), "w") as f:
             f.write(str(remove_list))
@@ -195,7 +227,7 @@ class ERRORS:
         # logger.info("Filter all error category Done")
         print("Filter all error category Done")
 
-        return ans_dict
+        return ans_dict, overlap_filtered_errors_counter
 
     def divide_error(self, all_filtered_error: dict):
         for _class in self.classes:

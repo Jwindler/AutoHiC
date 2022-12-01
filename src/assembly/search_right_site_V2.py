@@ -70,7 +70,7 @@ def search_right_site_v2(hic_file, assembly_file, ratio, error_site: tuple):
 
             # 计算自身的index
             bin_index = [i for i in
-                         range(round(error_site_copy[0] / resolution),
+                         range(round(error_site_copy[0] / resolution) - 1,
                                round(error_site_copy[1] / resolution) + 1)]
             logger.info("self scripts %s", bin_index)
 

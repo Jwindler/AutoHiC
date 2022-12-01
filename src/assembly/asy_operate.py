@@ -2,10 +2,10 @@
 # encoding: utf-8
 
 """
-@author: Swindler
-@contact: 1033199817@qq.com
+@author: jzj
+@contact: jzjlab@163.com
 @file: asy_operate.py
-@time: 8/18/22 4:14 PM
+@time: 12/01/22 4:14 PM
 @function:
 """
 import json
@@ -16,34 +16,35 @@ from src.core.utils.logger import logger
 
 
 class AssemblyOperate(object):
-
     def __init__(self, assembly_file_path, ratio):
-        # 初始化assembly文件路径
+        # Initiating assembly file path
         self.assembly_file_path = assembly_file_path
-        self.ratio = ratio  # assembly与hic的比例
+        self.ratio = ratio  # thr ratio between assembly and hic
 
-    def get_info(self, new_asy_file=None) -> json:
+    def get_info(self, new_asy_file=None) -> dict:
         """
-        获取assembly文件的基本信息
-        :param new_asy_file: 新的assembly文件路径
-        :return:
+            Get basic information of assembly file
+        Args:
+            new_asy_file:
+
+        Returns:
+            assembly_info: assembly information
         """
+        ctg_number = 0  # ctg number
+        seqs_length = 0  # sequence total length
 
-        ctg_number = 0  # ctg数量
-        seqs_length = 0  # 总长度
-
-        # 传入新的assembly文件路径
+        # when new_asy_file is not None
         if new_asy_file is not None:
-            # 更新文件路径
+            # renew assembly file path
             self.assembly_file_path = new_asy_file
 
-        # 获取 ctg数量 和 总长度
+        # get ctg number and total length
         with open(self.assembly_file_path, "r") as f:
             for line in f:
                 if line.startswith(">"):
                     ctg_number += 1
 
-                    # 获取ctg长度
+                    # get ctg length
                     seq_length = line.strip().split()[2]
                     seqs_length += int(seq_length)
 
@@ -55,28 +56,31 @@ class AssemblyOperate(object):
 
         return assembly_info
 
-    def get_ctg_info(self, ctg_name=None, ctg_order=None, new_asy_file=None) -> json:
+    def get_ctg_info(self, ctg_name=None, ctg_order=None, new_asy_file=None) -> dict:
         """
-        通过ctg名字 或者 序号，获取assembly文件中指定ctg的信息
-        :param ctg_name: ctg名字
-        :param ctg_order: ctg序号
-        :param new_asy_file: 新的assembly文件路径
-        :return: ctg信息（json格式）默认ctg_name
+            Get ctg information by ctg name or ctg order
+        Args:
+            ctg_name: ctg name
+            ctg_order: ctg order
+            new_asy_file: new assembly file path
+
+        Returns:
+            ctg_info: ctg information
         """
 
-        # 未传入查询字段
+        # No query field was passed in
         if ctg_name is None and ctg_order is None:
-            logger.error("未传入查询字段 \n")
-            raise ValueError("ctg_name or ctg_order must be specified")
+            logger.error("o query field ctg name or ctg order \n")
+            raise ValueError("ctg name or ctg order must be specified")
 
-        ctgs_infos = {}  # ctg信息
-        ctgs_orders = []  # ctg序号
+        ctgs_infos = {}  # ctg information
+        ctgs_orders = []  # ctg order
 
-        # 传入新的assembly文件路径
+        # when new_asy_file is not None
         if new_asy_file is not None:
             self.assembly_file_path = new_asy_file
 
-        # 获取基本信息
+        # get basic information
         with open(self.assembly_file_path, "r") as f:
             for line in f:
                 if line.startswith(">"):
@@ -90,15 +94,14 @@ class AssemblyOperate(object):
                         try:
                             ctgs_orders.append(int(order))
                         except ValueError:  # 如果是空的，则跳过
-                            print("Warning: order is not int, please check assembly file")
+                            print("Warning: order is empty, please check assembly file")
 
-        # 统计ctg的总长度
-        ctg_length = 1
+        ctg_length = 1  # Calculated total ctg length
 
-        ctg_by_name = {}  # ctg名字字典
-        ctg_by_order = {}  # ctg序号字典
+        ctg_by_name = {}  # ctg information dict by name
+        ctg_by_order = {}  # ctg information dict by order
 
-        # 格式化信息
+        # format ctg information
         for ctgs_order in ctgs_orders:
             abs_ctgs_order = abs(ctgs_order)
             ctg_by_name[ctgs_infos[str(abs_ctgs_order)]["ctg_name"]] = {
@@ -128,13 +131,17 @@ class AssemblyOperate(object):
     @staticmethod
     def _get_ctgs_orders(assembly_file_path):
         """
-        获取assembly 文件中的信息
-        :return:
-        """
-        ctgs = OrderedDict()  # ctgs信息
-        ctgs_orders = []  # ctgs序号
+            Get all ctg orders
+        Args:
+            assembly_file_path: assembly file path
 
-        # 获取ctg数量和总长度
+        Returns:
+            ctgs_orders: all ctgs and orders
+        """
+        ctgs = OrderedDict()  # ctgs information
+        ctgs_orders = []  # ctgs orders
+
+        # get ctg number and total length
         with open(assembly_file_path, "r") as f:
             for line in f:
                 if line.startswith(">"):
@@ -150,41 +157,42 @@ class AssemblyOperate(object):
 
     def cut_ctgs(self, assembly_file_path, cut_ctg, out_file_path):
         """
-        切割指定的ctgs
-        :param assembly_file_path: 原始assembly文件路径
-        :param cut_ctg: 需要剪切的ctgs（"ctg_name": cut_site）
-        :param out_file_path: 修改后存放路径
-        :return: None
+            Cut ctg by ctg name
+        Args:
+            assembly_file_path: assembly file path
+            cut_ctg: cut ctg name （ctg_name: cut_site）
+            out_file_path: output file path
+
+        Returns:
+
         """
 
-        # 获取原始ctgs信息
+        # get original ctgs information
         ctgs, ctgs_orders = self._get_ctgs_orders(assembly_file_path)
 
-        # 声明变量（以防后续提醒）
-        cut_ctg_name = None
-        cut_ctg_site = None
+        # Declare variables (in case of subsequent reminders)
+        cut_ctg_name, cut_ctg_site = None, None
 
-        # 获取需要剪切的ctg信息
+        # get cut ctg information
         for key, values in cut_ctg.items():
             cut_ctg_name = key
             cut_ctg_site = values
 
-        # 计算剪切的ctg的新信息
+        # calculated new information of cut ctg
         cut_ctg_info = self.get_ctg_info(ctg_name=cut_ctg_name, new_asy_file=assembly_file_path)
 
-        # 获取cut_ctg的顺序（正:True, 负:False）
+        # get cut_ctg order (True: positive, False: negative)
         cut_ctg_order = cut_ctg_info["ctg_order"]
 
-        # 计算切割的起始位置和结束位置
+        # calculated cut start and end site
         cut_ctg_site1 = cut_ctg_site - cut_ctg_info["site"][0]
         cut_ctg_site2 = cut_ctg_info["site"][1] - cut_ctg_site + 1
 
         with open(out_file_path, "w") as f:
-
-            # 写入新的ctg信息
+            # write new ctg information
             for key, value in ctgs.items():
                 if key == cut_ctg_name:
-                    # ctg正负 对于切割长度的影响
+                    # when ctg order is positive
                     if int(cut_ctg_order) > 0:
                         f.write(key + ":::fragment_1 " + value["order"] + " " + str(cut_ctg_site1) + "\n")
                         temp_order = int(value["order"]) + 1
@@ -194,28 +202,28 @@ class AssemblyOperate(object):
                         temp_order = int(value["order"]) + 1
                         f.write(key + ":::fragment_2" + " " + str(temp_order) + " " + str(cut_ctg_site1) + "\n")
                 else:
-                    # 一分为二后，后续序号+
+                    # cut ctg divides into two and then increase back ctg order
                     if int(value["order"]) > abs(int(cut_ctg_order)):
                         temp_order = int(value["order"]) + 1
                         f.write(key + " " + str(temp_order) + " " + value["length"] + "\n")
                     else:
                         f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
-            # 写入新的ctg顺序
+            # write new ctg order information
             for ctgs_order in ctgs_orders:
                 temp_write_list = []
                 for x in ctgs_order:
-                    # 跟新需要切割的ctg顺序
+                    # update cut ctg order
                     if int(x) == int(cut_ctg_order):
-                        if cut_ctg_order > 0:
+                        if cut_ctg_order > 0:  # when ctg order is positive
                             temp = cut_ctg_order + 1
                             temp_write_list.append(str(cut_ctg_order))
                             temp_write_list.append(str(temp))
-                        else:  # 反向
+                        else:  # when ctg order is negative
                             temp = cut_ctg_order - 1
                             temp_write_list.append(str(temp))
                             temp_write_list.append(str(cut_ctg_order))
-                    else:  # 其余ctg + 1
+                    else:  # the rest ctg order + 1
                         if abs(int(x)) > abs(int(cut_ctg_order)):
                             if int(x) > 0:
                                 temp = int(x) + 1
@@ -228,49 +236,57 @@ class AssemblyOperate(object):
                 f.write(" ".join(temp_write_list) + "\n")
 
     def recut_ctgs(self, assembly_file_path, cut_ctg, out_file_path):
-        # 获取原始ctgs信息
+        """
+            Recut ctg
+        Args:
+            assembly_file_path: assembly file path
+            cut_ctg: cut ctg name （ctg_name: cut_site）
+            out_file_path: output file path
+
+        Returns:
+            None
+        """
+        # get original ctgs information
         ctgs, ctgs_orders = self._get_ctgs_orders(assembly_file_path)
 
-        # 声明变量（以防后续提醒）
-        cut_ctg_name = None
-        cut_ctg_site = None
+        # Declare variables (in case of subsequent reminders)
+        cut_ctg_name, cut_ctg_site = None, None
 
-        # 获取需要剪切的ctg信息
+        # get cut ctg information
         for key, values in cut_ctg.items():
-            cut_ctg_name = key  # 获取需要剪切的ctg名称
-            cut_ctg_site = values  # 获取需要剪切的ctg位置
+            cut_ctg_name = key  # get cut ctg name
+            cut_ctg_site = values  # get cut ctg site
 
-        # 需要二次切割的ctg的原本切割需要的head
+        # get recut ctg name head
         cut_ctg_name_head = re.search(r"(.*_)(\d+)", cut_ctg_name).group(1)
-        # 需要二次切割的ctg的原本切割需要（fragment_X）
+        # get recut ctg name fragment order(fragment_X)
         cut_ctg_name_order = re.search(r"(.*_)(\d+)", cut_ctg_name).group(2)
 
-        # 计算剪切的ctg的新信息
+        # get recut ctg information
         cut_ctg_info = self.get_ctg_info(ctg_name=cut_ctg_name, new_asy_file=assembly_file_path)
 
-        # 获取cut_ctg的顺序（正:True, 负:False）
+        # get recut ctg order (True: positive, False: negative)
         cut_ctg_order = cut_ctg_info["ctg_order"]
 
-        # 计算切割的起始位置和结束位置
+        # calculated recut start and end site
         cut_ctg_site1 = cut_ctg_site - cut_ctg_info["site"][0]
         cut_ctg_site2 = cut_ctg_info["site"][1] - cut_ctg_site + 1
 
         with open(out_file_path, "w") as f:
-
-            # 写入新的ctg信息
+            # write new ctg order information
             for key, value in ctgs.items():
                 if key.startswith(cut_ctg_name_head):
                     head = re.search(r"(.*_)(\d+)", key).group(1)
                     order = re.search(r"(.*_)(\d+)", key).group(2)
 
-                    # 如果是需要剪切的ctg的前面的ctg，直接写入
+                    # Direct writing of the previous ctg
                     if int(order) < int(cut_ctg_name_order):
                         f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
-                    # 如果是需要剪切的ctg，需要根据顺序进行切割
+                    # if ctg is recut ctg
                     elif order == cut_ctg_name_order:
-                        # ctg正负 对于切割长度的影响
                         temp_order = int(value["order"]) + 1
+                        # when ctg order is positive
                         if int(cut_ctg_order) > 0:
                             if key.endswith("debris"):
                                 f.write(head + order + ":::debris " + value["order"] + " " + str(cut_ctg_site1) + "\n")
@@ -294,7 +310,7 @@ class AssemblyOperate(object):
                                 f.write(head + str(int(order) + 1) + " " + str(temp_order) + " " + str(
                                     cut_ctg_site1) + "\n")
 
-                    else:  # 如果是需要剪切的ctg的后面的ctg，序号递增即可
+                    else:  # the rest ctg order + 1
                         temp_order = int(value["order"]) + 1
                         if key.endswith("debris"):
                             f.write(head + str(int(order) + 1) + ":::debris " + str(temp_order) + " " + value[
@@ -303,28 +319,28 @@ class AssemblyOperate(object):
                             f.write(
                                 head + str(int(order) + 1) + " " + str(temp_order) + " " + value["length"] + "\n")
                 else:
-                    # 一分为二后，后续序号+
+                    # cut ctg divides into two and then increase back ctg order
                     if int(value["order"]) > abs(int(cut_ctg_order)):
                         temp_order = int(value["order"]) + 1
                         f.write(key + " " + str(temp_order) + " " + value["length"] + "\n")
                     else:
                         f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
-            # 写入新的ctg顺序
+            # write new ctg order information
             for ctgs_order in ctgs_orders:
                 temp_write_list = []
                 for x in ctgs_order:
-                    # 跟新需要切割的ctg顺序
+                    # update recut ctg order
                     if int(x) == cut_ctg_order:
                         if cut_ctg_order > 0:
                             temp = cut_ctg_order + 1
                             temp_write_list.append(str(cut_ctg_order))
                             temp_write_list.append(str(temp))
-                        else:  # 反向
+                        else:  # when recut ctg order is negative
                             temp = cut_ctg_order - 1
                             temp_write_list.append(str(temp))
                             temp_write_list.append(str(cut_ctg_order))
-                    else:  # 其余ctg + 1
+                    else:  # the rest ctg order + 1
                         if abs(int(x)) > abs(cut_ctg_order):
                             if int(x) > 0:
                                 temp = int(x) + 1
@@ -338,65 +354,68 @@ class AssemblyOperate(object):
 
     def move_ctgs(self, assembly_file_path, error_info, out_file_path):
         """
-        对易位错误进行移动
-        :param assembly_file_path: 需要调整的assembly文件路径
-        :param error_info: 易位错误信息
-        :param out_file_path: 保存路径
-        :return: None
+            move translocation ctgs
+        Args:
+            assembly_file_path: assembly file path
+            error_info: error information
+            out_file_path: output file path
+
+        Returns:
+            None
         """
 
         self.assembly_file_path = assembly_file_path
 
-        # 获取ctgs 序号信息
+        # get ctgs information
         ctgs, ctgs_orders = AssemblyOperate._get_ctgs_orders(assembly_file_path)
 
         for error in error_info:
-            # 需要移动的ctg_name
+            # get move ctg name information
             move_ctg = list(error_info[error]["move_ctgs"].keys())
 
-            # 获取需要移动的ctg的order
+            # get move ctg order information
             move_ctg_orders = []
             for ctg in move_ctg:
                 get_ctg_info = self.get_ctg_info(ctg_name=ctg, new_asy_file=assembly_file_path)
                 get_ctg_info_order = get_ctg_info["ctg_order"]
                 move_ctg_orders.append(str(get_ctg_info_order))
 
-            # 获取需要插入的ctg的order
+            # get insert ctg order information
             insert_ctg = list(error_info[error]["insert_site"].keys())[0]
             insert_ctg_order = self.get_ctg_info(ctg_name=insert_ctg)["ctg_order"]
 
-            # 声明变量， 存储插入位置的index
+            # insert ctg order index
             insert_ctg_order_index = None
 
-            # 修改ctg顺序
+            # update ctg order
             for move_ctg_order in move_ctg_orders:
                 for index in range(len(ctgs_orders)):
-                    # 删除需要移动的ctg的原始位置
+                    # delete the original position of the move ctg
                     if move_ctg_order in ctgs_orders[index]:
                         ctgs_orders[index].remove(move_ctg_order)
 
-                    # 获取插入位置的index
+                    # get insert ctg order index
                     if str(insert_ctg_order) in ctgs_orders[index]:
                         insert_ctg_order_index = (index, ctgs_orders[index].index(str(insert_ctg_order)))
 
-            # 插入需要移动的ctg
-            direction = error_info[error]["direction"]  # 插入方向
-            if direction == "left":  # 左插入
+            # get move ctg
+            direction = error_info[error]["direction"]  # insert direction
+            if direction == "left":  # insert left
                 move_ctg_orders.reverse()
                 for move_ctg_order in move_ctg_orders:
                     ctgs_orders[insert_ctg_order_index[0]].insert(insert_ctg_order_index[1], move_ctg_order)
-            else:  # 右插入
+            else:  # insert right
                 move_ctg_orders.reverse()
                 for move_ctg_order in move_ctg_orders:
                     ctgs_orders[insert_ctg_order_index[0]].insert(insert_ctg_order_index[1] + 1, move_ctg_order)
 
-            # 写入新文件
+            # update assembly file
             with open(out_file_path, "w") as f:
-                # 写入新的ctg信息
+                # write new ctg information
                 for key, value in ctgs.items():
                     f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
-                # 写入新的ctg顺序
+                # write new ctg order information
                 for ctgs_order in ctgs_orders:
                     temp_write_list = []
                     for x in ctgs_order:
@@ -405,20 +424,23 @@ class AssemblyOperate(object):
 
     def find_site_ctgs(self, assembly_file_path, start, end):
         """
-        根据start,end 返回该区域所包含的contig
-        :param start:    hic file 查询起始坐标
-        :param end:      hic file 查询终止坐标
-        :param assembly_file_path: assembly文件路径
-        :return: 位点内contig信息
+            Find site coordinate interval ctgs
+        Args:
+            assembly_file_path: assembly file path
+            start: start coordinate
+            end: end coordinate
+
+        Returns:
+            site_ctgs: site coordinate interval ctgs
         """
 
-        contain_contig = OrderedDict()  # 位点内contig信息
+        contain_contig = OrderedDict()  # site coordinate interval ctgs
 
-        contig_info = {}  # contig 信息{order: {name, length}}
+        contig_info = {}  # ctg information {order: {name, length}}
 
-        contig_order = []  # contig 顺序信息列表
+        contig_order = []  # ctg order list
 
-        # 基因组上真实的位置信息
+        # get the real position information on the genome
         genome_start = start * self.ratio
         genome_end = end * self.ratio
 
@@ -429,27 +451,27 @@ class AssemblyOperate(object):
         with open(assembly_file_path, "r") as f:
             lines = f.readlines()
             for line in lines:
-                # contig :name : order, length
+                # ctg :name : order, length
                 if line.startswith(">"):
                     each_line = line.strip().split()
                     contig_info[each_line[1].strip(">")] = {
                         "name": each_line[0],
                         "length": each_line[2]
                     }
-                # contig 顺序
+                # ctg order
                 else:
                     contig_order.append(line.strip().split())
 
-            # 二维降一维
+            # Two-dimensional reduction to one-dimensional
             contig_order = [order for st in contig_order for order in st]
 
         # 寻找contig
-        temp_len_s = 0  # 记录当前contig的起始位置
-        temp_len_e = 0  # 记录当前contig的终止位置
+        temp_len_s = 0  # record the start position of the current ctg
+        temp_len_e = 0  # record the end position of the current ctg
 
-        for i in contig_order:  # 循环contig
+        for i in contig_order:  # loop ctgs
 
-            if i.startswith("-"):  # 反向contig
+            if i.startswith("-"):  # when ctg is reverse(Negative)
                 i = i[1:]
                 temp_len_s = temp_len_e + 1
                 temp_len_e += int(contig_info[i]["length"])
@@ -457,8 +479,7 @@ class AssemblyOperate(object):
                 temp_len_s = temp_len_e + 1
                 temp_len_e += int(contig_info[i]["length"])
 
-                # 解冗余
-
+            # Decoupling
             def callback():
                 contain_contig[contig_info[i]["name"]] = {
                     "length": contig_info[i]["length"],
@@ -467,7 +488,7 @@ class AssemblyOperate(object):
                 }
                 return temp_len_e
 
-            # 各个contig与查询位点之间的关系（主要有四种，可以参考两条线段之间的关系）
+            # each ctg relationship with the query site (refer to the relationship between two line segments)
             if temp_len_s < genome_start:
                 if genome_start < temp_len_e:
                     callback()
@@ -477,7 +498,7 @@ class AssemblyOperate(object):
                 elif temp_len_s < genome_end:
                     callback()
 
-        # json格式输出
+        # reformatted output to json
         contain_contig = json.dumps(
             contain_contig,
             indent=4,
@@ -490,36 +511,40 @@ class AssemblyOperate(object):
 
     def cut_ctg_to_3(self, assembly_file_path, cut_ctg_name, site_1, site_2, out_file_path):
         """
-        将contig切割为3个
-        :param assembly_file_path:
-        :param cut_ctg_name:
-        :param site_1:
-        :param site_2:
-        :param out_file_path:
-        :return:
+            Cut ctg to 3 parts
+        Args:
+            assembly_file_path: assembly file path
+            cut_ctg_name: cut ctg name
+            site_1: cut site 1
+            site_2: cut site 2
+            out_file_path: output file path
+
+        Returns:
+            None
         """
+
         if cut_ctg_name.startswith(">") is False:
             cut_ctg_name = ">" + cut_ctg_name
 
-        # 获取原始ctgs信息
+        # get original ctgs information
         ctgs, ctgs_orders = self._get_ctgs_orders(assembly_file_path)
 
-        # 计算剪切的ctg的新信息
+        # get new information of cut ctg
         cut_ctg_info = self.get_ctg_info(ctg_name=cut_ctg_name, new_asy_file=assembly_file_path)
 
-        # 获取cut_ctg的顺序（正:True, 负:False）
+        #  get cut ctg order (positive: True, negative: False)
         cut_ctg_order = cut_ctg_info["ctg_order"]
 
-        # 计算切割的起始位置和结束位置
+        # calculate the start and end position of the cut
         cut_ctg_site1 = site_1 - cut_ctg_info["site"][0]
         cut_ctg_site2 = site_2 - site_1 + 1
         cut_ctg_site3 = cut_ctg_info["site"][1] - site_2
 
         with open(out_file_path, "w") as f:
-            # 写入新的ctg信息
+            # write new ctg information
             for key, value in ctgs.items():
                 if key == cut_ctg_name:
-                    # ctg正负 对于切割长度的影响
+                    # when ctg order is positive
                     if cut_ctg_order > 0:
                         f.write(key + ":::fragment_1 " + value["order"] + " " + str(cut_ctg_site1) + "\n")
                         temp_order = int(value["order"]) + 1
@@ -534,18 +559,18 @@ class AssemblyOperate(object):
                         temp_order += 1
                         f.write(key + ":::fragment_3" + " " + str(temp_order) + " " + str(cut_ctg_site1) + "\n")
                 else:
-                    # 一分为二后，后续序号++
+                    # update other ctg information
                     if int(value["order"]) > abs(cut_ctg_order):
                         temp_order = int(value["order"]) + 2
                         f.write(key + " " + str(temp_order) + " " + value["length"] + "\n")
                     else:
                         f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
-            # 写入新的ctg顺序
+            # write new ctg order
             for ctgs_order in ctgs_orders:
                 temp_write_list = []
                 for x in ctgs_order:
-                    # 更新新需要切割的ctg顺序
+                    # update ctg order
                     if int(x) == cut_ctg_order:
                         if cut_ctg_order > 0:
                             temp = cut_ctg_order + 1
@@ -553,13 +578,13 @@ class AssemblyOperate(object):
                             temp_write_list.append(str(temp))
                             temp += 1
                             temp_write_list.append(str(temp))
-                        else:  # 反向
+                        else:  # when ctg order is negative
                             temp = cut_ctg_order - 2
                             temp_write_list.append(str(temp))
                             temp += 1
                             temp_write_list.append(str(temp))
                             temp_write_list.append(str(cut_ctg_order))
-                    else:  # 其余ctg + 1
+                    else:  # other ctg order + 1
                         if abs(int(x)) > abs(cut_ctg_order):
                             if int(x) > 0:
                                 temp = int(x) + 2
@@ -573,51 +598,54 @@ class AssemblyOperate(object):
 
     def recut_ctg_to_3(self, assembly_file_path, cut_ctg_name, site_1, site_2, out_file_path):
         """
-        将contig切割为3个
-        :param assembly_file_path:
-        :param cut_ctg_name:
-        :param site_1:
-        :param site_2:
-        :param out_file_path:
-        :return:
+            Recut ctg to 3 parts
+        Args:
+            assembly_file_path: assembly file path
+            cut_ctg_name: cut ctg name
+            site_1: cut site 1
+            site_2: cut site 2
+            out_file_path: output file path
+
+        Returns:
+            None
         """
         if cut_ctg_name.startswith(">") is False:
             cut_ctg_name = ">" + cut_ctg_name
 
-        # 获取原始ctgs信息
+        # get original ctgs information
         ctgs, ctgs_orders = self._get_ctgs_orders(assembly_file_path)
 
-        # 需要二次切割的ctg的原本切割需要的head
+        # get recut ctg head information
         cut_ctg_name_head = re.search(r"(.*_)(\d+)", cut_ctg_name).group(1)
-        # 需要二次切割的ctg的原本切割需要（fragment_X）
+        # get recut ctg order information（fragment_X）
         cut_ctg_name_order = re.search(r"(.*_)(\d+)", cut_ctg_name).group(2)
 
-        # 计算剪切的ctg的新信息
+        # calculate the new information of the cut ctg
         cut_ctg_info = self.get_ctg_info(ctg_name=cut_ctg_name, new_asy_file=assembly_file_path)
 
-        # 获取cut_ctg的顺序（正:True, 负:False）
+        # get cut ctg order (positive: True, negative: False)
         cut_ctg_order = cut_ctg_info["ctg_order"]
 
-        # 计算切割的起始位置和结束位置
+        # calculate the start and end position of the cut
         cut_ctg_site1 = site_1 - cut_ctg_info["site"][0]
         cut_ctg_site2 = site_2 - site_1 + 1
         cut_ctg_site3 = cut_ctg_info["site"][1] - site_2
 
         with open(out_file_path, "w") as f:
-            # 写入新的ctg信息
+            # write new ctg information
             for key, value in ctgs.items():
                 if key.startswith(cut_ctg_name_head):
                     head = re.search(r"(.*_)(\d+)", key).group(1)
                     order = re.search(r"(.*_)(\d+)", key).group(2)
 
-                    # 如果是需要剪切的ctg的前面的ctg，直接写入
+                    # directly write the front ctg information
                     if int(order) < int(cut_ctg_name_order):
                         f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
-                    # 如果是需要剪切的ctg，需要根据顺序进行切割
+                    # recut ctg
                     elif int(order) == int(cut_ctg_name_order):
                         temp_order = int(value["order"]) + 1
-                        # ctg正负 对于切割长度的影响
+                        # judge the order direction of the cut ctg
                         if int(cut_ctg_order) > 0:
                             if key.endswith("debris"):
                                 f.write(head + order + ":::debris " + value["order"] + " " + str(cut_ctg_site1) + "\n")
@@ -649,7 +677,7 @@ class AssemblyOperate(object):
                                 temp_order += 1
                                 f.write(head + str(int(order) + 2) + " " + str(temp_order) + " " + str(
                                     cut_ctg_site1) + "\n")
-                    # 如果是需要剪切的ctg的后面的ctg，需要将序号递增
+                    # write the back ctg information and update the order + 2
                     else:
                         temp_order = int(value["order"]) + 2
                         if key.endswith("debris"):
@@ -659,18 +687,18 @@ class AssemblyOperate(object):
                             f.write(
                                 head + str(int(order) + 2) + " " + str(temp_order) + " " + value["length"] + "\n")
                 else:
-                    # 一分为二后，后续序号++
+                    # update the order + 2
                     if int(value["order"]) > abs(int(cut_ctg_order)):
                         temp_order = int(value["order"]) + 2
                         f.write(key + " " + str(temp_order) + " " + value["length"] + "\n")
                     else:
                         f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
-            # 写入新的ctg顺序
+            # write new ctg order information
             for ctgs_order in ctgs_orders:
                 temp_write_list = []
                 for x in ctgs_order:
-                    # 更新新需要切割的ctg顺序
+                    # update the new order of the cut ctg
                     if int(x) == cut_ctg_order:
                         if cut_ctg_order > 0:
                             temp = cut_ctg_order + 1
@@ -678,13 +706,13 @@ class AssemblyOperate(object):
                             temp_write_list.append(str(temp))
                             temp += 1
                             temp_write_list.append(str(temp))
-                        else:  # 反向
+                        else:  # when the cut ctg is negative
                             temp = cut_ctg_order - 2
                             temp_write_list.append(str(temp))
                             temp += 1
                             temp_write_list.append(str(temp))
                             temp_write_list.append(str(cut_ctg_order))
-                    else:  # 其余ctg + 1
+                    else:  # other ctg order + 2
                         if abs(int(x)) > abs(cut_ctg_order):
                             if int(x) > 0:
                                 temp = int(x) + 2
@@ -698,30 +726,30 @@ class AssemblyOperate(object):
 
     def inv_ctg(self, ctg_name, assembly_file_path, out_file_path, _ctg_order=None):
         """
-        反转ctg
+            Invert the order of the ctg
         Args:
-            ctg_name: 需要反转的ctg名字
-            assembly_file_path: 原始assembly文件路径
-            out_file_path: 输出文件路径
-            _ctg_order: 需要反转的ctg的顺序，如果为None，弃用
+            ctg_name: the name of the ctg
+            assembly_file_path: the path of the assembly file
+            out_file_path: the path of the output file
+            _ctg_order: the order of the ctg
 
         Returns:
             None
         """
 
-        # 获取需要反转的ctg的序号
+        # get the order of the invert ctg
         inv_ctg_order = self.get_ctg_info(ctg_name=ctg_name, new_asy_file=assembly_file_path)["ctg_order"]
 
-        # 获取assembly_file_path中 ctgs 序号信息
+        # get the ctgs order information in assembly_file_path
         ctgs, ctgs_orders = AssemblyOperate._get_ctgs_orders(assembly_file_path)
 
-        # 写入新文件
+        # update assembly file
         with open(out_file_path, "w") as f:
-            # 写入新的ctg信息
+            # write the new ctg information
             for key, value in ctgs.items():
                 f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
-            # 写入新的ctg顺序
+            # write new ctg order information
             for ctgs_order in ctgs_orders:
                 temp_write_list = []
                 for x in ctgs_order:
@@ -732,6 +760,16 @@ class AssemblyOperate(object):
                 f.write(" ".join(temp_write_list) + "\n")
 
     def move_deb_to_end(self, assembly_file_path, move_ctgs, out_file_path):
+        """
+            Move the debris ctg to the end of the assembly file
+        Args:
+            assembly_file_path: the path of the assembly file
+            move_ctgs: the list of the debris ctg
+            out_file_path: the path of the output file
+
+        Returns:
+            None
+        """
         deb_ctgs_order = []
 
         for i in move_ctgs:
@@ -739,16 +777,16 @@ class AssemblyOperate(object):
                 temp = self.get_ctg_info(ctg_name=j, new_asy_file=assembly_file_path)
                 deb_ctgs_order.append(str(temp["ctg_order"]))
 
-        # 获取assembly_file_path中 ctgs 序号信息
+        # get the ctgs order information in assembly_file_path
         ctgs, ctgs_orders = AssemblyOperate._get_ctgs_orders(assembly_file_path)
 
-        # 修改序号，写入新文件
+        # update order and write to new file
         with open(out_file_path, "w") as f:
-            # 写入新的ctg信息
+            # write the new ctg information
             for key, value in ctgs.items():
                 f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
-            # 写入新的ctg顺序
+            # write new ctg order information
             for ctgs_order in ctgs_orders:
                 temp_write_list = []
                 for x in ctgs_order:
@@ -758,67 +796,3 @@ class AssemblyOperate(object):
                         temp_write_list.append(str(x))
                 f.write(" ".join(temp_write_list) + "\n")
             f.write(" ".join(deb_ctgs_order) + "\n")
-
-
-def main():
-    # 实例化Assembly类
-    # temp = AssemblyOperate("/home/jzj/Data/Test/asy_test/random_Np/Np.final.assembly", ratio=2)
-    temp = AssemblyOperate("/home/jzj/buffer/test.asy", ratio=2)
-
-    # 测试获取整体信息
-    print(json.dumps(temp.get_info(), indent=4))
-
-    # 测试获取指定ctg信息
-    # assembly_info = temp.get_ctg_info(ctg_name=">ptg000059l:::fragment_366:::debris")
-    # # assembly_info = temp.get_ctg_info(ctg_order=1335)
-    # print(json.dumps(assembly_info, indent=4))
-
-    # 测试查询指定区间的ctg
-    # result = temp.find_site_ctgs("/home/jzj/buffer/test.assembly", start=537378984, end=549962140)
-    # print(result)
-
-    # 测试切割指定ctg
-    # out_file_path = "/home/jzj/buffer/cut_Np.0.assembly"
-    # cut_ctgs = {
-    #     ">utg832": 990375001}
-    # temp.cut_ctgs(cut_ctgs, out_file_path)
-
-    # 测试移动指定ctg
-    # assembly_file_path = "/home/jzj/buffer/cut_Np.0.assembly"
-    # out_file_path = "/home/jzj/buffer/move_Np.0.assembly"
-    # move_ctgs = [">utg832:::fragment_1", ">utg2240", ">utg4279"]
-    # insert_ctg = ">utg4426"
-    # temp.move_ctgs(assembly_file_path, move_ctgs, insert_ctg, out_file_path, direction="left")
-
-    # 测试切割指定ctg为三个ctg
-    # assembly_file_path = "/home/jzj/buffer/Np.0.assembly"
-    # out_file_path = "/home/jzj/buffer/3_Np.0.assembly"
-    # temp.cut_ctg_to_3(assembly_file_path, ">utg206980", 2291795710, 2291807171, out_file_path)
-
-    # 测试反转ctg
-    # assembly_file_path = "/home/jzj/Data/Test/asy_test/random_Np/Np.final.assembly"
-    # out_file_path = "/home/jzj/buffer/test.assembly"
-    # ctg_name = "utg2441"
-    # temp.inv_ctg(ctg_name, assembly_file_path, out_file_path)
-
-    # 测试二次切割
-    # assembly_file_path = "/home/jzj/buffer/test.asy"
-    # out_file_path = "/home/jzj/buffer/recut.asy"
-    # cut_ctgs = {
-    #     ">ptg000474l:::fragment_37": 2552365374}
-    # temp.recut_ctgs(assembly_file_path, cut_ctgs, out_file_path)
-
-    # 测试二次切割指定ctg为三个ctg
-    # assembly_file_path = "/home/jzj/buffer/test.asy"
-    # out_file_path = "/home/jzj/buffer/recut.asy"
-    # temp.recut_ctg_to_3(assembly_file_path, ">ptg000059l:::fragment_366:::debris", 2437385273, 2437385294, out_file_path)
-
-    # 测试移动指定ctg到末尾
-    # assembly_file_path = "/home/jzj/buffer/test.asy"
-    # out_file_path = "/home/jzj/buffer/debris.asy"
-    # move_ctgs = ['>utg30544', '>utg4278', '>utg140072', '>utg147794', '>utg22455']
-    # temp.move_deb_to_end(assembly_file_path, move_ctgs, out_file_path)
-
-
-if __name__ == "__main__":
-    main()
