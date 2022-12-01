@@ -1,3 +1,12 @@
+## [0.8.10](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.9...v0.8.10) (2022-12-01)
+
+
+### Features
+
+* add single score class filter, each error counter, update asy class doc and mark distence ([811a832](https://github.com/Jwindler/HiC-OpenCV/commit/811a8328bea56ac850ed5c0e15b4abe793569b68))
+
+
+
 ## [0.8.9](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.8...v0.8.9) (2022-11-29)
 
 
