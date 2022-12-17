@@ -6,7 +6,7 @@
 @contact: jzjlab@163.com
 @file: asy_operate.py
 @time: 12/01/22 4:14 PM
-@function:
+@function: assembly file operate class
 """
 import json
 import re
@@ -796,3 +796,9 @@ class AssemblyOperate(object):
                         temp_write_list.append(str(x))
                 f.write(" ".join(temp_write_list) + "\n")
             f.write(" ".join(deb_ctgs_order) + "\n")
+
+    @staticmethod
+    def remove_asy_blank(raw_asy, new_asy=None):
+        if new_asy is None:
+            new_asy = raw_asy.split(".")[0] + "_corrected.assembly"
+        open(new_asy, 'w').write(''.join(l for l in open(raw_asy) if l.strip()))

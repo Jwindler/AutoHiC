@@ -2,11 +2,11 @@
 # encoding: utf-8 
 
 """
-@author: Swindler
-@contact: 1033199817@qq.com
+@author: jzj
+@contact: jzjlab@163.com
 @file: tran_adjust.py
 @time: 10/7/22 10:27 AM
-@function: 易位错误调整流程整合
+@function: translocation adjust
 """
 import json
 import re

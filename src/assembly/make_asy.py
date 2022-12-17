@@ -2,7 +2,7 @@
 # encoding: utf-8 
 
 """
-@author: Swindler
+@author: jzj
 @contact: jzjlab@163.com
 @file: make_asy.py
 @time: 10/10/22 10:52 AM
@@ -14,44 +14,54 @@ from src.assembly.asy_operate import AssemblyOperate
 
 def random_color(maxcolor: int = 6000) -> int:
     """
-    随机生成色阈值
+        get random color threshold
     Args:
-        maxcolor: 随机色阈最大值
+        maxcolor: color threshold max value
 
     Returns:
-        色阈最大值
-
+        random color threshold
     """
 
     return random.randrange(1, maxcolor)
 
 
 def make_inv(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6) -> None:
-    # 获取原始信息
+    """
+        generate inversion data set
+    Args:
+        asy_file: assembly file path
+        out_file_path: output file path
+        random_p: inversion random probability
+
+    Returns:
+
+    """
+
+    # get original information
     asy_operate = AssemblyOperate(asy_file, ratio=None)
     ctgs, ctgs_orders = asy_operate._get_ctgs_orders(asy_file)
     ays_info = asy_operate.get_info()
 
     order_list = [x for x in range(1, int(ays_info["ctg_number"]) + 1)]
 
-    # 生成随机反转列表
+    # generate random inversion list
     random_inv_list = random.sample(order_list, int(len(order_list) * random_p))
 
     with open(out_file_path, "w") as f:
 
-        # 写入ctg信息
+        # write ctg information
         for key, value in ctgs.items():
             f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
-        # 写入新的ctg顺序
+        # write new ctg order
         for ctgs_order in ctgs_orders:
             temp_write_list = []
             for x in ctgs_order:
-                # 跟新需要切割的ctg顺序
+                # update ctg order which need to be cut
                 if abs(int(x)) in random_inv_list:
                     if int(x) > 0:
                         temp_write_list.append(str(-int(x)))
-                    else:  # 反向
+                    else:  # opposite direction
                         temp_write_list.append(str(abs(int(x))))
                 else:
                     temp_write_list.append(x)
@@ -59,15 +69,26 @@ def make_inv(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6)
 
 
 def make_tran(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6) -> None:
-    # 获取原始信息
+    """
+        generate translocation data set
+    Args:
+        asy_file: assembly file path
+        out_file_path: output file path
+        random_p: translocation random probability
+
+    Returns:
+
+    """
+
+    # get original information
     asy_operate = AssemblyOperate(asy_file, ratio=None)
     ctgs, ctgs_orders = asy_operate._get_ctgs_orders(asy_file)
     ays_info = asy_operate.get_info()
 
-    # 抽样数据集
+    # generate ctg order list
     order_list = [x for x in range(1, int(ays_info["ctg_number"]) + 1)]
 
-    # 随机抽取易位ctg的序号
+    # generate random translocation list
     random_list = random.sample(order_list, int(len(order_list) * random_p))
 
     tran_list = random_list[:int(len(random_list) * 0.5)]
@@ -76,15 +97,15 @@ def make_tran(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6
 
     with open(out_file_path, "w") as f:
 
-        # 写入ctg信息
+        # write ctg information
         for key, value in ctgs.items():
             f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
-        # 写入新的ctg顺序
+        # write new ctg order
         for ctgs_order in ctgs_orders:
             temp_write_list = []
             for x in ctgs_order:
-                # 跟新需要切割的ctg顺序
+                # update ctg order which need to be cut
                 if abs(int(x)) in tran_dict:
                     temp_write_list.append(x)
                     temp_write_list.append(str(tran_dict[abs(int(x))]))
@@ -96,6 +117,16 @@ def make_tran(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6
 
 
 def make_double(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6) -> None:
+    """
+        generate inversion and translocation data set
+    Args:
+        asy_file: assembly file path
+        out_file_path: output file path
+        random_p: inversion and translocation random probability
+
+    Returns:
+
+    """
     make_tran(asy_file, out_file_path, random_p)
     make_inv(out_file_path, out_file_path, random_p)
 

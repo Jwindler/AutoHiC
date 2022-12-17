@@ -2,11 +2,11 @@
 # encoding: utf-8
 
 """
-@author: Swindler
-@contact: 1033199817@qq.com
+@author: jzj
+@contact: jzjlab@163.com
 @file: logger.py
 @time: 6/14/22 11:38 AM
-@function: 构建日志处理的基础类，用于记录
+@function: configure logger
 """
 
 import logging
@@ -30,16 +30,16 @@ class LoggerHandler(logging.Logger):
             file=None):
         super().__init__(name)
 
-        # 设置级别
+        # set log level
         self.setLevel(level)
 
-        # 格式设置
+        # format setting
         console_formatter = colorlog.ColoredFormatter(
             fmt='%(log_color)s[%(asctime)s.%(msecs)03d] %(filename)s -> %(funcName)s line:%(lineno)d [%(levelname)s] : %(message)s',
             datefmt='%Y-%m-%d  %H:%M:%S',
             log_colors=log_colors_config)
 
-        # 初始化处理器
+        # initialing Handler
         if file:
             file_handle = logging.FileHandler(file)
             file_handle.setLevel(level)
@@ -48,15 +48,15 @@ class LoggerHandler(logging.Logger):
             file_handle.setFormatter(console_formatter)
         stream_handler = logging.StreamHandler()
 
-        # 设置handle 的级别
+        # set handler level
         stream_handler.setLevel(level)
 
         self.addHandler(stream_handler)
         stream_handler.setFormatter(console_formatter)
 
 
-# 初始化日志
-logger = LoggerHandler(file="/home/jzj/Jupyter-Docker/Download/result/Aa_2_test/modify.log")
+# initialing logger
+logger = LoggerHandler(file="/home/jzj/Jupyter-Docker/buffer/no_move_tran_modify.log")
 
 if __name__ == '__main__':
     logger = LoggerHandler(file="/home/jzj/bprojects/abroad/test.log")

@@ -6,7 +6,7 @@
 @contact: jzjlab@163.com
 @file: error.py
 @time: 10/26/22 7:47 PM
-@function: 
+@function: assembly error class
 """
 import json
 import os
@@ -114,7 +114,7 @@ class ERRORS:
 
         # count the number of errors
         for scored_class in filtered_errors:
-            for error in filtered_errors[scored_class]:
+            for _ in filtered_errors[scored_class]:
                 score_filtered_errors_counter[scored_class] += 1
 
         with open(os.path.join(self.out_path, out_path), "w") as outfile:
@@ -122,7 +122,6 @@ class ERRORS:
 
         return filtered_errors, score_filtered_errors_counter
 
-    # FIXME: update the function
     def score_filter_specific_class(self, errors_dict: dict, score: float = 0.9,
                                     out_path="_score_filter_specific_class.json", filter_cls=None):
         if filter_cls is None:
@@ -135,7 +134,7 @@ class ERRORS:
         # count the score_filter_specific_class_counter
         score_filter_specific_class_counter = len(errors_dict[filter_cls])
 
-        return errors_dict[filter_cls]
+        return errors_dict[filter_cls], score_filter_specific_class_counter
 
     @staticmethod
     def transform_bbox(detection_bbox):
@@ -234,7 +233,7 @@ class ERRORS:
             if _class in all_filtered_error.keys():
                 divided_error = dict()
                 for tran_error in all_filtered_error[_class]:
-                    divided_error[tran_error["id"]] = {  # 存在一个 key 对应多个 value
+                    divided_error[tran_error["id"]] = {  # one key may have multiple values
                         "start": tran_error["hic_loci"][0],
                         "end": tran_error["hic_loci"][1],
                     }
