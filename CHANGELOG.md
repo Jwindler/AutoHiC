@@ -1,3 +1,12 @@
+## [0.8.11](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.10...v0.8.11) (2022-12-19)
+
+
+### Features
+
+* add some new function and fix many errors ([e29001b](https://github.com/Jwindler/HiC-OpenCV/commit/e29001b526bae5f68c6bdb130ee37b7ffe24b75f))
+
+
+
 ## [0.8.10](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.9...v0.8.10) (2022-12-01)
 
 
