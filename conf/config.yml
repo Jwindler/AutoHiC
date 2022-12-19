@@ -1,7 +1,7 @@
-# 最大染色体长度
+# max chromosome length
 max_chromosome_length: 250000000
 
-# 预定义ColorRange
+# default color range
 color_range_sets:
   2500000: 6361
   1250000: 1607
@@ -19,7 +19,7 @@ color_range_sets:
   1000: 2
   500: 2
 
-# 预定义长宽
+# default length and width
 len_width_sets:
   2500000: 250000000  # 250M
   1250000: 250000000  # 250M
@@ -39,7 +39,7 @@ len_width_sets:
   333: 400000  # 400K
 
 
-# 预定义增量，详细版
+# default increment with global
 increment_sets_detail:
   2500000: 240000000  # 250M
   1250000: 240000000  # 250M
@@ -59,7 +59,7 @@ increment_sets_detail:
   333: 300000  # 400K
 
 
-# 预定义增量，快速版
+# default increment with dialog
 increment_sets_fast:
   2500000: 250000000  # 200M
   1250000: 250000000  # 200M
@@ -77,7 +77,7 @@ increment_sets_fast:
   1000: 1400000  # 1M
   500: 710000  # 700K
 
-# 用于获取错误矩阵时，预防矩阵长度超出分辨率的限制
+# hic resolution limit length
 rse_max_len:
   2500000: 3610000000
   1250000: 1800000000

@@ -9,6 +9,7 @@
 @function: construct data set（构造数据集）
 """
 import random
+
 from src.assembly.asy_operate import AssemblyOperate
 
 

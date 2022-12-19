@@ -801,4 +801,4 @@ class AssemblyOperate(object):
     def remove_asy_blank(raw_asy, new_asy=None):
         if new_asy is None:
             new_asy = raw_asy.split(".")[0] + "_corrected.assembly"
-        open(new_asy, 'w').write(''.join(l for l in open(raw_asy) if l.strip()))
+        open(new_asy, 'w').write(''.join(line for line in open(raw_asy) if line.strip()))

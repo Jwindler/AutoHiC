@@ -2,8 +2,8 @@
 # encoding: utf-8
 
 """
-@author: Swindler
-@contact: 1033199817@qq.com
+@author: jzj
+@contact: jzjlab@163.com
 @file: get_max_peak.py
 @time: 7/28/22 17:42 PM
 @function: get the max peak of hic matrix

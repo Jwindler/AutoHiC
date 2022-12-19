@@ -2,11 +2,11 @@
 # encoding: utf-8 
 
 """
-@author: Swindler
+@author: jzj
 @contact: jzjlab@163.com
 @file: hic_adv_model_v2.py
 @time: 9/2/22 10:42 AM
-@function: 解析Hic文件，生成图片（全局，会产生许多无互作图片）
+@function: parse Hic file, generate contact png
 """
 
 import json
@@ -23,33 +23,30 @@ from src.assembly.make_asy import random_color
 
 
 class GenBaseModel:
-
-
-    # 获取配置字典
+    # get config dict
     cfg = get_conf()
 
     def __init__(self, hic_file, genome_id, out_file):
         logger.info("Base Model Initiating ...")
-        self.hic_file = hic_file  # 原始hic文件路径
-        self.genome_id = genome_id  # 基因组id
-        self.out_file = out_file  # 输出文件路径
+        self.hic_file = hic_file  # hic file path
+        self.genome_id = genome_id  # genome id
+        self.out_file = out_file  # output file path
 
-        # 创建项目文件夹
-        # 父文件名
+        # create genome folder
+        # father folder
         self.father_file = os.path.basename(self.hic_file).split(".")[0]
 
-        # 父文件夹
         self.genome_folder = os.path.join(self.out_file, self.genome_id)
         logger.info("Create Genome Folder: %s" % self.genome_folder)
         self.create_folder(self.genome_folder)
 
     def get_resolutions(self):
-        hic = hicstraw.HiCFile(self.hic_file)  # 实例化hic对象
+        hic = hicstraw.HiCFile(self.hic_file)  # create hic object
         return hic.getResolutions()
 
     def get_chr_len(self):
-        hic_len = 0  # 基因组长度
-        hic = hicstraw.HiCFile(self.hic_file)  # 实例化hic对象
+        hic_len = 0  # genome length
+        hic = hicstraw.HiCFile(self.hic_file)  # create hic object
         for chrom in hic.getChromosomes():
             hic_len = chrom.length
         return hic_len
@@ -57,20 +54,23 @@ class GenBaseModel:
     @staticmethod
     def maxcolor(resolution):
         """
-        根据分辨率返回MaxColor,用于画图
-        :param resolution:
-        :return: MaxColor 颜色上线
+            get resolution max color threshold
+        Args:
+            resolution: hic resolution
+
+        Returns:
+            max color threshold
         """
 
-        # 预定义ColorRange
+        # default color range
         color_range_sets = GenBaseModel.cfg["color_range_sets"]
 
-        temp_return = None  # 默认返回值
+        temp_return = None  # default return
 
-        # 分辨率包括在预定义中
+        # check resolution in color_range_sets
         if resolution in color_range_sets.keys():
             return color_range_sets[resolution]
-        else:  # 与预定义分辨率不符,根据分辨率返回分辨率最靠近的值
+        else:  # get closest resolution
             for key, value in color_range_sets.items():
                 if resolution < key:
                     temp_return = value
@@ -83,39 +83,41 @@ class GenBaseModel:
     @staticmethod
     def increment(resolution):
         """
-        根据分辨率返回窗口滑动每次滑动的距离和窗口范围
-        :param resolution:
-        # :param chr_len: 用于后续设计参数
-        :return: increment 滑动窗口范围和增量的字典
+            get resolution increment
+        Args:
+            resolution: hic resolution
+
+        Returns:
+            resolution increment
         """
 
         dim_increase = {}
 
-        # 预定义长宽
+        # default color range
         len_width_sets = GenBaseModel.cfg["len_width_sets"]
 
-        # 预定义增量
+        # default increment
         increment_sets = GenBaseModel.cfg["increment_sets_detail"]
 
-        # 分辨率包括在预定义中
+        # check resolution in increment_sets
         if resolution in increment_sets.keys():
             dim_increase["increase"] = increment_sets[resolution]
             dim_increase["dim"] = len_width_sets[resolution]
             return dim_increase
-        else:  # 与预定义分辨率不符,根据分辨率返回分辨率最靠近的值，向下取
+        else:  # get closest resolution value
             for key, value in increment_sets.items():
                 if resolution < key:
-                    # 滑动增量
+                    # slide increment
                     dim_increase["increase"] = increment_sets[key]
 
-                    # 滑动范围
+                    # slide dim range
                     dim_increase["dim"] = len_width_sets[key]
                     continue
                 else:
-                    # 滑动增量
+                    # slide increment
                     dim_increase["increase"] = increment_sets[key]
 
-                    # 滑动范围
+                    # slide dim range
                     dim_increase["dim"] = len_width_sets[key]
 
                     return dim_increase
@@ -124,30 +126,32 @@ class GenBaseModel:
     @staticmethod
     def create_folder(file_dir):
         """
-        创建文件夹
-        :param file_dir:
-        :return: None
+            create folder
+        Args:
+            file_dir: folder path
+
+        Returns:
+
         """
-        # 创建文件夹存
+
+        # create folder
         try:
             os.makedirs(file_dir)
-
-        # 文件夹存在报错
-        except FileExistsError:
-            GenBaseModel.logger.debug("Folder Already Exists")
+        except FileExistsError:  # folder exists
+            logger.debug("Folder Already Exists")
 
     @staticmethod
     def plot_hic_map(matrix, resolution, fig_save_dir, ran_color=False):
         """
-        画图
+            plot hic map
         Args:
-            matrix: 互作矩阵
-            resolution: 分辨率
-            fig_save_dir: 图片保存路径
-            ran_color: 是否随机颜色
+            matrix: hic matrix
+            resolution: hic resolution
+            fig_save_dir: figure save dir
+            ran_color: random color or not
 
         Returns:
-            None
+
         """
         redmap = LinearSegmentedColormap.from_list(
             "bright_red", [(1, 1, 1), (1, 0, 0)])
@@ -157,21 +161,20 @@ class GenBaseModel:
         if ran_color:
             vmax = random_color()
 
-        # 可视化
+        # visualize
         plt.matshow(
             matrix,
             cmap=redmap,
             vmin=0,
             vmax=vmax)
 
-        plt.axis('off')  # 去坐标轴
+        plt.axis('off')  # remove axis
 
-        # 去除刻度
+        # remove x and y-axis
         plt.xticks([])
         plt.yticks([])
 
-        # 保存图像
-        # bbox_inches='tight',pad_inches = -0.01 去白边
+        # save figure
         plt.savefig(
             fig_save_dir,
             dpi=300,
@@ -208,41 +211,42 @@ class GenBaseModel:
 
     def gen_png(self, resolution, a_start, a_end, b_start, b_end, ran_color=False):
         """
-        生成png
+            generate png
         Args:
-            resolution: 分辨率
-            a_start: 互作图像左侧的起始位置
-            a_end: 互作图像左侧的结束位置
-            b_start: 互作图像上侧的起始位置
-            b_end: 互作图像上侧的结束位置
-            ran_color: 是否随机颜色
+            resolution: hic resolution
+            a_start: chr A start
+            a_end: chr A end
+            b_start: chr B start
+            b_end: chr B end
+            ran_color: random color or not
 
         Returns:
-            None
-        """
-        hic = hicstraw.HiCFile(self.hic_file)  # 实例化hic对象
 
-        # 创建分辨率文件夹
+        """
+
+        hic = hicstraw.HiCFile(self.hic_file)  # create hic object
+
+        # create resolutions folder
         temp_folder = os.path.join(self.genome_folder, str(resolution))
 
-        # 获取指定分辨率下的矩阵对象
+        # get matrix object by resolution
         matrix_object_chr = hic.getMatrixZoomData('assembly', 'assembly', "observed", "NONE", "BP", resolution)
 
-        temp_q = uuid.uuid4().hex  # 生成随机字符串，命令
+        temp_q = uuid.uuid4().hex  # generate random string
 
-        # 图片文件名
+        # png file name
         temp_folder2 = os.path.join(temp_folder, str(temp_q) + ".jpg")
 
-        # 提取互作矩阵
+        # get contact matrix
         numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(a_start, a_end, b_start, b_end)
 
-        # 互作图像生成
+        # plot hic contact map
         if ran_color:
             self.plot_hic_map(numpy_matrix_chr, resolution, temp_folder2, ran_color=True)
         else:
             self.plot_hic_map(numpy_matrix_chr, resolution, temp_folder2)
 
-        # 构建记录字典
+        # create info record
         temp_field = self.info_records(
             temp_folder2,
             self.genome_id,
@@ -255,17 +259,3 @@ class GenBaseModel:
             b_end) + "\n"
 
         return temp_field
-
-
-def main():
-    temp = GenBaseModel(
-        "/home/jzj/Data/Test/raw_data/Hv/0/Hv_bgi.0.hic", "Np",
-        "/home/jzj/buffer")
-    # temp.gen_png(1250000, 0, 1145951891, 0, 1145951891)
-
-    print(temp.increment(333))
-    print(temp.maxcolor(333))
-
-
-if __name__ == "__main__":
-    main()

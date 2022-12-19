@@ -2,11 +2,11 @@
 # encoding: utf-8
 
 """
-@author: Swindler
-@contact: 1033199817@qq.com
+@author: jzj
+@contact: jzjlab@163.com
 @file: hic_base_model.py
 @time: 6/14/22 3:00 PM
-@function: 生成图片的基类
+@function: generate image base class
 """
 
 import json
@@ -15,13 +15,15 @@ import os
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
-from conf import Pre_Config
+from src.core.utils.get_conf import get_conf
 from src.core.utils.logger import logger
 
 
 class GenBaseModel:
-
     logger.info("Base Model Initiating ...")
+
+    # get config dict
+    cfg = get_conf()
 
     def __init__(self, hic_file, save_dir):
         self.hic_file = hic_file
@@ -33,20 +35,23 @@ class GenBaseModel:
     @staticmethod
     def maxcolor(resolution):
         """
-        根据分辨率返回MaxColor,用于画图
-        :param resolution:
-        :return: MaxColor 颜色上线
+            get resolution max color threshold
+        Args:
+            resolution: hic resolution
+
+        Returns:
+            max color threshold
         """
 
-        # 预定义ColorRange
-        color_range_sets = Pre_Config.COLOR_RANGE_SETS
+        # default color range
+        color_range_sets = GenBaseModel.cfg["color_range_sets"]
 
         result = None  # No_Use
-        # 分辨率包括在预定义中
+        # check resolution in color_range_sets
         if resolution in color_range_sets.keys():
             return color_range_sets[resolution]
-        else:  # 与预定义分辨率不符,根据分辨率返回分辨率最靠近的值
-            min_temp = 9999999  #
+        else:  # get closest resolution
+            min_temp = 9999999
 
             for key, value in color_range_sets.items():
                 temp = abs(key - resolution)
@@ -59,27 +64,29 @@ class GenBaseModel:
     @staticmethod
     def increment(resolution):
         """
-        根据分辨率返回窗口滑动每次滑动的距离和窗口范围
-        :param resolution:
-        # :param chr_len: 用于后续设计参数
-        :return: increment 滑动窗口范围和增量的字典
+            get resolution increment
+        Args:
+            resolution: hic resolution
+
+        Returns:
+            resolution increment
         """
 
         dim_increase = {}
 
-        # 预定义长宽
-        len_width_sets = Pre_Config.LEN_WIDTH_SETS
+        # default color range
+        len_width_sets = GenBaseModel.cfg['len_width_sets']
 
-        # 预定义增量
-        increment_sets = Pre_Config.INCREMENT_SETS
+        # default increment
+        increment_sets = GenBaseModel.cfg['increment_sets']
 
         result = None  # No_Use
-        # 分辨率包括在预定义中
+        # check resolution in increment_sets
         if resolution in increment_sets.keys():
             dim_increase["increase"] = increment_sets[resolution]
             dim_increase["dim"] = len_width_sets[resolution]
             return dim_increase
-        else:  # 与预定义分辨率不符,根据分辨率返回分辨率最靠近的值
+        else:  # get closest resolution value
             min_temp = 9999999  #
             for key, value in increment_sets.items():
                 temp = abs(key - resolution)
@@ -87,10 +94,10 @@ class GenBaseModel:
                     min_temp = temp
                     result = key
 
-            # 滑动增量
+            # slide increment
             dim_increase["increase"] = increment_sets[result]
 
-            # 滑动范围
+            # slide dim range
             dim_increase["dim"] = len_width_sets[result]
 
             return dim_increase
@@ -98,20 +105,32 @@ class GenBaseModel:
     @staticmethod
     def create_folder(file_dir):
         """
-        创建文件夹
-        :param file_dir:
-        :return: None
+            create folder
+        Args:
+            file_dir: folder path
+
+        Returns:
+
         """
-        # 创建文件夹存
+
+        # create folder
         try:
             os.makedirs(file_dir)
-
-        # 文件夹存在报错
-        except FileExistsError:
-            GenBaseModel.logger.debug("Folder Already Exists")
+        except FileExistsError:  # folder exists
+            logger.debug("Folder Already Exists")
 
     @staticmethod
     def plot_hic_map(matrix, resolution, fig_save_dir):
+        """
+            plot hic map
+        Args:
+            matrix: hic matrix
+            resolution: hic resolution
+            fig_save_dir: figure save dir
+
+        Returns:
+
+        """
         redmap = LinearSegmentedColormap.from_list(
             "bright_red", [(1, 1, 1), (1, 0, 0)])
 
@@ -122,14 +141,13 @@ class GenBaseModel:
             vmin=0,
             vmax=GenBaseModel.maxcolor(resolution))
 
-        plt.axis('off')  # 去坐标轴
+        plt.axis('off')  # remove axis
 
-        # 去除刻度
+        # remove x and y-axis
         plt.xticks([])
         plt.yticks([])
 
-        # 保存图像
-        # bbox_inches='tight',pad_inches = -0.01 去白边
+        # save figure
         plt.savefig(
             fig_save_dir,
             dpi=300,
