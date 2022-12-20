@@ -2,11 +2,11 @@
 # encoding: utf-8 
 
 """
-@author: Swindler
+@author: jzj
 @contact: jzjlab@163.com
 @file: get_ratio.py
 @time: 8/31/22 9:48 AM
-@function: 获取染色体实际长度与assembly文件中染色体长度的比例
+@function: get the ratio of the actual length of the chromosome and the length of the chromosome in the assembly file
 """
 import hicstraw
 
@@ -15,20 +15,24 @@ from src.assembly.asy_operate import AssemblyOperate
 
 def get_ratio(hic, asy_file) -> int:
     """
-    获取染色体实际长度与assembly文件中染色体长度的比例
-    :param hic: hic文件路径
-    :param asy_file: assembly文件路径
-    :return: 染色体实际长度与assembly文件中染色体长度的比例
+        get the ratio of the actual length of the chromosome and the length of the chromosome in the assembly file
+    Args:
+        hic: hic file path
+        asy_file: assembly file path
+
+    Returns:
+        ratio: asy/assembly
     """
 
-    # 实例化Assembly类
+    # class Assembly class
     temp = AssemblyOperate(asy_file, ratio=None)
 
-    # 测试获取整体信息
+    # get the length of the chromosome in the assembly file
     asy_length = temp.get_info().get("seq_length", "")
 
-    hic_length = 0  # 声明
-    # 实例化hicstraw类
+    hic_length = 0
+
+    # get hic object
     hic = hicstraw.HiCFile(hic)
     for chrom in hic.getChromosomes():
         hic_length = chrom.length
@@ -37,10 +41,10 @@ def get_ratio(hic, asy_file) -> int:
 
 
 def main():
-    # hic文件路径
+    # hic file path
     hic_file = "/home/jzj/Data/Test/raw_data/Aa/Aa.2.hic"
 
-    # assembly文件路径
+    # assembly file path
     asy_file = "/home/jzj/Data/Test/raw_data/Aa/Aa.2.assembly"
 
     result = get_ratio(hic_file, asy_file)

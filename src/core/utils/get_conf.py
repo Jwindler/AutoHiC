@@ -2,11 +2,11 @@
 # encoding: utf-8 
 
 """
-@author: Swindler
+@author: jzj
 @contact: jzjlab@163.com
 @file: get_conf.py
 @time: 9/30/22 9:52 PM
-@function: 解析配置文件
+@function: parse config file
 """
 
 import yaml
@@ -30,7 +30,7 @@ def get_conf(key=None):
             except KeyError:
                 print("KeyError: %s" % key)
         else:
-            # data 是一个字典对象
+            # data : dict
             return data
 
 

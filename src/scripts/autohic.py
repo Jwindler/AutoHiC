@@ -2,11 +2,11 @@
 # encoding: utf-8 
 
 """
-@author: Swindler
+@author: jzj
 @contact: jzjlab@163.com
 @file: autohic.py
 @time: 9/27/22 7:28 PM
-@function: 命令行程序
+@function: cli
 """
 import os
 

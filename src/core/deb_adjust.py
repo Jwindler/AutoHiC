@@ -8,8 +8,8 @@
 @time: 10/7/22 10:27 AM
 @function: debris adjust
 """
-import re
 import json
+import re
 from collections import OrderedDict
 
 from src.assembly.asy_operate import AssemblyOperate
@@ -29,12 +29,6 @@ def adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file, 
     cut_ctg_name_site = {}  # save cut chromosome name and site
 
     error_deb_info = OrderedDict()  # debris info
-
-    # flag = True  # 用于文件修改判断
-    # if flag:  # 第一次修改assembly文件
-    #     flag = False
-    # else:
-    #     assembly_file = modified_assembly_file
 
     # iterate error queue
     for error in error_queue:
@@ -148,7 +142,7 @@ def adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file, 
 
 
 def main():
-    # 错误队列，其中的start和end是基于hic文件上的位置，没有转换为基因组上的位置
+    # error queue, start and end are based on hic file, not assembly file
     error_queue = {
         "error_1": {
             "start": 163482501,
@@ -160,13 +154,13 @@ def main():
         # }
     }
 
-    # hic文件路径
+    # hic file path
     hic_file = "/home/jzj/Data/Test/Np-Self/Np.0.hic"
 
-    # assembly文件路径
+    # assembly file path
     assembly_file = "/home/jzj/Data/Test/Np-Self/Np.0.assembly"
 
-    # 修改后assembly文件路径
+    # output assembly file path
     modified_assembly_file = "/home/jzj/buffer/test.assembly"
 
     adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file)

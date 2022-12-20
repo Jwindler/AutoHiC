@@ -20,28 +20,33 @@ from src.core.utils.logger import logger
 
 def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file, move_flag=True):
     """
-    易位错误调整
-    :param error_queue: 易位错误队列
-    :param hic_file:  hic文件路径
-    :param assembly_file:  assembly文件路径
-    :param modified_assembly_file:  修改后assembly文件保存路径
-    :return: None
+        translocation adjust
+    Args:
+        error_queue: error queue
+        hic_file: hic file path
+        assembly_file: assembly file path
+        modified_assembly_file: modified assembly file path
+        move_flag: move ctg or not
+
+    Returns:
+
     """
+
     logger.info("Start adjust translocation \n")
 
-    # 获取染色体长度比例
+    # get ratio of hic file and assembly file
     ratio = get_ratio(hic_file, assembly_file)
 
-    # 实例化AssemblyOperate类
+    # class AssemblyOperate class
     asy_operate = AssemblyOperate(assembly_file, ratio)
 
-    # 错误修改信息记录
+    # error modify information record
     error_mdy_info = OrderedDict()
 
-    flag = True  # 用于文件修改判断
-    cut_ctg_name_site = {}  # 存放切割的染色体名和位置
+    flag = True  # flag to judge whether the file is modified
+    cut_ctg_name_site = {}  # cut ctg name and site
 
-    # 循环易位错误队列
+    # loop error queue
     for error in error_queue:
         if flag:
             flag = False
@@ -50,49 +55,47 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
 
         logger.info("开始计算 {0} 的调整信息：".format(error))
 
-        # 查找易位错误区间中包含的ctgs
-        # 第一次查找旧文件，第二次查找新文件
-
+        # find ctgs in error region
         error_contain_ctgs = asy_operate.find_site_ctgs(assembly_file, error_queue[error]["start"],
                                                         error_queue[error]["end"])
 
-        error_contain_ctgs = json.loads(error_contain_ctgs)  # 将字符串转换为字典
-        error_contain_ctgs = list(error_contain_ctgs.items())  # 将字典转换为列表
+        error_contain_ctgs = json.loads(error_contain_ctgs)  # str to dict
+        error_contain_ctgs = list(error_contain_ctgs.items())  # dict to list
 
         logger.info("开始切割易位错误的边界ctgs：")
 
-        # 对易位错误区间中包含的ctgs进行切割,判断情况
-        if len(error_contain_ctgs) >= 2:  # 易位错误区间内包含两个或两个以上的ctgs
+        # cut ctg in translocation error region
+        if len(error_contain_ctgs) >= 2:  # ctg number >= 2
 
-            # 切割第一个ctg
+            # cut first ctg
             first_ctg = error_contain_ctgs[0]
 
             cut_ctg_name_site[first_ctg[0]] = error_queue[error]["start"] * ratio
 
             # {ctg_name: "cut_site"}
-            if "fragment" in first_ctg[0] or "debris" in first_ctg[0]:  # 是否二次切割
+            if "fragment" in first_ctg[0] or "debris" in first_ctg[0]:  # check whether the ctg is already cut
                 asy_operate.recut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
             else:
                 asy_operate.cut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
 
-            # 切割最后一个ctg
+            # cut last ctg
             last_ctg = error_contain_ctgs[-1]
 
-            cut_ctg_name_site.clear()  # 清空字典(此处是一个BUG，没有报错是因为后一个函数做了处理)
+            cut_ctg_name_site.clear()  # clear dict( a bug here, no error because the next function has processed it)
             cut_ctg_name_site[last_ctg[0]] = error_queue[error]["end"] * ratio
 
-            if "fragment" in last_ctg[0] or "debris" in last_ctg[0]:  # 是否二次切割
+            if "fragment" in last_ctg[0] or "debris" in last_ctg[0]:  # check whether the ctg is already cut
                 try:
                     first_ctg_name_head = re.search(r"(.*_)(\d+)", first_ctg[0]).group(1)
                     last_ctg_name_head = re.search(r"(.*_)(\d+)", last_ctg[0]).group(1)
                     first_ctg_name_order = re.search(r"(.*_)(\d+)", first_ctg[0]).group(2)
                     last_ctg_name_order = re.search(r"(.*_)(\d+)", last_ctg[0]).group(2)
 
-                    # 包含的错误是同源，并且正向，后一个需要加一
+                    # ctgs are synonymous and in the same direction
                     if first_ctg_name_head == last_ctg_name_head and int(first_ctg_name_order) < int(
                             last_ctg_name_order):
                         renew_last_ctg_name = last_ctg_name_head + str(int(last_ctg_name_order) + 1)
-                        cut_ctg_name_site.clear()  # 清空字典(此处是一个BUG，没有报错是因为后一个函数做了处理)
+                        cut_ctg_name_site.clear()  # clear dict
                         cut_ctg_name_site[renew_last_ctg_name] = error_queue[error]["end"] * ratio
                 except AttributeError:
                     pass
@@ -100,36 +103,35 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
             else:
                 asy_operate.cut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
 
-        else:  # 易位错误区间内只有一个ctg
+        else:  # ctg number = 1
             _ctg = error_contain_ctgs[0]  # ctg_name
 
-            _ctg_info = asy_operate.get_ctg_info(ctg_name=_ctg[0], new_asy_file=assembly_file)  # 获取ctg信息
+            _ctg_info = asy_operate.get_ctg_info(ctg_name=_ctg[0], new_asy_file=assembly_file)  # get ctg info
 
-            cut_ctg_site_start = error_queue[error]["start"] * ratio  # 错误真实起始位置
-            cut_ctg_site_end = error_queue[error]["end"] * ratio  # 错误真实终止位置
+            cut_ctg_site_start = error_queue[error]["start"] * ratio  # error real start site
+            cut_ctg_site_end = error_queue[error]["end"] * ratio  # error real end site
 
-            # 判断该ctg的位置情况
-            if _ctg_info["site"][0] == cut_ctg_site_start:  # 左边界重合，一切二即可
+            # check ctg position
+            if _ctg_info["site"][0] == cut_ctg_site_start:  # left boundary overlap, cut it directly
                 cut_ctg_name_site[_ctg[0]] = cut_ctg_site_end
 
-                # 将一个ctg切割为二个ctg
-                if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # 是否二次切割
+                # cut a ctg to two ctgs
+                if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # check whether the ctg is already cut
                     asy_operate.recut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
                 else:
                     asy_operate.cut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
 
-            elif _ctg_info["site"][1] == cut_ctg_site_end:  # 右边界重合，一切二即可
+            elif _ctg_info["site"][1] == cut_ctg_site_end:  # right boundary overlap, cut it directly
                 cut_ctg_name_site[_ctg[0]] = cut_ctg_site_start
 
-                # 将一个ctg切割为二个ctg
-                if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # 是否二次切割
+                # cut a ctg to two ctgs
+                if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # check whether the ctg is already cut
                     asy_operate.recut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
                 else:
                     asy_operate.cut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
 
-            else:  # 不存在边界情况，一切三
-                # 将一个ctg切割为三个ctg
-                if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # 是否二次切割
+            else:  # no boundary situation, cut it into three ctgs
+                if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # check whether the ctg is already cut
                     asy_operate.recut_ctg_to_3(assembly_file, _ctg[0], cut_ctg_site_start,
                                                cut_ctg_site_end, modified_assembly_file)
                 else:
@@ -144,12 +146,13 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
         new_error_contain_ctgs = asy_operate.find_site_ctgs(modified_assembly_file, error_queue[error]["start"],
                                                             error_queue[error]["end"])
 
-        new_error_contain_ctgs = json.loads(new_error_contain_ctgs)  # 将字符串转换为字典
+        new_error_contain_ctgs = json.loads(new_error_contain_ctgs)  # str to dict
 
         logger.info("需要移动的ctgs: %s \n", new_error_contain_ctgs)
 
         logger.info("开始查询 {0} 易位错误的插入位点：".format(error))
-        # 依次获取错误的插入ctg位点
+
+        # get insert ctg site
         error_site = (error_queue[error]["start"], error_queue[error]["end"])
         temp_result, insert_left = search_right_site_v2(hic_file, assembly_file, ratio, error_site)
         error_mdy_info[error] = {
@@ -157,12 +160,13 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
             "insert_site": temp_result,
             "direction": insert_left
         }
+
         logger.info("易位错误的插入位点查询完成 \n")
 
     if move_flag:
         logger.info("开始对所有易位错误进行调整：")
 
-        # 开始移动记录的ctgs
+        # move ctgs
         asy_operate.move_ctgs(modified_assembly_file, error_mdy_info, modified_assembly_file)
         logger.info("所有易位错误调整完成 \n")
 
@@ -171,7 +175,7 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
 
 
 def main():
-    # 错误队列，其中的start和end是基于hic文件上的位置，没有转换为基因组上的位置
+    # error queue, start and end are based on hic file, not assembly file
     error_queue = {
         "error_1": {
             "start": 250081212,
@@ -183,13 +187,13 @@ def main():
         # }
     }
 
-    # hic文件路径
+    # hic file path
     hic_file = "/home/jzj/Data/Test/raw_data/Aa/Aa.2.hic"
 
-    # assembly文件路径
+    # assembly file path
     assembly_file = "/home/jzj/Data/Test/raw_data/Aa/Aa.2.assembly"
 
-    # 修改后assembly文件路径
+    # modified assembly file path
     modified_assembly_file = "/home/jzj/buffer/test.assembly"
 
     adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file)
