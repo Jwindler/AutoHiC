@@ -15,11 +15,12 @@ import uuid
 
 import hicstraw
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
-from src.core.utils.logger import logger
-from src.core.utils.get_conf import get_conf
 from src.assembly.make_asy import random_color
+from src.core.utils.get_conf import get_conf
+from src.core.utils.logger import logger
 
 
 class GenBaseModel:
@@ -156,9 +157,11 @@ class GenBaseModel:
         redmap = LinearSegmentedColormap.from_list(
             "bright_red", [(1, 1, 1), (1, 0, 0)])
 
-        vmax = GenBaseModel.maxcolor(resolution)
-
-        if ran_color:
+        # vmax = GenBaseModel.maxcolor(resolution)
+        vmax = np.percentile(matrix, 99)
+        if vmax == 0:
+            vmax = 2
+        elif ran_color:
             vmax = random_color()
 
         # visualize

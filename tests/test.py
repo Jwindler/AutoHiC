@@ -1,21 +1,21 @@
-import json
-import os
+import hicstraw
+import numpy as np
 
-out_path = "/home/jzj/Jupyter-Docker/Download/result/Aa"
-with open("/home/jzj/Jupyter-Docker/Download/result/Aa/overlap_filtered_errors.json", "r") as outfile:
-    all_filtered_error = json.loads(outfile.read())
+hic = hicstraw.HiCFile("/home/jzj/Downloads/cs/cs.0.hic")
 
-classes = ("translocation", "inversion", "debris", "chromosome")
-for _class in classes:
-    if _class in all_filtered_error.keys():
-        divided_error = dict()
-        for tran_error in all_filtered_error[_class]:
-            divided_error[tran_error["id"]] = {  # 存在一个 key 对应多个 value
-                "start": tran_error["hic_loci"][0],
-                "end": tran_error["hic_loci"][1],
-            }
-        with open(os.path.join(out_path, _class + "_error.json"), "w") as outfile:
-            json.dump(divided_error, outfile)
-    else:
-        continue
-print("Divide all error category Done")
+resolutions = hic.getResolutions()
+print(resolutions)
+for chrom in hic.getChromosomes():
+    print(chrom.name, chrom.length)
+
+matrix_object_chr = hic.getMatrixZoomData('assembly', 'assembly', "observed", "NONE", "BP", 1000)
+
+start = 541000000
+end = 542400000
+numpy_matrix_chr_1 = matrix_object_chr.getRecordsAsMatrix(start, end, start, end)
+
+if np.percentile(numpy_matrix_chr_1, 99.9) == 0:
+    print("yes")
+# print(np.max(numpy_matrix_chr_1))
+
+print("done")

@@ -56,7 +56,7 @@ class LoggerHandler(logging.Logger):
 
 
 # initialing logger
-logger = LoggerHandler(file="/home/jzj/Jupyter-Docker/buffer/no_move_tran_modify.log")
+logger = LoggerHandler(file="/home/jzj/Jupyter-Docker/buffer/tran_modify_test.log")
 
 if __name__ == '__main__':
     logger = LoggerHandler(file="/home/jzj/bprojects/abroad/test.log")
