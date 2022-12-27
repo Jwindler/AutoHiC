@@ -144,7 +144,7 @@ def plot_chr(hic_date, genome_size=None, chr_name=None, genome_name=None, color=
 
 
 def main():
-    hic_date = "/home/jzj/Downloads/dnazoo/ASM200746v1.rawchrom.hic"
+    hic_date = "/home/jzj/Downloads/dnazoo/Allenopithecus_nigroviridis.rawchrom.hic"
     plot_chr(hic_date)
 
 

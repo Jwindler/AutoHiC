@@ -22,8 +22,8 @@ assembly_file_path = os.path.join(hic_asy_path, "cs.final.assembly")
 
 divided_error = "/home/jzj/Jupyter-Docker/buffer/result"
 
-# modified_assembly_file = os.path.join(divided_error, "only_tran_adjusted.assembly")
-modified_assembly_file = os.path.join(divided_error, "no_move_only_tran_adjusted.assembly")
+modified_assembly_file = os.path.join(divided_error, "only_tran_adjusted.assembly")
+# modified_assembly_file = os.path.join(divided_error, "no_move_only_tran_adjusted.assembly")
 
 # rectify all category errors
 
@@ -33,8 +33,8 @@ if os.path.exists(os.path.join(divided_error, "translocation_error.json")):
         translocation_queue = json.loads(translocation_queue)
 
     # translocation rectify
-    adjust_translocation(translocation_queue, hic_file_path, assembly_file_path, modified_assembly_file, move_flag=False)
-    # adjust_translocation(translocation_queue, hic_file_path, assembly_file_path, modified_assembly_file)
+    # adjust_translocation(translocation_queue, hic_file_path, assembly_file_path, modified_assembly_file, move_flag=False)
+    adjust_translocation(translocation_queue, hic_file_path, assembly_file_path, modified_assembly_file)
 
     print("translocation rectify done")
 
