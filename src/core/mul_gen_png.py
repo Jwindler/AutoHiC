@@ -31,7 +31,7 @@ def write_records(records):
         f.writelines(records)
 
 
-def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10, _resolution=None, ran_color=True):
+def mul_process(hic_file, genome_id, out_file, methods, process_num=10, _resolution=None, ran_color=True):
     """
         multiprocessing generate hic image
     Args:
@@ -93,15 +93,19 @@ def mul_process(hic_file, genome_id, out_file, methods="global", process_num=10,
                     break
         else:  # sliding window method with diagonal
             for site in range(start, end, temp_increase["increase"]):
-                if site + temp_increase["dim"] > end:
+                site_end = site + temp_increase["dim"]
+                if site_end > end:  # at the end
                     site = end - temp_increase["dim"]
+                    site_end = end
+                if site < 0:  # solve white region padding bug
+                    site = 0
                 if ran_color:
                     pool.apply_async(hic_operate.gen_png, args=(
-                        resolution, site, site + temp_increase["dim"], site, site + temp_increase["dim"], True,),
+                        resolution, site, site_end, site, site_end, True,),
                                      callback=write_records)
                 else:
                     pool.apply_async(hic_operate.gen_png, args=(
-                        resolution, site, site + temp_increase["dim"], site, site + temp_increase["dim"],),
+                        resolution, site, site_end, site, site_end,),
                                      callback=write_records)
 
     pool.close()  # close pool

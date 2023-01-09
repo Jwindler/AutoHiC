@@ -56,10 +56,10 @@ class LoggerHandler(logging.Logger):
 
 
 # initialing logger
-logger = LoggerHandler(file="/home/jzj/Jupyter-Docker/buffer/tran_modify_test.log")
+logger = LoggerHandler(file="/home/jzj/buffer/log.txt")
 
 if __name__ == '__main__':
-    logger = LoggerHandler(file="/home/jzj/bprojects/abroad/test.log")
+    logger = LoggerHandler(file="/home/jzj/buffer/test_insert_loci.log")
     logger.debug('debug')
     logger.info('info')
     logger.warning('warning')

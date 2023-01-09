@@ -158,7 +158,7 @@ class GenBaseModel:
             "bright_red", [(1, 1, 1), (1, 0, 0)])
 
         # vmax = GenBaseModel.maxcolor(resolution)
-        vmax = np.percentile(matrix, 99)
+        vmax = np.percentile(matrix, 99)  # get matrix top 99% value
         if vmax == 0:
             vmax = 2
         elif ran_color:
@@ -183,7 +183,7 @@ class GenBaseModel:
             dpi=300,
             format="jpg",
             bbox_inches='tight',
-            pad_inches=-0.01)
+            pad_inches=0.1)
         plt.close()
 
     @staticmethod

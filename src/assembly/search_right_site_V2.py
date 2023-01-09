@@ -129,7 +129,6 @@ def search_right_site_v2(hic_file, assembly_file, ratio, error_site: tuple):
 
 
 def main():
-    # error_site = (453010131, 455241282)  # 插入位置：556，750，001 左右 （1，113，500，002）
     error_site = (495175001, 499375001)  # 插入位置：556，750，001 左右 （936,000,000）
     hic_file = "/home/jzj/Auto-HiC/Test/Np-Self/Np.0.hic"
 
