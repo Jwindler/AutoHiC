@@ -12,6 +12,7 @@ __pycache__/
 # temp
 temp/
 iterated/
+.DS_Store
 
 # Build and Release Folders
 bin-debug/
