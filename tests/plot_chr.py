@@ -144,7 +144,7 @@ def plot_chr(hic_date, genome_size=None, chr_name=None, genome_name=None, color=
 
 
 def main():
-    hic_date = "/home/jzj/Data/Test/raw_data/Hv/0/Hv.0.hic"
+    hic_date = "/media/jzj/Elements SE/buffer/10_genomes/04_ca/ca.2.hic"
     plot_chr(hic_date)
 
 
