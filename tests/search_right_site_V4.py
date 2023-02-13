@@ -45,7 +45,9 @@ def get_full_len_matrix(hic_file, fit_resolution: int, width_site: tuple, length
 
         for chrom in hic_object.getChromosomes():
             if chrom.name == "assembly":
-                assembly_len = chrom.length
+                # assembly_len = chrom.length
+                # FIXME: 由于hic文件中的长度,可能包含了一些冗余片段，导致插入位置寻找错误，所以需要自己计算一个长度
+                assembly_len = 444336001
     else:
         assembly_len = length_site[1] - length_site[0]
 
@@ -71,9 +73,8 @@ def get_full_len_matrix(hic_file, fit_resolution: int, width_site: tuple, length
 
     full_len_matrix = None
     for i in range(len(iter_len) - 1):
-        # FIXME: 可能 错误长度 大于 分辨率能够提取的长度
         if length_site is None:
-            # FIXME: 提出来的矩阵可能长度不符合
+            # FIXME: 提出来的矩阵可能长度不符合 > 主要是错误长度是否和矩阵一致
             numpy_matrix_chr = chr_matrix_object.getRecordsAsMatrix(width_site[0], width_site[1],
                                                                     int(iter_len[i]), int(iter_len[i + 1]) - 1)
         else:
@@ -84,8 +85,6 @@ def get_full_len_matrix(hic_file, fit_resolution: int, width_site: tuple, length
             full_len_matrix = numpy_matrix_chr
         else:
             full_len_matrix = np.hstack((full_len_matrix, numpy_matrix_chr))
-
-    # FIXME: 去除全是 0 的行
 
     return full_len_matrix
 
@@ -109,8 +108,7 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
                        math.ceil(error_site[1] / fit_resolution) + 2)]
     logger.info("Self error peaks index : %s", bin_index)
 
-    # find_peaks params: distance
-    # FIXME: 错误长度 可能小于 fit_resolution
+    # TODO： find_peaks params: distance
     distance_threshold = len(bin_index)
 
     numpy_matrix_num = len(peak_matrix)  # get matrix length
@@ -124,7 +122,7 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
         y = peak_matrix[i]  # get matrix value
 
         # get peaks
-        # FIXME: distance should be a hyperparameter
+        # TODO: distance should be a hyperparameter
         # FIXME: height=np.percentile(y, 90) 需要调整，90% 可能峰太多
         peak_id, peak_property = find_peaks(
             y, height=np.percentile(y, 95), distance=distance_threshold)
@@ -154,6 +152,18 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
     return many_key_name
 
 
+def get_max_matrix_value(matrix: np.ndarray):
+    """
+        get max matrix value
+    Args:
+        matrix: matrix
+
+    Returns:
+        max value
+    """
+    return np.unravel_index(np.argmax(matrix, axis=None), matrix.shape)[1] + 1
+
+
 def search_right_site_v4(hic_file, assembly_file, ratio, error_site: tuple):
     asy_operate = AssemblyOperate(assembly_file, ratio)
 
@@ -181,14 +191,14 @@ def search_right_site_v4(hic_file, assembly_file, ratio, error_site: tuple):
     logger.debug("New Insert region: %s", update_search_site)
 
     # get fit_resolution max len
-    cfg = get_conf()  # get config dict
+    get_conf()  # get config dict
 
     # get insert region max interaction ctg
     update_full_len_matrix = get_full_len_matrix(hic_file, min(resolutions), error_site, update_search_site)
 
     # logger.info("Update insert full length matrix: ", full_len_matrix.shape)
 
-    update_insert_peak_index = get_insert_peak(update_full_len_matrix, error_site, min(resolutions), remove_self=False)
+    update_insert_peak_index = get_max_matrix_value(update_full_len_matrix)
     final_insert_region = (update_search_site[0] + update_insert_peak_index * min(resolutions),
                            update_search_site[0] + (update_insert_peak_index + 1) * min(resolutions))
 
@@ -217,7 +227,7 @@ def search_right_site_v4(hic_file, assembly_file, ratio, error_site: tuple):
 
 
 def main():
-    error_site = (430825001 , 431125001)
+    error_site = (430825001, 431125001)
 
     hic_file = "/home/jzj/Jupyter-Docker/buffer/03_silkworm/silkworm.0.hic"
     assembly_file = "/home/jzj/Jupyter-Docker/buffer/03_silkworm/silkworm.0.assembly"
