@@ -48,7 +48,7 @@ def adjust_inversion(error_queue, hic_file, assembly_file, modified_assembly_fil
 
             # cut first ctg
             first_ctg = error_contain_ctgs[0]
-            cut_ctg_name_site[first_ctg[0]] = error_queue[error]["start"] * ratio
+            cut_ctg_name_site[first_ctg[0]] = round(error_queue[error]["start"] * ratio)
 
             # {ctg_name: "cut_site"}
             if "fragment" in first_ctg[0] or "debris" in first_ctg[0]:  # check if second cut
@@ -60,7 +60,7 @@ def adjust_inversion(error_queue, hic_file, assembly_file, modified_assembly_fil
             last_ctg = error_contain_ctgs[-1]
 
             cut_ctg_name_site.clear()  # clear dict
-            cut_ctg_name_site[last_ctg[0]] = error_queue[error]["end"] * ratio
+            cut_ctg_name_site[last_ctg[0]] = round(error_queue[error]["end"] * ratio)
 
             if "fragment" in last_ctg[0] or "debris" in last_ctg[0]:  # check if second cut
                 try:
@@ -72,7 +72,7 @@ def adjust_inversion(error_queue, hic_file, assembly_file, modified_assembly_fil
                             last_ctg_name_order):
                         renew_last_ctg_name = last_ctg_name_head + str(int(last_ctg_name_order) + 1)
                         cut_ctg_name_site.clear()  # clear dict
-                        cut_ctg_name_site[renew_last_ctg_name] = error_queue[error]["end"] * ratio
+                        cut_ctg_name_site[renew_last_ctg_name] = round(error_queue[error]["end"] * ratio)
                 except AttributeError:
                     pass
                 asy_operate.recut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
@@ -84,8 +84,8 @@ def adjust_inversion(error_queue, hic_file, assembly_file, modified_assembly_fil
 
             _ctg_info = asy_operate.get_ctg_info(ctg_name=_ctg[0], new_asy_file=assembly_file)  # get ctg info
 
-            cut_ctg_site_start = error_queue[error]["start"] * ratio  # error start site in assembly file
-            cut_ctg_site_end = error_queue[error]["end"] * ratio  # error end site in assembly file
+            cut_ctg_site_start = round(error_queue[error]["start"] * ratio)  # error start site in assembly file
+            cut_ctg_site_end = round(error_queue[error]["end"] * ratio)  # error end site in assembly file
 
             # check ctg position
             if _ctg_info["site"][0] == cut_ctg_site_start:  # left boundary coincide

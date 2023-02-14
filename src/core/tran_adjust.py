@@ -13,7 +13,8 @@ import re
 from collections import OrderedDict
 
 from src.assembly.asy_operate import AssemblyOperate
-from src.assembly.search_right_site_V2 import search_right_site_v2
+# from src.assembly.search_right_site_V2 import search_right_site_v2
+from tests.search_right_site_V4 import search_right_site_v4
 from src.core.utils.get_ratio import get_ratio
 from src.core.utils.logger import logger
 
@@ -70,7 +71,7 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
             # cut first ctg
             first_ctg = error_contain_ctgs[0]
 
-            cut_ctg_name_site[first_ctg[0]] = error_queue[error]["start"] * ratio
+            cut_ctg_name_site[first_ctg[0]] = round(error_queue[error]["start"] * ratio)
 
             # {ctg_name: "cut_site"}
             if "fragment" in first_ctg[0] or "debris" in first_ctg[0]:  # check whether the ctg is already cut
@@ -82,7 +83,7 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
             last_ctg = error_contain_ctgs[-1]
 
             cut_ctg_name_site.clear()  # clear dict( a bug here, no error because the next function has processed it)
-            cut_ctg_name_site[last_ctg[0]] = error_queue[error]["end"] * ratio
+            cut_ctg_name_site[last_ctg[0]] = round(error_queue[error]["end"] * ratio)
 
             if "fragment" in last_ctg[0] or "debris" in last_ctg[0]:  # check whether the ctg is already cut
                 try:
@@ -96,7 +97,7 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
                             last_ctg_name_order):
                         renew_last_ctg_name = last_ctg_name_head + str(int(last_ctg_name_order) + 1)
                         cut_ctg_name_site.clear()  # clear dict
-                        cut_ctg_name_site[renew_last_ctg_name] = error_queue[error]["end"] * ratio
+                        cut_ctg_name_site[renew_last_ctg_name] = round(error_queue[error]["end"] * ratio)
                 except AttributeError:
                     pass
                 asy_operate.recut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
@@ -108,8 +109,8 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
 
             _ctg_info = asy_operate.get_ctg_info(ctg_name=_ctg[0], new_asy_file=assembly_file)  # get ctg info
 
-            cut_ctg_site_start = error_queue[error]["start"] * ratio  # error real start site
-            cut_ctg_site_end = error_queue[error]["end"] * ratio  # error real end site
+            cut_ctg_site_start = round(error_queue[error]["start"] * ratio)  # error real start site
+            cut_ctg_site_end = round(error_queue[error]["end"] * ratio)  # error real end site
 
             # check ctg position
             if _ctg_info["site"][0] == cut_ctg_site_start:  # left boundary overlap, cut it directly
@@ -154,7 +155,7 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
 
         # get insert ctg site
         error_site = (error_queue[error]["start"], error_queue[error]["end"])
-        temp_result, insert_left = search_right_site_v2(hic_file, assembly_file, ratio, error_site)
+        temp_result, insert_left = search_right_site_v4(hic_file, assembly_file, ratio, error_site)
         error_mdy_info[error] = {
             "move_ctgs": new_error_contain_ctgs,
             "insert_site": temp_result,

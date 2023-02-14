@@ -16,11 +16,11 @@ from src.core.tran_adjust import adjust_translocation
 
 # 初始化日志
 
-hic_asy_path = "/home/jzj/Downloads/curated"
-hic_file_path = os.path.join(hic_asy_path, "curated.0.hic")
-assembly_file_path = os.path.join(hic_asy_path, "curated.0.assembly")
+hic_asy_path = "/home/jzj/Jupyter-Docker/buffer/03_silkworm"
+hic_file_path = os.path.join(hic_asy_path, "silkworm.0.hic")
+assembly_file_path = os.path.join(hic_asy_path, "silkworm.0.assembly")
 
-divided_error = "/home/jzj/Jupyter-Docker/buffer/0_curated"
+divided_error = "/home/jzj/Jupyter-Docker/buffer/silkworm_0_1"
 
 modified_assembly_file = os.path.join(divided_error, "only_tran_adjusted.assembly")
 # modified_assembly_file = os.path.join(divided_error, "no_move_only_tran_adjusted.assembly")

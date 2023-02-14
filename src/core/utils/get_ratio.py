@@ -37,7 +37,7 @@ def get_ratio(hic, asy_file) -> int:
     for chrom in hic.getChromosomes():
         hic_length = chrom.length
 
-    return asy_length // hic_length
+    return asy_length / hic_length
 
 
 def main():

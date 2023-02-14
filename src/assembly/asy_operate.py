@@ -441,8 +441,8 @@ class AssemblyOperate(object):
         contig_order = []  # ctg order list
 
         # get the real position information on the genome
-        genome_start = start * self.ratio
-        genome_end = end * self.ratio
+        genome_start = round(start * self.ratio)
+        genome_end = round(end * self.ratio)
 
         logger.info("查询真实位点为 ： {0} - {1} \n".format(genome_start, genome_end))
 

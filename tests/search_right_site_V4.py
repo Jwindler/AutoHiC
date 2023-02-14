@@ -213,8 +213,8 @@ def search_right_site_v4(hic_file, assembly_file, ratio, error_site: tuple):
 
     # calculate insert direction
     only_ctg_name = list(contain_contig.keys())[0]
-    left_distance = update_search_site[0] * ratio - contain_contig[only_ctg_name]["start"]
-    right_distance = contain_contig[only_ctg_name]["end"] - update_search_site[1] * ratio
+    left_distance = round(update_search_site[0] * ratio) - contain_contig[only_ctg_name]["start"]
+    right_distance = contain_contig[only_ctg_name]["end"] - round(update_search_site[1] * ratio)
 
     if left_distance < right_distance:
         logger.info("Insert direction is Left \n")
