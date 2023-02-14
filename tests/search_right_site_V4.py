@@ -21,14 +21,16 @@ from src.assembly import get_max_peak
 from src.assembly.asy_operate import AssemblyOperate
 from src.core.utils.get_conf import get_conf
 from src.core.utils.logger import logger
+from src.core.utils.get_hic_real_len import get_hic_real_len
 from src.core import settings  # export ENVIROMENT
 
 
-def get_full_len_matrix(hic_file, fit_resolution: int, width_site: tuple, length_site: tuple = None):
+def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tuple, length_site: tuple = None):
     """
         get full length matrix
     Args:
         hic_file: hic file
+        asy_file: assembly file
         width_site:  error site
         length_site:  length site
         fit_resolution:  fit resolution
@@ -47,7 +49,7 @@ def get_full_len_matrix(hic_file, fit_resolution: int, width_site: tuple, length
             if chrom.name == "assembly":
                 # assembly_len = chrom.length
                 # FIXME: 由于hic文件中的长度,可能包含了一些冗余片段，导致插入位置寻找错误，所以需要自己计算一个长度
-                assembly_len = 444336001
+                assembly_len = get_hic_real_len(hic_file, asy_file)
     else:
         assembly_len = length_site[1] - length_site[0]
 
@@ -180,7 +182,7 @@ def search_right_site_v4(hic_file, assembly_file, ratio, error_site: tuple):
     min_index = res_error_distance_list.index(min(res_error_distance_list))  # min value index
     fit_resolution = resolutions[min_index]
 
-    full_len_matrix = get_full_len_matrix(hic_file, fit_resolution, error_site)
+    full_len_matrix = get_full_len_matrix(hic_file, assembly_file, fit_resolution, error_site)
 
     # logger.info("Error full length matrix: ", full_len_matrix.shape)
 
@@ -194,7 +196,8 @@ def search_right_site_v4(hic_file, assembly_file, ratio, error_site: tuple):
     get_conf()  # get config dict
 
     # get insert region max interaction ctg
-    update_full_len_matrix = get_full_len_matrix(hic_file, min(resolutions), error_site, update_search_site)
+    update_full_len_matrix = get_full_len_matrix(hic_file, assembly_file, min(resolutions), error_site,
+                                                 update_search_site)
 
     # logger.info("Update insert full length matrix: ", full_len_matrix.shape)
 
