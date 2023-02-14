@@ -1,3 +1,22 @@
+## [0.8.12](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.11...v0.8.12) (2023-02-14)
+
+
+### Bug Fixes
+
+* delete some docs and update project structure ([fdd0bef](https://github.com/Jwindler/HiC-OpenCV/commit/fdd0bef331790991df9112d721611fd6f9445da2))
+* fix many bug about search_right_site algorithm ([d06f0e4](https://github.com/Jwindler/HiC-OpenCV/commit/d06f0e4ccebd75cc02b5c9cdad6cd01b2490e7d3))
+* fix some get peak bug ([a2bf8c2](https://github.com/Jwindler/HiC-OpenCV/commit/a2bf8c211aee3fc80f53ae4beac265168a6a6797))
+* update annotation and docs ([33f189e](https://github.com/Jwindler/HiC-OpenCV/commit/33f189e2e0e464209499d48c9b3eec36bec1079f))
+* update vmax color resolution ([beb0379](https://github.com/Jwindler/HiC-OpenCV/commit/beb037948084cf2438d5337695d79f187f512a5f))
+
+
+### Features
+
+* add get hic real length ([44e488c](https://github.com/Jwindler/HiC-OpenCV/commit/44e488c6edd6c3ce912e833ba6b25bbc7de97b8d))
+* update get ration ([4e5ef21](https://github.com/Jwindler/HiC-OpenCV/commit/4e5ef21d4348c6742226b9fbad2292627c01e521))
+
+
+
 ## [0.8.11](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.10...v0.8.11) (2022-12-19)
 
 
