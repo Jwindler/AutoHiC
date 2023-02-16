@@ -4,8 +4,8 @@
 """
 @author: jzj
 @contact: jzjlab@163.com
-@file: search_right_site_V4.py
-@time: 2/7/23 4:02 PM
+@file: search_right_site_V5.py
+@time: 2/15/23 4:19 PM
 @function: 
 """
 
@@ -47,8 +47,6 @@ def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tup
 
         for chrom in hic_object.getChromosomes():
             if chrom.name == "assembly":
-                # assembly_len = chrom.length
-                # FIXME: 由于hic文件中的长度,可能包含了一些冗余片段，导致插入位置寻找错误，所以需要自己计算一个长度
                 assembly_len = get_hic_real_len(hic_file, asy_file)
     else:
         assembly_len = length_site[1] - length_site[0]
@@ -76,19 +74,24 @@ def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tup
     full_len_matrix = None
     for i in range(len(iter_len) - 1):
         if length_site is None:
-            # FIXME: 提出来的矩阵可能长度不符合 > 主要是错误长度是否和矩阵一致
             numpy_matrix_chr = chr_matrix_object.getRecordsAsMatrix(width_site[0], width_site[1],
-                                                                    int(iter_len[i]), int(iter_len[i + 1]) - 1)
+                                                                    iter_len[i], iter_len[i + 1] - 1)
+            print(width_site[0], width_site[1], iter_len[i], iter_len[i + 1] - 1)
         else:
             numpy_matrix_chr = chr_matrix_object.getRecordsAsMatrix(width_site[0], width_site[1],
-                                                                    length_site[0] + int(iter_len[i]),
-                                                                    length_site[0] + int(iter_len[i + 1]))
+                                                                    length_site[0] + iter_len[i],
+                                                                    length_site[0] + iter_len[i + 1])
         if not np.any(full_len_matrix):
             full_len_matrix = numpy_matrix_chr
         else:
             full_len_matrix = np.hstack((full_len_matrix, numpy_matrix_chr))
-
+    print("full_len_matrix.shape", full_len_matrix.shape)
     return full_len_matrix
+
+
+def intersection(lst1, lst2):
+    lst3 = [value for value in lst1 if value in lst2]
+    return lst3
 
 
 def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_self: bool = True):
@@ -103,6 +106,7 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
     Returns:
         insert peak index
     """
+    print("Test")
 
     # calculate self index
     bin_index = [i for i in
@@ -110,13 +114,12 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
                        math.ceil(error_site[1] / fit_resolution) + 2)]
     logger.info("Self error peaks index : %s", bin_index)
 
-    # TODO： find_peaks params: distance
     distance_threshold = len(bin_index)
 
     numpy_matrix_num = len(peak_matrix)  # get matrix length
     numpy_matrix_len = len(peak_matrix[0])  # get matrix width
 
-    peaks_dict = defaultdict(int)
+    peaks_dict = defaultdict()
 
     for i in range(numpy_matrix_num):
         x = np.arange(0, numpy_matrix_len)  # get matrix index
@@ -124,8 +127,7 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
         y = peak_matrix[i]  # get matrix value
 
         # get peaks
-        # TODO: distance should be a hyperparameter
-        # FIXME: height=np.percentile(y, 90) 需要调整，90% 可能峰太多
+        # TODO: distance should be a hyperparameter,  height=np.percentile(y, 90) 需要调整，90% 可能峰太多
         peak_id, peak_property = find_peaks(
             y, height=np.percentile(y, 95), distance=distance_threshold)
 
@@ -137,13 +139,24 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
 
         for peak_index, peak_height in zip(peaks_index, peaks_height):
             if peak_index not in peaks_dict:
-                peaks_dict[peak_index] = peak_height
+                peaks_dict[peak_index] = [peak_height, 1]
             else:
-                peaks_dict[peak_index] = max(
-                    peak_height, peaks_dict[peak_index])
+                peaks_dict[peak_index] = [max(
+                    peak_height, peaks_dict[peak_index][0]), peaks_dict[peak_index][1] + 1]
+
     if remove_self:
         # remove self error peaks index
         final_peaks = get_max_peak.remove_peak(peaks_dict, bin_index)
+        sorted_final_peaks = list(sorted(final_peaks.items(), key=lambda t: t[1][1]))
+        overlap_peaks = [x for x in sorted_final_peaks if x[1][1] != 1]
+
+        # get max peak in overlap peaks
+        max_overlap_peak_value = max([x[1][0] for x in overlap_peaks])
+        for overlap_peak in overlap_peaks:
+            if overlap_peak[1][0] == max_overlap_peak_value:
+                final_peaks.clear()
+                final_peaks[overlap_peak[0]] = overlap_peak[1][0]
+                break
     else:
         final_peaks = peaks_dict
 
@@ -166,7 +179,8 @@ def get_max_matrix_value(matrix: np.ndarray):
     return np.unravel_index(np.argmax(matrix, axis=None), matrix.shape)[1] + 1
 
 
-def search_right_site_v4(hic_file, assembly_file, ratio, error_site: tuple):
+def search_right_site_v5(hic_file, assembly_file, ratio, error_site: tuple):
+    # init assembly operate object
     asy_operate = AssemblyOperate(assembly_file, ratio)
 
     hic = hicstraw.HiCFile(hic_file)  # get hic object
@@ -177,14 +191,14 @@ def search_right_site_v4(hic_file, assembly_file, ratio, error_site: tuple):
     res_error_distance_list = []
 
     for res in resolutions:
-        res_error_distance_list.append(abs(error_len - res))
+        res_error_distance_list.append(abs(error_len / 3 - res))
 
     min_index = res_error_distance_list.index(min(res_error_distance_list))  # min value index
     fit_resolution = resolutions[min_index]
 
     full_len_matrix = get_full_len_matrix(hic_file, assembly_file, fit_resolution, error_site)
 
-    # logger.info("Error full length matrix: ", full_len_matrix.shape)
+    logger.info("Error full length matrix: %s", full_len_matrix.shape)
 
     insert_peak_index = get_insert_peak(full_len_matrix, error_site, fit_resolution)
 
@@ -207,10 +221,24 @@ def search_right_site_v4(hic_file, assembly_file, ratio, error_site: tuple):
 
     # search ctg in insert peak
     contain_contig = asy_operate.find_site_ctgs(assembly_file, final_insert_region[0], final_insert_region[1])
-    # FIXME: 可能有多个 contig
 
     # json format
     contain_contig = json.loads(contain_contig)
+
+    # return multiple ctg : ctg > 1
+    if len(contain_contig) > 1:
+        max_overlap = {}
+        contain_contigs_list = list(contain_contig.keys())
+        max_overlap[contain_contigs_list[0]] = contain_contig[contain_contigs_list[0]]["end"] - final_insert_region[0]
+        max_overlap[contain_contigs_list[-1]] = final_insert_region[1] - contain_contig[contain_contigs_list[-1]][
+            "start"]
+
+        for contain_contig_list in contain_contigs_list[1:-1]:
+            max_overlap[contain_contig_list] = contain_contig[contain_contig_list]["length"]
+        temp_contain_contig = {
+            max(max_overlap, key=max_overlap.get): contain_contig[max(max_overlap, key=max_overlap.get)]}
+
+        contain_contig = temp_contain_contig
 
     logger.info("Insert ctg: ： %s", contain_contig)
 
@@ -230,12 +258,12 @@ def search_right_site_v4(hic_file, assembly_file, ratio, error_site: tuple):
 
 
 def main():
-    error_site = (430825001, 431125001)
+    error_site = (28772000, 28791000)
 
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/03_silkworm/silkworm.0.hic"
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/03_silkworm/silkworm.0.assembly"
+    hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.1.hic"
+    assembly_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.1.assembly"
     ratio = 1
-    print(search_right_site_v4(hic_file, assembly_file, ratio, error_site))
+    print(search_right_site_v5(hic_file, assembly_file, ratio, error_site))
 
 
 if __name__ == "__main__":

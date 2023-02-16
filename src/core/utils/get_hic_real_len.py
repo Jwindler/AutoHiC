@@ -77,9 +77,9 @@ def get_hic_real_len(hic_file, asy_file) -> int:
 
 
 def main():
-    hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/07_aj/aj.0.hic"
-    asy_file = "/home/jzj/Data/Elements/buffer/10_genomes/07_aj/aj.0.assembly"
-    print("hic_real_len: ", get_hic_real_len(hic_file, asy_file))
+    hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.1.hic"
+    assembly_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.1.assembly"
+    print("hic_real_len: ", get_hic_real_len(hic_file, assembly_file))
 
 
 if __name__ == "__main__":

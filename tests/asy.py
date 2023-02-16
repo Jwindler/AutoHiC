@@ -16,7 +16,7 @@ from src.core.tran_adjust import adjust_translocation
 
 # 初始化日志
 
-hic_asy_path = "/home/jzj/Jupyter-Docker/buffer/03_silkworm"
+hic_asy_path = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm"
 hic_file_path = os.path.join(hic_asy_path, "silkworm.0.hic")
 assembly_file_path = os.path.join(hic_asy_path, "silkworm.0.assembly")
 

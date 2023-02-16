@@ -41,13 +41,10 @@ def get_ratio(hic, asy_file) -> int:
 
 
 def main():
-    # hic file path
-    hic_file = "/home/jzj/Data/Test/raw_data/Aa/Aa.2.hic"
+    hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/04_ca/ca.0.hic"
+    assembly_file = "/home/jzj/Data/Elements/buffer/10_genomes/04_ca/ca.0.assembly"
 
-    # assembly file path
-    asy_file = "/home/jzj/Data/Test/raw_data/Aa/Aa.2.assembly"
-
-    result = get_ratio(hic_file, asy_file)
+    result = get_ratio(hic_file, assembly_file)
     print(result)
 
 
