@@ -4,8 +4,8 @@
 """
 @author: jzj
 @contact: jzjlab@163.com
-@file: search_right_site_V5.py
-@time: 2/15/23 4:19 PM
+@file: search_right_site_v6.py
+@time: 2/17/23 3:45 PM
 @function: 
 """
 
@@ -59,39 +59,53 @@ def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tup
     cfg = get_conf()  # get config dict
     res_max_len = cfg["rse_max_len"][fit_resolution]
 
-    # cut block number
+    # cut full length block number
     len_block_num = math.ceil(assembly_len / res_max_len)
-
     # each block length
     each_block_len = math.ceil(assembly_len / len_block_num)
     each_block_res_number = round(each_block_len / fit_resolution)
     iter_len = []
     for i in range(len_block_num):
         iter_len.append(each_block_res_number * i * fit_resolution)
-
     iter_len.append(assembly_len)
+
+    # TODO： 增加对于width_site[0] - width_site[1] > 最小分辨率的范围的处理
+    # cut error site block number
+    error_len_block_num = math.ceil((width_site[1] - width_site[0]) / res_max_len)
+    # each block length
+    error_each_block_len = math.ceil((width_site[1] - width_site[0]) / error_len_block_num)
+    error_each_block_res_number = round(error_each_block_len / fit_resolution)
+    error_iter_len = []
+    for i in range(error_len_block_num):
+        error_iter_len.append(width_site[0] + error_each_block_res_number * i * fit_resolution)
+    error_iter_len.append(width_site[1])
 
     full_len_matrix = None
     for i in range(len(iter_len) - 1):
-        if length_site is None:
-            numpy_matrix_chr = chr_matrix_object.getRecordsAsMatrix(width_site[0], width_site[1],
-                                                                    iter_len[i], iter_len[i + 1] - 1)
-            print(width_site[0], width_site[1], iter_len[i], iter_len[i + 1] - 1)
-        else:
-            numpy_matrix_chr = chr_matrix_object.getRecordsAsMatrix(width_site[0], width_site[1],
-                                                                    length_site[0] + iter_len[i],
-                                                                    length_site[0] + iter_len[i + 1])
+        temp_error_matrix = None
+        for j in range(len(error_iter_len) - 1):
+            if length_site is None:
+                print(error_iter_len[j], error_iter_len[j + 1] - 1, iter_len[i], iter_len[i + 1] - 1)
+                numpy_matrix_chr = chr_matrix_object.getRecordsAsMatrix(error_iter_len[j], error_iter_len[j + 1] - 1,
+                                                                        iter_len[i], iter_len[i + 1] - 1)
+            else:
+                print(error_iter_len[j], error_iter_len[j + 1] - 1, length_site[0] + iter_len[i],
+                      length_site[0] + iter_len[i + 1])
+                # FIXME: width_site[0] - width_site[1] > 最小分辨率的范围
+                numpy_matrix_chr = chr_matrix_object.getRecordsAsMatrix(error_iter_len[j], error_iter_len[j + 1] - 1,
+                                                                        length_site[0] + iter_len[i],
+                                                                        length_site[0] + iter_len[i + 1])
+            if not np.any(temp_error_matrix):
+                temp_error_matrix = numpy_matrix_chr
+            else:
+                temp_error_matrix = np.vstack((temp_error_matrix, numpy_matrix_chr))
+
         if not np.any(full_len_matrix):
-            full_len_matrix = numpy_matrix_chr
+            full_len_matrix = temp_error_matrix
         else:
-            full_len_matrix = np.hstack((full_len_matrix, numpy_matrix_chr))
+            full_len_matrix = np.hstack((full_len_matrix, temp_error_matrix))
     print("full_len_matrix.shape", full_len_matrix.shape)
     return full_len_matrix
-
-
-def intersection(lst1, lst2):
-    lst3 = [value for value in lst1 if value in lst2]
-    return lst3
 
 
 def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_self: bool = True):
@@ -148,15 +162,26 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
         # remove self error peaks index
         final_peaks = get_max_peak.remove_peak(peaks_dict, bin_index)
         sorted_final_peaks = list(sorted(final_peaks.items(), key=lambda t: t[1][1]))
+
         overlap_peaks = [x for x in sorted_final_peaks if x[1][1] != 1]
 
-        # get max peak in overlap peaks
-        max_overlap_peak_value = max([x[1][0] for x in overlap_peaks])
-        for overlap_peak in overlap_peaks:
-            if overlap_peak[1][0] == max_overlap_peak_value:
-                final_peaks.clear()
-                final_peaks[overlap_peak[0]] = overlap_peak[1][0]
-                break
+        # 可能没有重叠的峰
+        if len(overlap_peaks) == 0:
+            # get max peak in overlap peaks
+            max_sorted_peak_value = max([x[1][0] for x in sorted_final_peaks])
+            for sorted_final_peak in sorted_final_peaks:
+                if sorted_final_peak[1][0] == max_sorted_peak_value:
+                    final_peaks.clear()
+                    final_peaks[sorted_final_peak[0]] = sorted_final_peak[1][0]
+                    break
+        else:
+            # get max peak in overlap peaks
+            max_overlap_peak_value = max([x[1][0] for x in overlap_peaks])
+            for overlap_peak in overlap_peaks:
+                if overlap_peak[1][0] == max_overlap_peak_value:
+                    final_peaks.clear()
+                    final_peaks[overlap_peak[0]] = overlap_peak[1][0]
+                    break
     else:
         final_peaks = peaks_dict
 
@@ -179,7 +204,7 @@ def get_max_matrix_value(matrix: np.ndarray):
     return np.unravel_index(np.argmax(matrix, axis=None), matrix.shape)[1] + 1
 
 
-def search_right_site_v5(hic_file, assembly_file, ratio, error_site: tuple):
+def search_right_site_v6(hic_file, assembly_file, ratio, error_site: tuple):
     # init assembly operate object
     asy_operate = AssemblyOperate(assembly_file, ratio)
 
@@ -258,12 +283,12 @@ def search_right_site_v5(hic_file, assembly_file, ratio, error_site: tuple):
 
 
 def main():
-    error_site = (28772000, 28791000)
+    error_site = (1277300000, 1279130000)
 
-    hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.1.hic"
-    assembly_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.1.assembly"
+    hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/05_pb/pb.0.hic"
+    assembly_file = "/home/jzj/Data/Elements/buffer/10_genomes/05_pb/pb.0.assembly"
     ratio = 1
-    print(search_right_site_v5(hic_file, assembly_file, ratio, error_site))
+    print(search_right_site_v6(hic_file, assembly_file, ratio, error_site))
 
 
 if __name__ == "__main__":

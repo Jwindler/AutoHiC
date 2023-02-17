@@ -54,7 +54,7 @@ def get_hic_real_len(hic_file, asy_file) -> int:
 
     # get ratio: asy_length / hic_length
     ratio = get_ratio(hic_file, asy_file)
-
+    print("ratio: ", ratio)
     all_seqs_len = 0  # sequence total length
     real_seqs_len = 0  # real sequence total length
 

@@ -15,7 +15,7 @@ from collections import OrderedDict
 from src.assembly.asy_operate import AssemblyOperate
 # from src.assembly.search_right_site_V2 import search_right_site_v2
 
-from tests.search_right_site_V5 import search_right_site_v5
+from iterated.search_right_site_V5 import search_right_site_v5
 from src.core.utils.get_ratio import get_ratio
 from src.core.utils.logger import logger
 
