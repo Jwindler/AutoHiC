@@ -15,7 +15,7 @@ from collections import OrderedDict
 from src.assembly.asy_operate import AssemblyOperate
 # from src.assembly.search_right_site_V2 import search_right_site_v2
 
-from iterated.search_right_site_V5 import search_right_site_v5
+from tests.search_right_site_v8 import search_right_site_v8
 from src.core.utils.get_ratio import get_ratio
 from src.core.utils.logger import logger
 
@@ -156,7 +156,7 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
 
         # get insert ctg site
         error_site = (error_queue[error]["start"], error_queue[error]["end"])
-        temp_result, insert_left = search_right_site_v5(hic_file, assembly_file, ratio, error_site)
+        temp_result, insert_left = search_right_site_v8(hic_file, assembly_file, ratio, error_site)
         error_mdy_info[error] = {
             "move_ctgs": new_error_contain_ctgs,
             "insert_site": temp_result,

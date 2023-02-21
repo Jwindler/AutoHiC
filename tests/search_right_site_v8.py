@@ -4,8 +4,8 @@
 """
 @author: jzj
 @contact: jzjlab@163.com
-@file: search_right_site_v6.py
-@time: 2/17/23 3:45 PM
+@file: search_right_site_v8.py
+@time: 2/21/23 11:40 AM
 @function: 
 """
 
@@ -42,6 +42,13 @@ def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tup
     hic_object = hicstraw.HiCFile(hic_file)
 
     if length_site is None:
+
+        # update width site
+        update_width_site = (
+            math.ceil(width_site[0] / fit_resolution) * fit_resolution,
+            width_site[1] // fit_resolution * fit_resolution)
+        width_site = update_width_site
+
         # get full chromosome length
         assembly_len = 0  # define assembly length
 
@@ -161,27 +168,15 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
     if remove_self:
         # remove self error peaks index
         final_peaks = get_max_peak.remove_peak(peaks_dict, bin_index)
-        sorted_final_peaks = list(sorted(final_peaks.items(), key=lambda t: t[1][1]))
+        sorted_final_peaks = list(sorted(final_peaks.items(), key=lambda t: t[1][0]))
 
-        overlap_peaks = [x for x in sorted_final_peaks if x[1][1] != 1]
-
-        # 可能没有重叠的峰
-        if len(overlap_peaks) == 0:
-            # get max peak in overlap peaks
-            max_sorted_peak_value = max([x[1][0] for x in sorted_final_peaks])
-            for sorted_final_peak in sorted_final_peaks:
-                if sorted_final_peak[1][0] == max_sorted_peak_value:
-                    final_peaks.clear()
-                    final_peaks[sorted_final_peak[0]] = sorted_final_peak[1][0]
-                    break
-        else:
-            # get max peak in overlap peaks
-            max_overlap_peak_value = max([x[1][0] for x in overlap_peaks])
-            for overlap_peak in overlap_peaks:
-                if overlap_peak[1][0] == max_overlap_peak_value:
-                    final_peaks.clear()
-                    final_peaks[overlap_peak[0]] = overlap_peak[1][0]
-                    break
+        # get max peak in overlap peaks
+        max_overlap_peak_value = max([x[1][0] for x in sorted_final_peaks])
+        for overlap_peak in sorted_final_peaks:
+            if overlap_peak[1][0] == max_overlap_peak_value:
+                final_peaks.clear()
+                final_peaks[overlap_peak[0]] = overlap_peak[1][0]
+                break
     else:
         final_peaks = peaks_dict
 
@@ -204,7 +199,7 @@ def get_max_matrix_value(matrix: np.ndarray):
     return np.unravel_index(np.argmax(matrix, axis=None), matrix.shape)[1] + 1
 
 
-def search_right_site_v6(hic_file, assembly_file, ratio, error_site: tuple):
+def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple):
     # init assembly operate object
     asy_operate = AssemblyOperate(assembly_file, ratio)
 
@@ -229,7 +224,7 @@ def search_right_site_v6(hic_file, assembly_file, ratio, error_site: tuple):
 
     # update Insert region
     update_search_site = (insert_peak_index * fit_resolution, (insert_peak_index + 1) * fit_resolution)
-    logger.debug("New Insert region: %s", update_search_site)
+    logger.debug("New insert search region: %s", update_search_site)
 
     # get fit_resolution max len
     get_conf()  # get config dict
@@ -243,6 +238,35 @@ def search_right_site_v6(hic_file, assembly_file, ratio, error_site: tuple):
     update_insert_peak_index = get_max_matrix_value(update_full_len_matrix)
     final_insert_region = (update_search_site[0] + update_insert_peak_index * min(resolutions),
                            update_search_site[0] + (update_insert_peak_index + 1) * min(resolutions))
+
+    logger.info("Final insert region: %s", final_insert_region)
+
+    # search ctg in insert peak
+    contain_contig = asy_operate.find_site_ctgs(assembly_file, final_insert_region[0], final_insert_region[0] + 1)
+    # json format
+    contain_contig = list(json.loads(contain_contig).keys())[0]
+
+    first_cut_ctg = {contain_contig: final_insert_region[0]}
+
+    # cut a ctg to two ctgs
+    if "fragment" in contain_contig or "debris" in contain_contig:  # check whether the ctg is already cut
+        asy_operate.recut_ctgs(assembly_file, first_cut_ctg, assembly_file)
+    else:
+        asy_operate.cut_ctgs(assembly_file, first_cut_ctg, assembly_file)
+
+    # search ctg in insert peak
+    contain_contig = asy_operate.find_site_ctgs(assembly_file, final_insert_region[1], final_insert_region[1] + 1)
+
+    # json format
+    contain_contig = list(json.loads(contain_contig).keys())[0]
+
+    second_cut_ctg = {contain_contig: final_insert_region[1]}
+
+    # cut a ctg to two ctgs
+    if "fragment" in contain_contig or "debris" in contain_contig:  # check whether the ctg is already cut
+        asy_operate.recut_ctgs(assembly_file, second_cut_ctg, assembly_file)
+    else:
+        asy_operate.cut_ctgs(assembly_file, second_cut_ctg, assembly_file)
 
     # search ctg in insert peak
     contain_contig = asy_operate.find_site_ctgs(assembly_file, final_insert_region[0], final_insert_region[1])
@@ -269,8 +293,8 @@ def search_right_site_v6(hic_file, assembly_file, ratio, error_site: tuple):
 
     # calculate insert direction
     only_ctg_name = list(contain_contig.keys())[0]
-    left_distance = round(update_search_site[0] * ratio) - contain_contig[only_ctg_name]["start"]
-    right_distance = contain_contig[only_ctg_name]["end"] - round(update_search_site[1] * ratio)
+    left_distance = round(final_insert_region[0] * ratio) - contain_contig[only_ctg_name]["start"]
+    right_distance = contain_contig[only_ctg_name]["end"] - round(final_insert_region[1] * ratio)
 
     if left_distance < right_distance:
         logger.info("Insert direction is Left \n")
@@ -283,12 +307,13 @@ def search_right_site_v6(hic_file, assembly_file, ratio, error_site: tuple):
 
 
 def main():
-    error_site = (1277300000, 1279130000)
+    error_site = (93110030, 93183810)
 
-    hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/05_pb/pb.0.hic"
-    assembly_file = "/home/jzj/Data/Elements/buffer/10_genomes/05_pb/pb.0.assembly"
+    hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.0.hic"
+    # assembly_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.0.assembly"
+    assembly_file = "/home/jzj/buffer/silkworm.0.assembly"
     ratio = 1
-    print(search_right_site_v6(hic_file, assembly_file, ratio, error_site))
+    print(search_right_site_v8(hic_file, assembly_file, ratio, error_site))
 
 
 if __name__ == "__main__":
