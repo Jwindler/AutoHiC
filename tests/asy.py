@@ -16,13 +16,13 @@ from src.core.tran_adjust import adjust_translocation
 
 # 初始化日志
 
-hic_asy_path = "/home/jzj/Downloads"
-hic_file_path = os.path.join(hic_asy_path, "silkworm.final.hic")
-assembly_file_path = os.path.join(hic_asy_path, "silkworm.final.assembly")
+hic_asy_path = "/home/jzj/Jupyter-Docker/buffer/silkworm_test"
+hic_file_path = os.path.join(hic_asy_path, "silkworm.0.hic")
+assembly_file_path = os.path.join(hic_asy_path, "silkworm.0.assembly")
 
+divided_error = "/home/jzj/Jupyter-Docker/buffer/silkworm_test"
 
-divided_error = "/home/jzj/Jupyter-Docker/buffer/result"
-
+# 输出文件路径
 modified_assembly_file = os.path.join(divided_error, "only_tran_adjusted.assembly")
 # modified_assembly_file = os.path.join(divided_error, "no_move_only_tran_adjusted.assembly")
 
@@ -48,7 +48,8 @@ if os.path.exists(os.path.join(divided_error, "translocation_error.json")):
 #     adjust_inversion(inversion_queue, hic_file_path, modified_assembly_file, modified_assembly_file)
 #
 #     print("inversion rectify done")
-#
+
+
 # if os.path.exists(os.path.join(divided_error, "debris_error.json")):
 #     with open(os.path.join(divided_error, "debris_error.json"), "r") as outfile:
 #         debris_queue = outfile.read()
@@ -57,5 +58,5 @@ if os.path.exists(os.path.join(divided_error, "translocation_error.json")):
 #     # debris rectify
 #     # adjust_debris(debris_queue, hic_file_path, modified_assembly_file, modified_assembly_file)  # no move
 #     adjust_debris(debris_queue, hic_file_path, modified_assembly_file, modified_assembly_file, move_flag=True)  # move
-
-#    print("debris rectify done")
+#
+# print("debris rectify done")

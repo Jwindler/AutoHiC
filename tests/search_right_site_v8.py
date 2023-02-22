@@ -307,7 +307,7 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple):
 
 
 def main():
-    error_site = (93110030, 93183810)
+    error_site = (56507626, 58430891)
 
     hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.0.hic"
     # assembly_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.0.assembly"

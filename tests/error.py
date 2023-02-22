@@ -159,7 +159,7 @@ class ERRORS:
 
     # filter error according to overlap and iou
     def de_diff_overlap(self, errors_dict: dict, iou_score: float = 0.8, out_path="overlap_filtered_errors.json",
-                        remove_error_path="remove_error.txt"):
+                        remove_error_path="overlap_remove_error.txt"):
         remove_list = list()  # save the key of the errors_dict which has been removed
         ans = []  # store de_overlap errors
         ans_dict = defaultdict()  # store de_overlap errors
@@ -228,6 +228,34 @@ class ERRORS:
 
         return ans_dict, overlap_filtered_errors_counter
 
+    def len_filter(self, errors_dict: dict, min_len: int = 50000, max_len: int = 10000000,
+                   out_path="len_filtered_errors.json", remove_error_path="len_remove_error.txt", filter_cls=None):
+        if filter_cls is None:
+            filter_cls = self.classes
+        filtered_errors = dict()
+        len_removed_errors = dict()
+        len_filtered_errors_counter = dict()
+
+        for key in filter_cls:
+            filtered_errors[key] = list(
+                filter(lambda x: min_len <= x["hic_loci"][1] - x["hic_loci"][0] <= max_len, errors_dict[key]))
+            len_removed_errors[key] = list(
+                filter(lambda x: x["hic_loci"][1] - x["hic_loci"][0] < min_len or x["hic_loci"][1] - x["hic_loci"][
+                    0] > max_len, errors_dict[key]))
+
+            len_filtered_errors_counter[key] = {
+                "normal": len(filtered_errors[key]),
+                "abnormal": len(len_removed_errors[key])
+            }
+
+        with open(os.path.join(self.out_path, out_path), "w") as outfile:
+            json.dump(filtered_errors, outfile)
+
+        with open(os.path.join(self.out_path, remove_error_path), "w") as outfile:
+            json.dump(len_removed_errors, outfile)
+
+        return filtered_errors, len_filtered_errors_counter
+
     def divide_error(self, all_filtered_error: dict):
         for _class in self.classes:
             if _class in all_filtered_error.keys():
@@ -242,3 +270,26 @@ class ERRORS:
             else:
                 continue
         print("Divide all error category Done")
+
+
+def main():
+    info_file = "/home/jzj/Jupyter-Docker/buffer/silkworm_test/info.txt"
+
+    classes = ("translocation", "inversion", "debris", "chromosome")
+
+    out_path = "/home/jzj/Jupyter-Docker/buffer"
+
+    temp_class = ERRORS(classes, info_file, out_path)
+
+    raw_errors_file = "/home/jzj/Jupyter-Docker/buffer/silkworm_test/raw_errors.json"
+
+    with open(raw_errors_file, "r") as outfile:
+        raw_errors = json.load(outfile)
+
+    score_filtered_errors, score_filtered_errors_counter = temp_class.len_filter(raw_errors)
+
+    print(score_filtered_errors_counter)
+
+
+if __name__ == "__main__":
+    main()

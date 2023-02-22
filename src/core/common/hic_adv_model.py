@@ -183,7 +183,7 @@ class GenBaseModel:
             dpi=300,
             format="jpg",
             bbox_inches='tight',
-            pad_inches=0.1)
+            pad_inches=0)
         plt.close()
 
     @staticmethod
