@@ -5,7 +5,7 @@
 @author: jzj
 @contact: jzjlab@163.com
 @file: asy_operate.py
-@time: 12/01/22 4:14 PM
+@time: 2/23/23 4:14 PM
 @function: assembly file operate class
 """
 import json
@@ -73,8 +73,8 @@ class AssemblyOperate(object):
             logger.error("o query field ctg name or ctg order \n")
             raise ValueError("ctg name or ctg order must be specified")
 
-        ctgs_infos = {}  # ctg information
-        ctgs_orders = []  # ctg order
+        ctg_infos = {}  # ctg information
+        ctg_orders = []  # ctg order
 
         # when new_asy_file is not None
         if new_asy_file is not None:
@@ -85,14 +85,14 @@ class AssemblyOperate(object):
             for line in f:
                 if line.startswith(">"):
                     temp_line = line.strip().split()
-                    ctgs_infos[temp_line[1]] = {
+                    ctg_infos[temp_line[1]] = {
                         "ctg_name": temp_line[0],
                         "length": temp_line[2]
                     }
                 else:
                     for order in line.strip("\n").split(" "):
                         try:
-                            ctgs_orders.append(int(order))
+                            ctg_orders.append(int(order))
                         except ValueError:  # 如果是空的，则跳过
                             print("Warning: order is empty, please check assembly file")
 
@@ -102,23 +102,23 @@ class AssemblyOperate(object):
         ctg_by_order = {}  # ctg information dict by order
 
         # format ctg information
-        for ctgs_order in ctgs_orders:
-            abs_ctgs_order = abs(ctgs_order)
-            ctg_by_name[ctgs_infos[str(abs_ctgs_order)]["ctg_name"]] = {
-                "ctg_name": ctgs_infos[str(abs_ctgs_order)]["ctg_name"],
-                "ctg_order": ctgs_order,
-                "ctg_length": ctgs_infos[str(abs_ctgs_order)]["length"],
-                "site": (ctg_length, ctg_length - 1 + int(ctgs_infos[str(abs_ctgs_order)]["length"]))
+        for ctg_order in ctg_orders:
+            abs_ctg_order = abs(ctg_order)
+            ctg_by_name[ctg_infos[str(abs_ctg_order)]["ctg_name"]] = {
+                "ctg_name": ctg_infos[str(abs_ctg_order)]["ctg_name"],
+                "ctg_order": ctg_order,
+                "ctg_length": ctg_infos[str(abs_ctg_order)]["length"],
+                "site": (ctg_length, ctg_length - 1 + int(ctg_infos[str(abs_ctg_order)]["length"]))
             }
 
-            ctg_by_order[abs_ctgs_order] = {
-                "ctg_name": ctgs_infos[str(abs_ctgs_order)]["ctg_name"],
-                "ctg_order": ctgs_order,
-                "ctg_length": ctgs_infos[str(abs_ctgs_order)]["length"],
-                "site": (ctg_length, ctg_length - 1 + int(ctgs_infos[str(abs_ctgs_order)]["length"]))
+            ctg_by_order[abs_ctg_order] = {
+                "ctg_name": ctg_infos[str(abs_ctg_order)]["ctg_name"],
+                "ctg_order": ctg_order,
+                "ctg_length": ctg_infos[str(abs_ctg_order)]["length"],
+                "site": (ctg_length, ctg_length - 1 + int(ctg_infos[str(abs_ctg_order)]["length"]))
             }
 
-            ctg_length += int(ctgs_infos[str(abs_ctgs_order)]["length"])
+            ctg_length += int(ctg_infos[str(abs_ctg_order)]["length"])
 
         if ctg_name is not None:
             if ctg_name.startswith(">") is False:
@@ -129,33 +129,33 @@ class AssemblyOperate(object):
             return ctg_by_order[ctg_order]
 
     @staticmethod
-    def _get_ctgs_orders(assembly_file_path):
+    def _get_ctg_orders(assembly_file_path):
         """
             Get all ctg orders
         Args:
             assembly_file_path: assembly file path
 
         Returns:
-            ctgs_orders: all ctgs and orders
+            ctg_orders: all ctg_s and orders
         """
-        ctgs = OrderedDict()  # ctgs information
-        ctgs_orders = []  # ctgs orders
+        ctg_s = OrderedDict()  # ctg_s information
+        ctg_orders = []  # ctg_s orders
 
         # get ctg number and total length
         with open(assembly_file_path, "r") as f:
             for line in f:
                 if line.startswith(">"):
                     temp_line = line.strip().split()
-                    ctgs[temp_line[0]] = {
+                    ctg_s[temp_line[0]] = {
                         "order": temp_line[1],
                         "length": temp_line[2]
                     }
                 else:
                     temp_line = line.strip().split(" ")
-                    ctgs_orders.append(temp_line)
-        return ctgs, ctgs_orders
+                    ctg_orders.append(temp_line)
+        return ctg_s, ctg_orders
 
-    def cut_ctgs(self, assembly_file_path, cut_ctg, out_file_path):
+    def cut_ctg_s(self, assembly_file_path, cut_ctg, out_file_path):
         """
             Cut ctg by ctg name
         Args:
@@ -167,8 +167,8 @@ class AssemblyOperate(object):
 
         """
 
-        # get original ctgs information
-        ctgs, ctgs_orders = self._get_ctgs_orders(assembly_file_path)
+        # get original ctg_s information
+        ctg_s, ctg_orders = self._get_ctg_orders(assembly_file_path)
 
         # Declare variables (in case of subsequent reminders)
         cut_ctg_name, cut_ctg_site = None, None
@@ -190,7 +190,7 @@ class AssemblyOperate(object):
 
         with open(out_file_path, "w") as f:
             # write new ctg information
-            for key, value in ctgs.items():
+            for key, value in ctg_s.items():
                 if key == cut_ctg_name:
                     # when ctg order is positive
                     if int(cut_ctg_order) > 0:
@@ -210,9 +210,9 @@ class AssemblyOperate(object):
                         f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
             # write new ctg order information
-            for ctgs_order in ctgs_orders:
+            for ctg_order in ctg_orders:
                 temp_write_list = []
-                for x in ctgs_order:
+                for x in ctg_order:
                     # update cut ctg order
                     if int(x) == int(cut_ctg_order):
                         if cut_ctg_order > 0:  # when ctg order is positive
@@ -235,9 +235,9 @@ class AssemblyOperate(object):
                             temp_write_list.append(str(x))
                 f.write(" ".join(temp_write_list) + "\n")
 
-    def recut_ctgs(self, assembly_file_path, cut_ctg, out_file_path):
+    def re_cut_ctg_s(self, assembly_file_path, cut_ctg, out_file_path):
         """
-            Recut ctg
+            Re cut ctg
         Args:
             assembly_file_path: assembly file path
             cut_ctg: cut ctg name （ctg_name: cut_site）
@@ -246,8 +246,8 @@ class AssemblyOperate(object):
         Returns:
             None
         """
-        # get original ctgs information
-        ctgs, ctgs_orders = self._get_ctgs_orders(assembly_file_path)
+        # get original ctg_s information
+        ctg_s, ctg_orders = self._get_ctg_orders(assembly_file_path)
 
         # Declare variables (in case of subsequent reminders)
         cut_ctg_name, cut_ctg_site = None, None
@@ -257,24 +257,24 @@ class AssemblyOperate(object):
             cut_ctg_name = key  # get cut ctg name
             cut_ctg_site = values  # get cut ctg site
 
-        # get recut ctg name head
+        # get re_cut ctg name head
         cut_ctg_name_head = re.search(r"(.*_)(\d+)", cut_ctg_name).group(1)
-        # get recut ctg name fragment order(fragment_X)
+        # get re_cut ctg name fragment order(fragment_X)
         cut_ctg_name_order = re.search(r"(.*_)(\d+)", cut_ctg_name).group(2)
 
-        # get recut ctg information
+        # get re_cut ctg information
         cut_ctg_info = self.get_ctg_info(ctg_name=cut_ctg_name, new_asy_file=assembly_file_path)
 
-        # get recut ctg order (True: positive, False: negative)
+        # get re_cut ctg order (True: positive, False: negative)
         cut_ctg_order = cut_ctg_info["ctg_order"]
 
-        # calculated recut start and end site
+        # calculated re_cut start and end site
         cut_ctg_site1 = cut_ctg_site - cut_ctg_info["site"][0]
         cut_ctg_site2 = cut_ctg_info["site"][1] - cut_ctg_site + 1
 
         with open(out_file_path, "w") as f:
             # write new ctg order information
-            for key, value in ctgs.items():
+            for key, value in ctg_s.items():
                 if key.startswith(cut_ctg_name_head):
                     head = re.search(r"(.*_)(\d+)", key).group(1)
                     order = re.search(r"(.*_)(\d+)", key).group(2)
@@ -283,7 +283,7 @@ class AssemblyOperate(object):
                     if int(order) < int(cut_ctg_name_order):
                         f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
-                    # if ctg is recut ctg
+                    # if ctg is re_cut ctg
                     elif order == cut_ctg_name_order:
                         temp_order = int(value["order"]) + 1
                         # when ctg order is positive
@@ -327,16 +327,16 @@ class AssemblyOperate(object):
                         f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
             # write new ctg order information
-            for ctgs_order in ctgs_orders:
+            for ctg_order in ctg_orders:
                 temp_write_list = []
-                for x in ctgs_order:
-                    # update recut ctg order
+                for x in ctg_order:
+                    # update re_cut ctg order
                     if int(x) == cut_ctg_order:
                         if cut_ctg_order > 0:
                             temp = cut_ctg_order + 1
                             temp_write_list.append(str(cut_ctg_order))
                             temp_write_list.append(str(temp))
-                        else:  # when recut ctg order is negative
+                        else:  # when re_cut ctg order is negative
                             temp = cut_ctg_order - 1
                             temp_write_list.append(str(temp))
                             temp_write_list.append(str(cut_ctg_order))
@@ -352,9 +352,9 @@ class AssemblyOperate(object):
                             temp_write_list.append(str(x))
                 f.write(" ".join(temp_write_list) + "\n")
 
-    def move_ctgs(self, assembly_file_path, error_info, out_file_path):
+    def moves_ctg(self, assembly_file_path, error_info, out_file_path):
         """
-            move translocation ctgs
+            move translocation ctg_s
         Args:
             assembly_file_path: assembly file path
             error_info: error information
@@ -366,12 +366,12 @@ class AssemblyOperate(object):
 
         self.assembly_file_path = assembly_file_path
 
-        # get ctgs information
-        ctgs, ctgs_orders = AssemblyOperate._get_ctgs_orders(assembly_file_path)
+        # get ctg_s information
+        ctg_s, ctg_orders = AssemblyOperate._get_ctg_orders(assembly_file_path)
 
         for error in error_info:
             # get move ctg name information
-            move_ctg = list(error_info[error]["move_ctgs"].keys())
+            move_ctg = list(error_info[error]["moves_ctg"].keys())
 
             # get move ctg order information
             move_ctg_orders = []
@@ -389,56 +389,56 @@ class AssemblyOperate(object):
 
             # update ctg order
             for move_ctg_order in move_ctg_orders:
-                for index in range(len(ctgs_orders)):
+                for index in range(len(ctg_orders)):
                     # delete the original position of the move ctg
-                    if move_ctg_order in ctgs_orders[index]:
-                        ctgs_orders[index].remove(move_ctg_order)
+                    if move_ctg_order in ctg_orders[index]:
+                        ctg_orders[index].remove(move_ctg_order)
 
                     # get insert ctg order index
-                    if str(insert_ctg_order) in ctgs_orders[index]:
-                        insert_ctg_order_index = (index, ctgs_orders[index].index(str(insert_ctg_order)))
+                    if str(insert_ctg_order) in ctg_orders[index]:
+                        insert_ctg_order_index = (index, ctg_orders[index].index(str(insert_ctg_order)))
 
             # get move ctg
             direction = error_info[error]["direction"]  # insert direction
             if direction == "left":  # insert left
                 move_ctg_orders.reverse()
                 for move_ctg_order in move_ctg_orders:
-                    ctgs_orders[insert_ctg_order_index[0]].insert(insert_ctg_order_index[1], move_ctg_order)
+                    ctg_orders[insert_ctg_order_index[0]].insert(insert_ctg_order_index[1], move_ctg_order)
             else:  # insert right
                 move_ctg_orders.reverse()
                 for move_ctg_order in move_ctg_orders:
-                    ctgs_orders[insert_ctg_order_index[0]].insert(insert_ctg_order_index[1] + 1, move_ctg_order)
+                    ctg_orders[insert_ctg_order_index[0]].insert(insert_ctg_order_index[1] + 1, move_ctg_order)
 
             # update assembly file
             with open(out_file_path, "w") as f:
                 # write new ctg information
-                for key, value in ctgs.items():
+                for key, value in ctg_s.items():
                     f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
                 # write new ctg order information
-                for ctgs_order in ctgs_orders:
+                for ctg_order in ctg_orders:
                     temp_write_list = []
-                    for x in ctgs_order:
+                    for x in ctg_order:
                         temp_write_list.append(str(x))
                     f.write(" ".join(temp_write_list) + "\n")
 
-    def find_site_ctgs(self, assembly_file_path, start, end):
+    def find_site_ctg_s(self, assembly_file_path, start, end):
         """
-            Find site coordinate interval ctgs
+            Find site coordinate interval ctg_s
         Args:
             assembly_file_path: assembly file path
             start: start coordinate
             end: end coordinate
 
         Returns:
-            site_ctgs: site coordinate interval ctgs
+            site_ctg_s: site coordinate interval ctg_s
         """
 
-        contain_contig = OrderedDict()  # site coordinate interval ctgs
+        contain_ctg = OrderedDict()  # site coordinate interval ctg_s
 
-        contig_info = {}  # ctg information {order: {name, length}}
+        ctg_info = {}  # ctg information {order: {name, length}}
 
-        contig_order = []  # ctg order list
+        ctg_order = []  # ctg order list
 
         # get the real position information on the genome
         genome_start = round(start * self.ratio)
@@ -446,7 +446,7 @@ class AssemblyOperate(object):
 
         logger.info("查询真实位点为 ： {0} - {1} \n".format(genome_start, genome_end))
 
-        logger.info("该区域包含的contig : ")
+        logger.info("该区域包含的ctg : ")
 
         with open(assembly_file_path, "r") as f:
             lines = f.readlines()
@@ -454,35 +454,35 @@ class AssemblyOperate(object):
                 # ctg :name : order, length
                 if line.startswith(">"):
                     each_line = line.strip().split()
-                    contig_info[each_line[1].strip(">")] = {
+                    ctg_info[each_line[1].strip(">")] = {
                         "name": each_line[0],
                         "length": each_line[2]
                     }
                 # ctg order
                 else:
-                    contig_order.append(line.strip().split())
+                    ctg_order.append(line.strip().split())
 
             # Two-dimensional reduction to one-dimensional
-            contig_order = [order for st in contig_order for order in st]
+            ctg_order = [order for st in ctg_order for order in st]
 
-        # 寻找contig
+        # 寻找ctg
         temp_len_s = 0  # record the start position of the current ctg
         temp_len_e = 0  # record the end position of the current ctg
 
-        for i in contig_order:  # loop ctgs
+        for i in ctg_order:  # loop ctg_s
 
             if i.startswith("-"):  # when ctg is reverse(Negative)
                 i = i[1:]
                 temp_len_s = temp_len_e + 1
-                temp_len_e += int(contig_info[i]["length"])
+                temp_len_e += int(ctg_info[i]["length"])
             else:
                 temp_len_s = temp_len_e + 1
-                temp_len_e += int(contig_info[i]["length"])
+                temp_len_e += int(ctg_info[i]["length"])
 
             # Decoupling
             def callback():
-                contain_contig[contig_info[i]["name"]] = {
-                    "length": contig_info[i]["length"],
+                contain_ctg[ctg_info[i]["name"]] = {
+                    "length": ctg_info[i]["length"],
                     "start": temp_len_s,
                     "end": temp_len_e
                 }
@@ -499,15 +499,15 @@ class AssemblyOperate(object):
                     callback()
 
         # reformatted output to json
-        contain_contig = json.dumps(
-            contain_contig,
+        contain_ctg = json.dumps(
+            contain_ctg,
             indent=4,
             separators=(
                 ',',
                 ': '))
-        logger.info(contain_contig)
+        logger.info(contain_ctg)
 
-        return contain_contig
+        return contain_ctg
 
     def cut_ctg_to_3(self, assembly_file_path, cut_ctg_name, site_1, site_2, out_file_path):
         """
@@ -526,8 +526,8 @@ class AssemblyOperate(object):
         if cut_ctg_name.startswith(">") is False:
             cut_ctg_name = ">" + cut_ctg_name
 
-        # get original ctgs information
-        ctgs, ctgs_orders = self._get_ctgs_orders(assembly_file_path)
+        # get original ctg_s information
+        ctg_s, ctg_orders = self._get_ctg_orders(assembly_file_path)
 
         # get new information of cut ctg
         cut_ctg_info = self.get_ctg_info(ctg_name=cut_ctg_name, new_asy_file=assembly_file_path)
@@ -542,7 +542,7 @@ class AssemblyOperate(object):
 
         with open(out_file_path, "w") as f:
             # write new ctg information
-            for key, value in ctgs.items():
+            for key, value in ctg_s.items():
                 if key == cut_ctg_name:
                     # when ctg order is positive
                     if cut_ctg_order > 0:
@@ -567,9 +567,9 @@ class AssemblyOperate(object):
                         f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
             # write new ctg order
-            for ctgs_order in ctgs_orders:
+            for ctg_order in ctg_orders:
                 temp_write_list = []
-                for x in ctgs_order:
+                for x in ctg_order:
                     # update ctg order
                     if int(x) == cut_ctg_order:
                         if cut_ctg_order > 0:
@@ -596,9 +596,9 @@ class AssemblyOperate(object):
                             temp_write_list.append(str(x))
                 f.write(" ".join(temp_write_list) + "\n")
 
-    def recut_ctg_to_3(self, assembly_file_path, cut_ctg_name, site_1, site_2, out_file_path):
+    def re_cut_ctg_to_3(self, assembly_file_path, cut_ctg_name, site_1, site_2, out_file_path):
         """
-            Recut ctg to 3 parts
+            Re cut ctg to 3 parts
         Args:
             assembly_file_path: assembly file path
             cut_ctg_name: cut ctg name
@@ -612,12 +612,12 @@ class AssemblyOperate(object):
         if cut_ctg_name.startswith(">") is False:
             cut_ctg_name = ">" + cut_ctg_name
 
-        # get original ctgs information
-        ctgs, ctgs_orders = self._get_ctgs_orders(assembly_file_path)
+        # get original ctg_s information
+        ctg_s, ctg_orders = self._get_ctg_orders(assembly_file_path)
 
-        # get recut ctg head information
+        # get re_cut ctg head information
         cut_ctg_name_head = re.search(r"(.*_)(\d+)", cut_ctg_name).group(1)
-        # get recut ctg order information（fragment_X）
+        # get re_cut ctg order information（fragment_X）
         cut_ctg_name_order = re.search(r"(.*_)(\d+)", cut_ctg_name).group(2)
 
         # calculate the new information of the cut ctg
@@ -633,7 +633,7 @@ class AssemblyOperate(object):
 
         with open(out_file_path, "w") as f:
             # write new ctg information
-            for key, value in ctgs.items():
+            for key, value in ctg_s.items():
                 if key.startswith(cut_ctg_name_head):
                     head = re.search(r"(.*_)(\d+)", key).group(1)
                     order = re.search(r"(.*_)(\d+)", key).group(2)
@@ -642,7 +642,7 @@ class AssemblyOperate(object):
                     if int(order) < int(cut_ctg_name_order):
                         f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
-                    # recut ctg
+                    # re_cut ctg
                     elif int(order) == int(cut_ctg_name_order):
                         temp_order = int(value["order"]) + 1
                         # judge the order direction of the cut ctg
@@ -695,9 +695,9 @@ class AssemblyOperate(object):
                         f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
             # write new ctg order information
-            for ctgs_order in ctgs_orders:
+            for ctg_order in ctg_orders:
                 temp_write_list = []
-                for x in ctgs_order:
+                for x in ctg_order:
                     # update the new order of the cut ctg
                     if int(x) == cut_ctg_order:
                         if cut_ctg_order > 0:
@@ -740,62 +740,78 @@ class AssemblyOperate(object):
         # get the order of the invert ctg
         inv_ctg_order = self.get_ctg_info(ctg_name=ctg_name, new_asy_file=assembly_file_path)["ctg_order"]
 
-        # get the ctgs order information in assembly_file_path
-        ctgs, ctgs_orders = AssemblyOperate._get_ctgs_orders(assembly_file_path)
+        # get the ctg_s order information in assembly_file_path
+        ctg_s, ctg_orders = AssemblyOperate._get_ctg_orders(assembly_file_path)
 
         # update assembly file
         with open(out_file_path, "w") as f:
             # write the new ctg information
-            for key, value in ctgs.items():
+            for key, value in ctg_s.items():
                 f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
             # write new ctg order information
-            for ctgs_order in ctgs_orders:
+            for ctg_order in ctg_orders:
                 temp_write_list = []
-                for x in ctgs_order:
+                for x in ctg_order:
                     if int(x) == inv_ctg_order:
                         temp_write_list.append(str(-int(x)))
                     else:
                         temp_write_list.append(str(x))
                 f.write(" ".join(temp_write_list) + "\n")
 
-    def move_deb_to_end(self, assembly_file_path, move_ctgs, out_file_path):
+    def ins_ctg(self, assembly_file_path, error_inv_info, out_file_path):
+        """
+            Loop invert the order of the ctg
+        Args:
+            assembly_file_path: the path of the assembly file
+            out_file_path: the path of the output file
+            error_inv_info: the information of the error ctg
+
+        Returns:
+            None
+        """
+
+        for error in error_inv_info:
+            for inv_ctg in error_inv_info[error]["inv_ctg"]:
+                self.inv_ctg(inv_ctg, assembly_file_path, out_file_path)
+
+    def move_deb_to_end(self, assembly_file_path, moves_ctg, out_file_path):
         """
             Move the debris ctg to the end of the assembly file
         Args:
             assembly_file_path: the path of the assembly file
-            move_ctgs: the list of the debris ctg
+            moves_ctg: the list of the debris ctg
             out_file_path: the path of the output file
 
         Returns:
             None
         """
-        deb_ctgs_order = []
+        deb_ctg_order = []
 
-        for i in move_ctgs:
-            for j in move_ctgs[i]["deb_ctgs"]:
+        for i in moves_ctg:
+            for j in moves_ctg[i]["deb_ctg"]:
                 temp = self.get_ctg_info(ctg_name=j, new_asy_file=assembly_file_path)
-                deb_ctgs_order.append(str(temp["ctg_order"]))
+                deb_ctg_order.append(str(temp["ctg_order"]))
 
-        # get the ctgs order information in assembly_file_path
-        ctgs, ctgs_orders = AssemblyOperate._get_ctgs_orders(assembly_file_path)
+        # get the ctg_s order information in assembly_file_path
+        ctg_s, ctg_orders = AssemblyOperate._get_ctg_orders(assembly_file_path)
 
         # update order and write to new file
         with open(out_file_path, "w") as f:
             # write the new ctg information
-            for key, value in ctgs.items():
+            for key, value in ctg_s.items():
                 f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
             # write new ctg order information
-            for ctgs_order in ctgs_orders:
+            for ctg_order in ctg_orders:
                 temp_write_list = []
-                for x in ctgs_order:
-                    if str(x) in deb_ctgs_order:
+                for x in ctg_order:
+                    if str(x) in deb_ctg_order:
                         continue
                     else:
                         temp_write_list.append(str(x))
                 f.write(" ".join(temp_write_list) + "\n")
-            f.write(" ".join(deb_ctgs_order) + "\n")
+            f.write(" ".join(deb_ctg_order) + "\n")
 
     @staticmethod
     def remove_asy_blank(raw_asy, new_asy=None):

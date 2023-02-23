@@ -30,6 +30,7 @@ modified_assembly_file = os.path.join(divided_error, "tran_debris_adjusted.assem
 # define variable
 error_deb_info = None
 error_tran_info = None
+error_inv_info = None
 
 # translocation rectify
 if os.path.exists(os.path.join(divided_error, "translocation_error.json")):
@@ -68,6 +69,7 @@ ratio = get_ratio(hic_file_path, assembly_file_path)
 # class AssemblyOperate class
 asy_operate = AssemblyOperate(modified_assembly_file, ratio)
 
-# move ctgs
-asy_operate.move_ctgs(modified_assembly_file, error_tran_info, modified_assembly_file)
+# move ctg
+asy_operate.moves_ctg(modified_assembly_file, error_tran_info, modified_assembly_file)
+asy_operate.ins_ctg(modified_assembly_file, error_inv_info, modified_assembly_file)
 asy_operate.move_deb_to_end(modified_assembly_file, error_deb_info, modified_assembly_file)

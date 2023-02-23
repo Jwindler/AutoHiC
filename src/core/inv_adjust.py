@@ -18,7 +18,18 @@ from src.core.utils.logger import logger
 
 
 def adjust_inversion(error_queue, hic_file, assembly_file, modified_assembly_file):
-    logger.info("Start adjust inversion \n")
+    """
+    Inversion adjust
+    Args:
+        error_queue:
+        hic_file:
+        assembly_file:
+        modified_assembly_file:
+
+    Returns:
+        inversion error information queue
+    """
+    logger.info("Start adjust inversion errors:\n")
 
     # get ratio between chromosome length and hic file length
     ratio = get_ratio(hic_file, assembly_file)
@@ -30,34 +41,40 @@ def adjust_inversion(error_queue, hic_file, assembly_file, modified_assembly_fil
 
     error_inv_info = OrderedDict()  # inversion info
 
+    flag = True  # flag to judge whether the file is modified
+
     # iterate error queue
     for error in error_queue:
+        if flag:
+            flag = False
+        else:
+            assembly_file = modified_assembly_file
 
-        logger.info("开始计算 {0} 的调整信息：".format(error))
+        logger.info("Start calculate {0} information：\n".format(error))
 
         # search ctg in debris site
-        error_contain_ctgs = asy_operate.find_site_ctgs(assembly_file, error_queue[error]["start"],
-                                                        error_queue[error]["end"])
-        error_contain_ctgs = json.loads(error_contain_ctgs)  # convert string to dict
-        error_contain_ctgs = list(error_contain_ctgs.items())  # convert dict to list
+        error_contains_ctg = asy_operate.find_site_ctg_s(assembly_file, error_queue[error]["start"],
+                                                         error_queue[error]["end"])
+        error_contains_ctg = json.loads(error_contains_ctg)  # convert string to dict
+        error_contains_ctg = list(error_contains_ctg.items())  # convert dict to list
 
-        logger.info("开始切割反转错误的边界ctgs：")
+        logger.info("Start cut inversion location ctg：\n")
 
         # cut ctg in inversion site
-        if len(error_contain_ctgs) >= 2:  # ctg in debris site >= 2
+        if len(error_contains_ctg) >= 2:  # ctg in debris site >= 2
 
             # cut first ctg
-            first_ctg = error_contain_ctgs[0]
+            first_ctg = error_contains_ctg[0]
             cut_ctg_name_site[first_ctg[0]] = round(error_queue[error]["start"] * ratio)
 
             # {ctg_name: "cut_site"}
             if "fragment" in first_ctg[0] or "debris" in first_ctg[0]:  # check if second cut
-                asy_operate.recut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
+                asy_operate.re_cut_ctg_s(assembly_file, cut_ctg_name_site, modified_assembly_file)
             else:
-                asy_operate.cut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
+                asy_operate.cut_ctg_s(assembly_file, cut_ctg_name_site, modified_assembly_file)
 
             # cut last ctg
-            last_ctg = error_contain_ctgs[-1]
+            last_ctg = error_contains_ctg[-1]
 
             cut_ctg_name_site.clear()  # clear dict
             cut_ctg_name_site[last_ctg[0]] = round(error_queue[error]["end"] * ratio)
@@ -74,13 +91,14 @@ def adjust_inversion(error_queue, hic_file, assembly_file, modified_assembly_fil
                         cut_ctg_name_site.clear()  # clear dict
                         cut_ctg_name_site[renew_last_ctg_name] = round(error_queue[error]["end"] * ratio)
                 except AttributeError:
-                    pass
-                asy_operate.recut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
+                    logger.warning(
+                        "AttributeError: {0} or {1} is not synonymous ctg\n".format(first_ctg[0], last_ctg[0]))
+                asy_operate.re_cut_ctg_s(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
             else:
-                asy_operate.cut_ctgs(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
+                asy_operate.cut_ctg_s(modified_assembly_file, cut_ctg_name_site, modified_assembly_file)
 
         else:  # only one ctg in debris site
-            _ctg = error_contain_ctgs[0]  # ctg_name
+            _ctg = error_contains_ctg[0]  # ctg_name
 
             _ctg_info = asy_operate.get_ctg_info(ctg_name=_ctg[0], new_asy_file=assembly_file)  # get ctg info
 
@@ -91,43 +109,43 @@ def adjust_inversion(error_queue, hic_file, assembly_file, modified_assembly_fil
             if _ctg_info["site"][0] == cut_ctg_site_start:  # left boundary coincide
                 cut_ctg_name_site[_ctg[0]] = cut_ctg_site_end
 
-                # cut one ctg to two ctgs
+                # cut one ctg to two ctg
                 if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # check if second cut
-                    asy_operate.recut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
+                    asy_operate.re_cut_ctg_s(assembly_file, cut_ctg_name_site, modified_assembly_file)
                 else:
-                    asy_operate.cut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
+                    asy_operate.cut_ctg_s(assembly_file, cut_ctg_name_site, modified_assembly_file)
 
             elif _ctg_info["site"][1] == cut_ctg_site_end:  # right boundary coincide
                 cut_ctg_name_site[_ctg[0]] = cut_ctg_site_start
 
-                # cut one ctg to two ctgs
+                # cut one ctg to two ctg
                 if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # check if second cut
-                    asy_operate.recut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
+                    asy_operate.re_cut_ctg_s(assembly_file, cut_ctg_name_site, modified_assembly_file)
                 else:
-                    asy_operate.cut_ctgs(assembly_file, cut_ctg_name_site, modified_assembly_file)
+                    asy_operate.cut_ctg_s(assembly_file, cut_ctg_name_site, modified_assembly_file)
 
             else:  # no boundary, one cut three
 
-                # cut one ctg to three ctgs
+                # cut one ctg to three ctg
                 if "fragment" in _ctg[0] or "debris" in _ctg[0]:  # check if second cut
-                    asy_operate.recut_ctg_to_3(assembly_file, _ctg[0], cut_ctg_site_start,
-                                               cut_ctg_site_end, modified_assembly_file)
+                    asy_operate.re_cut_ctg_to_3(assembly_file, _ctg[0], cut_ctg_site_start,
+                                                cut_ctg_site_end, modified_assembly_file)
                 else:
                     asy_operate.cut_ctg_to_3(assembly_file, _ctg[0], cut_ctg_site_start,
                                              cut_ctg_site_end, modified_assembly_file)
 
-        logger.info("反转错误的边界ctgs切割完成 \n")
+        logger.info("Cut inversion location ctg done \n")
 
-        logger.info("重新查询反转错误区间包含的ctgs")
-        new_error_contain_ctgs = asy_operate.find_site_ctgs(modified_assembly_file, error_queue[error]["start"],
-                                                            error_queue[error]["end"])
+        logger.info("Re-search {0} inversion location ctg information:\n".format(error))
+        new_error_contains_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, error_queue[error]["start"],
+                                                             error_queue[error]["end"])
 
-        new_error_contain_ctgs = json.loads(new_error_contain_ctgs)  # convert str to dict
+        new_error_contains_ctg = json.loads(new_error_contains_ctg)  # convert str to dict
 
-        logger.info("需要翻转的ctgs: %s \n", new_error_contain_ctgs)
+        logger.info("Needs to be moved ctg: %s\n", new_error_contains_ctg)
 
         error_inv_info[error] = {
-            "inv_ctgs": list(new_error_contain_ctgs.keys())
+            "inv_ctg": list(new_error_contains_ctg.keys())
         }
     return error_inv_info
 

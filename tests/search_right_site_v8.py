@@ -22,12 +22,12 @@ from src.assembly.asy_operate import AssemblyOperate
 from src.core.utils.get_conf import get_conf
 from src.core.utils.logger import logger
 from src.core.utils.get_hic_real_len import get_hic_real_len
-from src.core import settings  # export ENVIROMENT
+from src.core import settings  # export ENVIRONMENT
 
 
 def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tuple, length_site: tuple = None):
     """
-        get full length matrix
+    Get full length matrix
     Args:
         hic_file: hic file
         asy_file: assembly file
@@ -114,7 +114,7 @@ def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tup
     return full_len_matrix
 
 
-def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_self: bool = True):
+def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_self: bool = True, peak_percentile=95):
     """
         get insert peak
     Args:
@@ -122,6 +122,7 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
         error_site: error site
         fit_resolution: fit resolution
         remove_self: remove self error peaks
+        peak_percentile: peak percentile
 
     Returns:
         insert peak index
@@ -147,16 +148,16 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
         y = peak_matrix[i]  # get matrix value
 
         # get peaks
-        # TODO: distance should be a hyperparameter,  height=np.percentile(y, 90) 需要调整，90% 可能峰太多
+        # peak_percentile 需要调整，95% 可能峰太多
         peak_id, peak_property = find_peaks(
-            y, height=np.percentile(y, 95), distance=distance_threshold)
+            y, height=np.percentile(y, peak_percentile), distance=distance_threshold)
 
         peaks_index = x[peak_id]  # get peaks index
         peaks_height = peak_property['peak_heights']  # get peaks height/value
 
         # 下面的内容太长，不打印到日志，或者打印到debug日志
-        # logger.info("第{0}个矩阵的峰 index：{1}".format(i + 1, peaks_index))
-        # logger.debug("第{0}个矩阵的峰 value：{1} \n".format(i + 1, peaks_height))
+        logger.debug("第{0}个矩阵的峰 index：{1}".format(i + 1, peaks_index))
+        logger.debug("第{0}个矩阵的峰 value：{1} \n".format(i + 1, peaks_height))
 
         for peak_index, peak_height in zip(peaks_index, peaks_height):
             if peak_index not in peaks_dict:
@@ -242,60 +243,60 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
     logger.info("Final insert region: %s", final_insert_region)
 
     # search ctg in insert peak
-    contain_contig = asy_operate.find_site_ctgs(assembly_file, final_insert_region[0], final_insert_region[0] + 1)
+    contain_ctg = asy_operate.find_site_ctg_s(assembly_file, final_insert_region[0], final_insert_region[0] + 1)
     # json format
-    contain_contig = list(json.loads(contain_contig).keys())[0]
+    contain_ctg = list(json.loads(contain_ctg).keys())[0]
 
-    first_cut_ctg = {contain_contig: math.ceil(final_insert_region[0] * ratio)}
+    first_cut_ctg = {contain_ctg: math.ceil(final_insert_region[0] * ratio)}
 
-    # cut a ctg to two ctgs
-    if "fragment" in contain_contig or "debris" in contain_contig:  # check whether the ctg is already cut
-        asy_operate.recut_ctgs(modified_assembly_file, first_cut_ctg, modified_assembly_file)
+    # cut a ctg to two ctg
+    if "fragment" in contain_ctg or "debris" in contain_ctg:  # check whether the ctg is already cut
+        asy_operate.re_cut_ctg_s(modified_assembly_file, first_cut_ctg, modified_assembly_file)
     else:
-        asy_operate.cut_ctgs(modified_assembly_file, first_cut_ctg, modified_assembly_file)
+        asy_operate.cut_ctg_s(modified_assembly_file, first_cut_ctg, modified_assembly_file)
 
     # search ctg in insert peak
-    contain_contig = asy_operate.find_site_ctgs(modified_assembly_file, final_insert_region[1],
-                                                final_insert_region[1] + 1)
+    contain_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, final_insert_region[1],
+                                              final_insert_region[1] + 1)
 
     # json format
-    contain_contig = list(json.loads(contain_contig).keys())[0]
+    contain_ctg = list(json.loads(contain_ctg).keys())[0]
 
-    second_cut_ctg = {contain_contig: math.ceil(final_insert_region[1] * ratio)}
+    second_cut_ctg = {contain_ctg: math.ceil(final_insert_region[1] * ratio)}
 
-    # cut a ctg to two ctgs
-    if "fragment" in contain_contig or "debris" in contain_contig:  # check whether the ctg is already cut
-        asy_operate.recut_ctgs(modified_assembly_file, second_cut_ctg, modified_assembly_file)
+    # cut a ctg to two ctg
+    if "fragment" in contain_ctg or "debris" in contain_ctg:  # check whether the ctg is already cut
+        asy_operate.re_cut_ctg_s(modified_assembly_file, second_cut_ctg, modified_assembly_file)
     else:
-        asy_operate.cut_ctgs(modified_assembly_file, second_cut_ctg, modified_assembly_file)
+        asy_operate.cut_ctg_s(modified_assembly_file, second_cut_ctg, modified_assembly_file)
 
     # search ctg in insert peak
-    contain_contig = asy_operate.find_site_ctgs(modified_assembly_file, final_insert_region[0], final_insert_region[1])
+    contain_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, final_insert_region[0], final_insert_region[1])
 
     # json format
-    contain_contig = json.loads(contain_contig)
+    contain_ctg = json.loads(contain_ctg)
 
     # return multiple ctg : ctg > 1
-    if len(contain_contig) > 1:
+    if len(contain_ctg) > 1:
         max_overlap = {}
-        contain_contigs_list = list(contain_contig.keys())
-        max_overlap[contain_contigs_list[0]] = contain_contig[contain_contigs_list[0]]["end"] - final_insert_region[0]
-        max_overlap[contain_contigs_list[-1]] = final_insert_region[1] - contain_contig[contain_contigs_list[-1]][
+        contain_ctg_lists = list(contain_ctg.keys())
+        max_overlap[contain_ctg_lists[0]] = contain_ctg[contain_ctg_lists[0]]["end"] - final_insert_region[0]
+        max_overlap[contain_ctg_lists[-1]] = final_insert_region[1] - contain_ctg[contain_ctg_lists[-1]][
             "start"]
 
-        for contain_contig_list in contain_contigs_list[1:-1]:
-            max_overlap[contain_contig_list] = contain_contig[contain_contig_list]["length"]
-        temp_contain_contig = {
-            max(max_overlap, key=max_overlap.get): contain_contig[max(max_overlap, key=max_overlap.get)]}
+        for contain_ctg_list in contain_ctg_lists[1:-1]:
+            max_overlap[contain_ctg_list] = contain_ctg[contain_ctg_list]["length"]
+        temp_contain_ctg = {
+            max(max_overlap, key=max_overlap.get): contain_ctg[max(max_overlap, key=max_overlap.get)]}
 
-        contain_contig = temp_contain_contig
+        contain_ctg = temp_contain_ctg
 
-    logger.info("Insert ctg: ： %s", contain_contig)
+    logger.info("Insert ctg: ： %s", contain_ctg)
 
     # calculate insert direction
-    only_ctg_name = list(contain_contig.keys())[0]
-    left_distance = round(final_insert_region[0] * ratio) - contain_contig[only_ctg_name]["start"]
-    right_distance = contain_contig[only_ctg_name]["end"] - round(final_insert_region[1] * ratio)
+    only_ctg_name = list(contain_ctg.keys())[0]
+    left_distance = round(final_insert_region[0] * ratio) - contain_ctg[only_ctg_name]["start"]
+    right_distance = contain_ctg[only_ctg_name]["end"] - round(final_insert_region[1] * ratio)
 
     if left_distance < right_distance:
         logger.info("Insert direction is Left \n")
@@ -304,7 +305,7 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
         logger.info("Insert direction is Right \n")
         insert_direction = "right"
 
-    return contain_contig, insert_direction
+    return contain_ctg, insert_direction
 
 
 def main():
