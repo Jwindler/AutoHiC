@@ -2,7 +2,6 @@
 
 ![](https://img.shields.io/badge/release-v0.8.12-blue)![a](https://img.shields.io/badge/license-MIT-brightgreen)
 
-> Note: the [iterated](https://github.com/Jwindler/AutoHiC/tree/main/iterated) folder is deprecated
 
 
 

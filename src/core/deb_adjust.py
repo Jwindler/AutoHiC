@@ -5,7 +5,7 @@
 @author: jzj
 @contact: jzjlab@163.com
 @file: deb_adjust.py
-@time: 10/7/22 10:27 AM
+@time: 2/23/23 10:27 AM
 @function: debris adjust
 """
 import json
@@ -17,7 +17,7 @@ from src.core.utils.get_ratio import get_ratio
 from src.core.utils.logger import logger
 
 
-def adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file, move_flag=False):
+def adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file):
     logger.info("Start adjust debris \n")
 
     # get ratio between chromosome length and hic file length
@@ -28,10 +28,15 @@ def adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file, 
 
     cut_ctg_name_site = {}  # save cut chromosome name and site
 
+    flag = True  # flag to judge whether the file is modified
     error_deb_info = OrderedDict()  # debris info
 
     # iterate error queue
     for error in error_queue:
+        if flag:
+            flag = False
+        else:
+            assembly_file = modified_assembly_file
 
         logger.info("开始计算 {0} 的调整信息：".format(error))
 
@@ -130,38 +135,38 @@ def adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file, 
             "deb_ctgs": list(new_error_contain_ctgs.keys())
         }
 
-    if move_flag:
-        logger.info("开始对所有冗余错误进行调整：")
-
-        # start move ctgs
-        asy_operate.move_deb_to_end(modified_assembly_file, error_deb_info, modified_assembly_file)
-        logger.info("所有冗余错误调整完成 \n")
-
-    logger.info("所有冗余错误的调整信息： %s \n", error_deb_info)
-    logger.info("All Done! \n")
+    return error_deb_info
 
 
 def main():
     # error queue, start and end are based on hic file, not assembly file
     error_queue = {
-        "error_1": {
-            "start": 163482501,
-            "end": 163820001
+        "102241": {
+            "start": 202675001,
+            "end": 203925000
+        },
+        "932": {
+            "start": 640841620,
+            "end": 640892500
+        },
+        "9321": {
+            "start": 960874500,
+            "end": 961110000
+        },
+        "10224": {
+            "start": 964074301,
+            "end": 964168480
         }
-        # "error_2": {
-        #     "start": 280560061,
-        #     "end": 284239273
-        # }
     }
 
     # hic file path
-    hic_file = "/home/jzj/Data/Test/Np-Self/Np.0.hic"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/curated/curated_2/curated.2.hic"
 
     # assembly file path
-    assembly_file = "/home/jzj/Data/Test/Np-Self/Np.0.assembly"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/curated/curated_2/curated.2.assembly"
 
-    # output assembly file path
-    modified_assembly_file = "/home/jzj/buffer/test.assembly"
+    # modified assembly file path
+    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/test.assembly"
 
     adjust_debris(error_queue, hic_file, assembly_file, modified_assembly_file)
 

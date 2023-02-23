@@ -5,7 +5,7 @@
 @author: jzj
 @contact: jzjlab@163.com
 @file: tran_adjust.py
-@time: 10/7/22 10:27 AM
+@time: 2/23/23 10:27 AM
 @function: translocation adjust
 """
 import json
@@ -13,14 +13,13 @@ import re
 from collections import OrderedDict
 
 from src.assembly.asy_operate import AssemblyOperate
-# from src.assembly.search_right_site_V2 import search_right_site_v2
 
 from tests.search_right_site_v8 import search_right_site_v8
 from src.core.utils.get_ratio import get_ratio
 from src.core.utils.logger import logger
 
 
-def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file, move_flag=True):
+def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file):
     """
         translocation adjust
     Args:
@@ -28,7 +27,6 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
         hic_file: hic file path
         assembly_file: assembly file path
         modified_assembly_file: modified assembly file path
-        move_flag: move ctg or not
 
     Returns:
 
@@ -43,7 +41,7 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
     asy_operate = AssemblyOperate(assembly_file, ratio)
 
     # error modify information record
-    error_mdy_info = OrderedDict()
+    error_tran_info = OrderedDict()
 
     flag = True  # flag to judge whether the file is modified
     cut_ctg_name_site = {}  # cut ctg name and site
@@ -156,32 +154,24 @@ def adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly
 
         # get insert ctg site
         error_site = (error_queue[error]["start"], error_queue[error]["end"])
-        temp_result, insert_left = search_right_site_v8(hic_file, assembly_file, ratio, error_site)
-        error_mdy_info[error] = {
+        temp_result, insert_left = search_right_site_v8(hic_file, assembly_file, ratio, error_site,
+                                                        modified_assembly_file)
+        error_tran_info[error] = {
             "move_ctgs": new_error_contain_ctgs,
             "insert_site": temp_result,
             "direction": insert_left
         }
 
         logger.info("易位错误的插入位点查询完成 \n")
-
-    if move_flag:
-        logger.info("开始对所有易位错误进行调整：")
-
-        # move ctgs
-        asy_operate.move_ctgs(modified_assembly_file, error_mdy_info, modified_assembly_file)
-        logger.info("所有易位错误调整完成 \n")
-
-    logger.info("所有易位错误的调整信息： %s \n", error_mdy_info)
-    logger.info("All Done! \n")
+    return error_tran_info
 
 
 def main():
     # error queue, start and end are based on hic file, not assembly file
     error_queue = {
         "error_1": {
-            "start": 250081212,
-            "end": 254212374
+            "start": 175830201,
+            "end": 175981456
         }
         # "error_2": {
         #     "start": 453010131,
@@ -190,13 +180,13 @@ def main():
     }
 
     # hic file path
-    hic_file = "/home/jzj/Data/Test/raw_data/Aa/Aa.2.hic"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/curated/curated_2/curated.2.hic"
 
     # assembly file path
-    assembly_file = "/home/jzj/Data/Test/raw_data/Aa/Aa.2.assembly"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/curated/curated_2/curated.2.assembly"
 
     # modified assembly file path
-    modified_assembly_file = "/home/jzj/buffer/test.assembly"
+    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/test.assembly"
 
     adjust_translocation(error_queue, hic_file, assembly_file, modified_assembly_file)
 

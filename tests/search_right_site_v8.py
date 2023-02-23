@@ -76,7 +76,6 @@ def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tup
         iter_len.append(each_block_res_number * i * fit_resolution)
     iter_len.append(assembly_len)
 
-    # TODO： 增加对于width_site[0] - width_site[1] > 最小分辨率的范围的处理
     # cut error site block number
     error_len_block_num = math.ceil((width_site[1] - width_site[0]) / res_max_len)
     # each block length
@@ -155,8 +154,9 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
         peaks_index = x[peak_id]  # get peaks index
         peaks_height = peak_property['peak_heights']  # get peaks height/value
 
-        logger.info("第{0}个矩阵的峰 index：{1}".format(i + 1, peaks_index))
-        logger.debug("第{0}个矩阵的峰 value：{1} \n".format(i + 1, peaks_height))
+        # 下面的内容太长，不打印到日志，或者打印到debug日志
+        # logger.info("第{0}个矩阵的峰 index：{1}".format(i + 1, peaks_index))
+        # logger.debug("第{0}个矩阵的峰 value：{1} \n".format(i + 1, peaks_height))
 
         for peak_index, peak_height in zip(peaks_index, peaks_height):
             if peak_index not in peaks_dict:
@@ -199,7 +199,7 @@ def get_max_matrix_value(matrix: np.ndarray):
     return np.unravel_index(np.argmax(matrix, axis=None), matrix.shape)[1] + 1
 
 
-def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple):
+def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modified_assembly_file):
     # init assembly operate object
     asy_operate = AssemblyOperate(assembly_file, ratio)
 
@@ -246,30 +246,31 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple):
     # json format
     contain_contig = list(json.loads(contain_contig).keys())[0]
 
-    first_cut_ctg = {contain_contig: final_insert_region[0]}
+    first_cut_ctg = {contain_contig: math.ceil(final_insert_region[0] * ratio)}
 
     # cut a ctg to two ctgs
     if "fragment" in contain_contig or "debris" in contain_contig:  # check whether the ctg is already cut
-        asy_operate.recut_ctgs(assembly_file, first_cut_ctg, assembly_file)
+        asy_operate.recut_ctgs(modified_assembly_file, first_cut_ctg, modified_assembly_file)
     else:
-        asy_operate.cut_ctgs(assembly_file, first_cut_ctg, assembly_file)
+        asy_operate.cut_ctgs(modified_assembly_file, first_cut_ctg, modified_assembly_file)
 
     # search ctg in insert peak
-    contain_contig = asy_operate.find_site_ctgs(assembly_file, final_insert_region[1], final_insert_region[1] + 1)
+    contain_contig = asy_operate.find_site_ctgs(modified_assembly_file, final_insert_region[1],
+                                                final_insert_region[1] + 1)
 
     # json format
     contain_contig = list(json.loads(contain_contig).keys())[0]
 
-    second_cut_ctg = {contain_contig: final_insert_region[1]}
+    second_cut_ctg = {contain_contig: math.ceil(final_insert_region[1] * ratio)}
 
     # cut a ctg to two ctgs
     if "fragment" in contain_contig or "debris" in contain_contig:  # check whether the ctg is already cut
-        asy_operate.recut_ctgs(assembly_file, second_cut_ctg, assembly_file)
+        asy_operate.recut_ctgs(modified_assembly_file, second_cut_ctg, modified_assembly_file)
     else:
-        asy_operate.cut_ctgs(assembly_file, second_cut_ctg, assembly_file)
+        asy_operate.cut_ctgs(modified_assembly_file, second_cut_ctg, modified_assembly_file)
 
     # search ctg in insert peak
-    contain_contig = asy_operate.find_site_ctgs(assembly_file, final_insert_region[0], final_insert_region[1])
+    contain_contig = asy_operate.find_site_ctgs(modified_assembly_file, final_insert_region[0], final_insert_region[1])
 
     # json format
     contain_contig = json.loads(contain_contig)
@@ -310,10 +311,10 @@ def main():
     error_site = (56507626, 58430891)
 
     hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.0.hic"
-    # assembly_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.0.assembly"
     assembly_file = "/home/jzj/buffer/silkworm.0.assembly"
     ratio = 1
-    print(search_right_site_v8(hic_file, assembly_file, ratio, error_site))
+    modified_assembly_file = ""
+    print(search_right_site_v8(hic_file, assembly_file, ratio, error_site, modified_assembly_file))
 
 
 if __name__ == "__main__":

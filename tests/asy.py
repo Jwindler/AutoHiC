@@ -5,58 +5,69 @@
 @author: jzj
 @contact: jzjlab@163.com
 @file: asy.py
-@time: 11/11/22 3:38 PM
+@time: 2/23/23 3:38 PM
 @function: 
 """
-import os
+
 import json
+import os
+
+from src.assembly.asy_operate import AssemblyOperate
 from src.core.deb_adjust import adjust_debris
 from src.core.inv_adjust import adjust_inversion
 from src.core.tran_adjust import adjust_translocation
+from src.core.utils.get_ratio import get_ratio
 
-# 初始化日志
+hic_asy_path = "/home/jzj/Jupyter-Docker/buffer/curated/curated_2"
+hic_file_path = os.path.join(hic_asy_path, "curated.2.hic")
+assembly_file_path = os.path.join(hic_asy_path, "curated.2.assembly")
 
-hic_asy_path = "/home/jzj/Jupyter-Docker/buffer/silkworm_test"
-hic_file_path = os.path.join(hic_asy_path, "silkworm.0.hic")
-assembly_file_path = os.path.join(hic_asy_path, "silkworm.0.assembly")
-
-divided_error = "/home/jzj/Jupyter-Docker/buffer/silkworm_test"
+divided_error = "/home/jzj/Jupyter-Docker/buffer/curated/curated_2"
 
 # 输出文件路径
-modified_assembly_file = os.path.join(divided_error, "only_tran_adjusted.assembly")
-# modified_assembly_file = os.path.join(divided_error, "no_move_only_tran_adjusted.assembly")
+modified_assembly_file = os.path.join(divided_error, "tran_debris_adjusted.assembly")
 
-# rectify all category errors
+# define variable
+error_deb_info = None
+error_tran_info = None
 
+# translocation rectify
 if os.path.exists(os.path.join(divided_error, "translocation_error.json")):
     with open(os.path.join(divided_error, "translocation_error.json"), "r") as outfile:
         translocation_queue = outfile.read()
         translocation_queue = json.loads(translocation_queue)
 
-    # translocation rectify
-    # adjust_translocation(translocation_queue, hic_file_path, assembly_file_path, modified_assembly_file, move_flag=False)
-    adjust_translocation(translocation_queue, hic_file_path, assembly_file_path, modified_assembly_file)
+    error_tran_info = adjust_translocation(translocation_queue, hic_file_path, assembly_file_path,
+                                           modified_assembly_file)
 
     print("translocation rectify done")
 
-# if os.path.exists(os.path.join(divided_error, "inversion_error.json")):
-#     with open(os.path.join(divided_error, "inversion_error.json"), "r") as outfile:
-#         inversion_queue = outfile.read()
-#         inversion_queue = json.loads(inversion_queue)
-#
-#     # inversion rectify
-#     adjust_inversion(inversion_queue, hic_file_path, modified_assembly_file, modified_assembly_file)
-#
-#     print("inversion rectify done")
+# inversion rectify
+if os.path.exists(os.path.join(divided_error, "inversion_error.json")):
+    with open(os.path.join(divided_error, "inversion_error.json"), "r") as outfile:
+        inversion_queue = outfile.read()
+        inversion_queue = json.loads(inversion_queue)
 
+    error_inv_info = adjust_inversion(inversion_queue, hic_file_path, modified_assembly_file, modified_assembly_file)
 
-# if os.path.exists(os.path.join(divided_error, "debris_error.json")):
-#     with open(os.path.join(divided_error, "debris_error.json"), "r") as outfile:
-#         debris_queue = outfile.read()
-#         debris_queue = json.loads(debris_queue)
-#
-#     # debris rectify
-#     # adjust_debris(debris_queue, hic_file_path, modified_assembly_file, modified_assembly_file)  # no move
-#     adjust_debris(debris_queue, hic_file_path, modified_assembly_file, modified_assembly_file, move_flag=True)  # move
-#
-# print("debris rectify done")
+    print("inversion rectify done")
+
+# debris rectify
+if os.path.exists(os.path.join(divided_error, "debris_error.json")):
+    with open(os.path.join(divided_error, "debris_error.json"), "r") as outfile:
+        debris_queue = outfile.read()
+        debris_queue = json.loads(debris_queue)
+
+    error_deb_info = adjust_debris(debris_queue, hic_file_path, modified_assembly_file, modified_assembly_file)
+
+    print("debris rectify done")
+
+# get ratio of hic file and assembly file
+ratio = get_ratio(hic_file_path, assembly_file_path)
+
+# class AssemblyOperate class
+asy_operate = AssemblyOperate(modified_assembly_file, ratio)
+
+# move ctgs
+asy_operate.move_ctgs(modified_assembly_file, error_tran_info, modified_assembly_file)
+asy_operate.move_deb_to_end(modified_assembly_file, error_deb_info, modified_assembly_file)

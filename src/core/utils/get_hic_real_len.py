@@ -77,8 +77,8 @@ def get_hic_real_len(hic_file, asy_file) -> int:
 
 
 def main():
-    hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.0.hic"
-    assembly_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.0.assembly"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/curated/curated_2/curated.2.hic"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/curated/curated_2/curated.2.assembly"
     print("hic_real_len: ", get_hic_real_len(hic_file, assembly_file))
 
 
