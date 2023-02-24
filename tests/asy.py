@@ -18,11 +18,11 @@ from src.core.inv_adjust import adjust_inversion
 from src.core.tran_adjust import adjust_translocation
 from src.core.utils.get_ratio import get_ratio
 
-hic_asy_path = "/home/jzj/Jupyter-Docker/buffer/curated/curated_2"
-hic_file_path = os.path.join(hic_asy_path, "curated.2.hic")
-assembly_file_path = os.path.join(hic_asy_path, "curated.2.assembly")
+hic_asy_path = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_0"
+hic_file_path = os.path.join(hic_asy_path, "ci.0.hic")
+assembly_file_path = os.path.join(hic_asy_path, "ci.0.assembly")
 
-divided_error = "/home/jzj/Jupyter-Docker/buffer/curated/curated_2"
+divided_error = hic_asy_path
 
 # 输出文件路径
 modified_assembly_file = os.path.join(divided_error, "tran_debris_adjusted.assembly")
