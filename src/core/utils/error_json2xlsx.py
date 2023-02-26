@@ -40,7 +40,7 @@ def error2xlsx(error_file_path, output_path):
 
 
 def main():
-    error_path = "/home/jzj/Jupyter-Docker/buffer/curated/curated_2"
+    error_path = "/home/jzj/Jupyter-Docker/buffer/02_am/am_2"
 
     error_file = os.path.join(error_path, "overlap_filtered_errors.json")
     output_path = os.path.join(error_path, "errors.xlsx")
