@@ -444,9 +444,9 @@ class AssemblyOperate(object):
         genome_start = round(start * self.ratio)
         genome_end = round(end * self.ratio)
 
-        logger.info("查询真实位点为 ： {0} - {1} \n".format(genome_start, genome_end))
+        logger.info("Search assembly location ： {0} - {1} \n".format(genome_start, genome_end))
 
-        logger.info("该区域包含的ctg : ")
+        logger.info("This location ctg contains:\n")
 
         with open(assembly_file_path, "r") as f:
             lines = f.readlines()

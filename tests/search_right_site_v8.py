@@ -87,7 +87,7 @@ def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tup
     error_iter_len.append(width_site[1])
 
     full_len_matrix = None
-    for i in range(len(iter_len) - 1):
+    for i in range(len(iter_len) - 1):  # loop full length each block
         temp_error_matrix = None
         for j in range(len(error_iter_len) - 1):
             if length_site is None:
@@ -97,20 +97,24 @@ def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tup
             else:
                 print(error_iter_len[j], error_iter_len[j + 1] - 1, length_site[0] + iter_len[i],
                       length_site[0] + iter_len[i + 1])
-                # FIXME: width_site[0] - width_site[1] > 最小分辨率的范围
                 numpy_matrix_chr = chr_matrix_object.getRecordsAsMatrix(error_iter_len[j], error_iter_len[j + 1] - 1,
                                                                         length_site[0] + iter_len[i],
                                                                         length_site[0] + iter_len[i + 1])
-            if not np.any(temp_error_matrix):
+            if temp_error_matrix is None:
+                # 稀疏矩阵
+                if numpy_matrix_chr.shape == (1, 1):
+                    numpy_matrix_chr = np.zeros((error_each_block_res_number, each_block_res_number))
                 temp_error_matrix = numpy_matrix_chr
+            elif numpy_matrix_chr.shape == (1, 1):
+                temp_error_matrix = np.zeros((error_each_block_res_number, each_block_res_number))
             else:
                 temp_error_matrix = np.vstack((temp_error_matrix, numpy_matrix_chr))
 
-        if not np.any(full_len_matrix):
+        if full_len_matrix is None:
             full_len_matrix = temp_error_matrix
         else:
             full_len_matrix = np.hstack((full_len_matrix, temp_error_matrix))
-    print("full_len_matrix.shape", full_len_matrix.shape)
+
     return full_len_matrix
 
 
@@ -156,8 +160,8 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
         peaks_height = peak_property['peak_heights']  # get peaks height/value
 
         # 下面的内容太长，不打印到日志，或者打印到debug日志
-        logger.debug("第{0}个矩阵的峰 index：{1}".format(i + 1, peaks_index))
-        logger.debug("第{0}个矩阵的峰 value：{1} \n".format(i + 1, peaks_height))
+        logger.debug("The peak of the matrix {0} index：{1} \n".format(i + 1, peaks_index))
+        logger.debug("The peak of the matrix {0} value：{1} \n".format(i + 1, peaks_height))
 
         for peak_index, peak_height in zip(peaks_index, peaks_height):
             if peak_index not in peaks_dict:
@@ -183,7 +187,8 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
 
     # get max peak index
     many_key_name = max(final_peaks, key=final_peaks.get)
-    logger.info("互作程度最大的index为 %s", many_key_name)
+    logger.info("互作程度最大的index为 %s \n", many_key_name)
+    logger.info("The greatest interaction peak index %s \n", many_key_name)
 
     return many_key_name
 
@@ -309,13 +314,17 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
 
 
 def main():
-    error_site = (56507626, 58430891)
+    error_site = (16060000, 16265001)
 
-    hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/03_silkworm/silkworm.0.hic"
-    assembly_file = "/home/jzj/buffer/silkworm.0.assembly"
+    # hic file path
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2/ci.2.hic"
+
+    # assembly file path
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2/ci.2.assembly"
+
     ratio = 1
-    modified_assembly_file = ""
-    print(search_right_site_v8(hic_file, assembly_file, ratio, error_site, modified_assembly_file))
+    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/test.assembly"
+    print(search_right_site_v8(hic_file, assembly_file, ratio, error_site, assembly_file))
 
 
 if __name__ == "__main__":

@@ -174,24 +174,28 @@ def adjust_translocation(tran_error_queue, hic_file, assembly_file, modified_ass
 def main():
     # error queue, start and end are based on hic file, not assembly file
     tran_error_queue = {
-        "error_1": {
-            "start": 175830201,
-            "end": 175981456
+        "78": {
+            "start": 15125000,
+            "end": 15157000
+        },
+        "50": {
+            "start": 16060000,
+            "end":   16068000
+        },
+        "88": {
+            "start": 33098000,
+            "end": 33147000
         }
-        # "error_2": {
-        #     "start": 453010131,
-        #     "end": 455241282
-        # }
     }
 
     # hic file path
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/curated/curated_2/curated.2.hic"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2/ci.2.hic"
 
     # assembly file path
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/curated/curated_2/curated.2.assembly"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2/ci.2_backup.assembly"
 
-    # modified assembly file path
-    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/test.assembly"
+    # output assembly file path
+    modified_assembly_file = "/home/jzj/buffer/test.assembly"
 
     adjust_translocation(tran_error_queue, hic_file, assembly_file, modified_assembly_file)
 

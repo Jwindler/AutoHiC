@@ -154,20 +154,16 @@ def main():
     # error queue, start and end are based on hic file, not assembly file
     error_queue = {
         "error_1": {
-            "start": 268689492,
-            "end": 274981070
-        },
-        "error_2": {
-            "start": 280560061,
-            "end": 284239273
+            "start": 61779504,
+            "end": 62355990
         }
     }
 
     # hic file path
-    hic_file = "/home/jzj/Data/Test/Np-Self/Np.final.hic"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2/ci.2.hic"
 
     # assembly file path
-    assembly_file = "/home/jzj/Data/Test/Np-Self/Np.final.assembly"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2/ci.2_backup.assembly"
 
     # output assembly file path
     modified_assembly_file = "/home/jzj/buffer/test.assembly"
