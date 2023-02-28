@@ -18,11 +18,12 @@ from src.core.inv_adjust import adjust_inversion
 from src.core.tran_adjust import adjust_translocation
 from src.core.utils.get_ratio import get_ratio
 
-hic_asy_path = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2"
-hic_file_path = os.path.join(hic_asy_path, "ci.2.hic")
-assembly_file_path = os.path.join(hic_asy_path, "ci.2_backup.assembly")
+hic_asy_path = "/home/jzj/Data/Elements/buffer/10_genomes/04_ca"
+hic_file_path = os.path.join(hic_asy_path, "ca.2.hic")
 
-divided_error = hic_asy_path
+assembly_file_path = os.path.join(hic_asy_path, "ca.2.assembly")
+
+divided_error = "/home/jzj/Jupyter-Docker/buffer/04_ca/ca_2"
 
 # 输出文件路径
 modified_assembly_file = os.path.join(divided_error, "test_all.assembly")
@@ -46,28 +47,28 @@ else:
     print("no translocation error")
 
 # inversion rectify
-if os.path.exists(os.path.join(divided_error, "inversion_error.json")):
-    with open(os.path.join(divided_error, "inversion_error.json"), "r") as outfile:
-        inversion_queue = outfile.read()
-        inversion_queue = json.loads(inversion_queue)
-
-    error_inv_info = adjust_inversion(inversion_queue, hic_file_path, modified_assembly_file, modified_assembly_file)
-
-    print("inversion rectify done")
-else:
-    print("no inversion error")
-
-# debris rectify
-if os.path.exists(os.path.join(divided_error, "debris_error.json")):
-    with open(os.path.join(divided_error, "debris_error.json"), "r") as outfile:
-        debris_queue = outfile.read()
-        debris_queue = json.loads(debris_queue)
-
-    error_deb_info = adjust_debris(debris_queue, hic_file_path, modified_assembly_file, modified_assembly_file)
-
-    print("debris rectify done")
-else:
-    print("no debris error")
+# if os.path.exists(os.path.join(divided_error, "inversion_error.json")):
+#     with open(os.path.join(divided_error, "inversion_error.json"), "r") as outfile:
+#         inversion_queue = outfile.read()
+#         inversion_queue = json.loads(inversion_queue)
+#
+#     error_inv_info = adjust_inversion(inversion_queue, hic_file_path, modified_assembly_file, modified_assembly_file)
+#
+#     print("inversion rectify done")
+# else:
+#     print("no inversion error")
+#
+# # debris rectify
+# if os.path.exists(os.path.join(divided_error, "debris_error.json")):
+#     with open(os.path.join(divided_error, "debris_error.json"), "r") as outfile:
+#         debris_queue = outfile.read()
+#         debris_queue = json.loads(debris_queue)
+#
+#     error_deb_info = adjust_debris(debris_queue, hic_file_path, modified_assembly_file, modified_assembly_file)
+#
+#     print("debris rectify done")
+# else:
+#     print("no debris error")
 
 # get ratio of hic file and assembly file
 ratio = get_ratio(hic_file_path, assembly_file_path)
@@ -80,7 +81,7 @@ asy_operate = AssemblyOperate(modified_assembly_file, ratio)
 asy_operate.moves_ctg(modified_assembly_file, error_tran_info, modified_assembly_file)
 
 # inversion
-asy_operate.ins_ctg(modified_assembly_file, error_inv_info, modified_assembly_file)
-
-# debris
-asy_operate.move_deb_to_end(modified_assembly_file, error_deb_info, modified_assembly_file)
+# asy_operate.ins_ctg(modified_assembly_file, error_inv_info, modified_assembly_file)
+#
+# # debris
+# asy_operate.move_deb_to_end(modified_assembly_file, error_deb_info, modified_assembly_file)

@@ -4,6 +4,10 @@
 
 ## 分辨率
 
+- 
+
+![](https://swindler-typora.oss-cn-chengdu.aliyuncs.com/typora_imgs/image-20230228154512265.png)
+
 
 
 > juicebox 最高分辨率为500bp

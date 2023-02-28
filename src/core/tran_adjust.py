@@ -175,24 +175,16 @@ def main():
     # error queue, start and end are based on hic file, not assembly file
     tran_error_queue = {
         "78": {
-            "start": 15125000,
-            "end": 15157000
-        },
-        "50": {
-            "start": 16060000,
-            "end":   16068000
-        },
-        "88": {
-            "start": 33098000,
-            "end": 33147000
+            "start": 904050000,
+            "end":   904615000
         }
     }
 
     # hic file path
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2/ci.2.hic"
+    hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/04_ca/ca.2.hic"
 
     # assembly file path
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2/ci.2_backup.assembly"
+    assembly_file = "/home/jzj/Data/Elements/buffer/10_genomes/04_ca/ca.2.assembly"
 
     # output assembly file path
     modified_assembly_file = "/home/jzj/buffer/test.assembly"
