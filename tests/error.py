@@ -15,11 +15,11 @@ from collections import defaultdict
 
 
 class ERRORS:
-    def __init__(self, classes, info_file, out_path, img_size=(1110, 1110)):
+    def __init__(self, classes, info_file, out_path, img_size=(1116, 1116)):
         self.info_file = info_file
         self.classes = classes
         self.out_path = out_path
-        self.img_size = img_size
+        self.img_size = img_size  # TODO: 自动获取图片大小
         self.errors, self.counter = dict(), dict()
         self.class_list = []
 
@@ -29,6 +29,16 @@ class ERRORS:
 
     # generate error structure
     def create_structure(self, img_info, detection_result, epoch_flag=0):
+        """
+
+        Args:
+            img_info:
+            detection_result:
+            epoch_flag: detect epoch flag
+
+        Returns:
+
+        """
         for category, classes in zip(detection_result, self.classes):
             if epoch_flag == 0 and classes == "chromosome":
                 continue  # skip chromosome when epoch is 0
@@ -237,16 +247,20 @@ class ERRORS:
         len_filtered_errors_counter = dict()
 
         for key in filter_cls:
-            filtered_errors[key] = list(
-                filter(lambda x: min_len <= x["hic_loci"][1] - x["hic_loci"][0] <= max_len, errors_dict[key]))
-            len_removed_errors[key] = list(
-                filter(lambda x: x["hic_loci"][1] - x["hic_loci"][0] < min_len or x["hic_loci"][1] - x["hic_loci"][
-                    0] > max_len, errors_dict[key]))
+            try:
+                filtered_errors[key] = list(
+                    filter(lambda x: min_len <= x["hic_loci"][1] - x["hic_loci"][0] <= max_len, errors_dict[key]))
+                len_removed_errors[key] = list(
+                    filter(lambda x: x["hic_loci"][1] - x["hic_loci"][0] < min_len or x["hic_loci"][1] - x["hic_loci"][
+                        0] > max_len, errors_dict[key]))
 
-            len_filtered_errors_counter[key] = {
-                "normal": len(filtered_errors[key]),
-                "abnormal": len(len_removed_errors[key])
-            }
+                len_filtered_errors_counter[key] = {
+                    "normal": len(filtered_errors[key]),
+                    "abnormal": len(len_removed_errors[key])
+                }
+            except KeyError:
+                print(f"KeyError: {key} not in errors_dict")
+                continue
 
         with open(os.path.join(self.out_path, out_path), "w") as outfile:
             json.dump(filtered_errors, outfile)
@@ -260,6 +274,7 @@ class ERRORS:
                        out_path="chr_len_filtered_errors.json",
                        remove_error_path="chr_len_remove_error.txt", filter_cls=None):
         if chr_len is None:
+            # TODO: 接入 get_real_chr_len 函数
             print("chr_len is None, please input chr_len")
             return
 

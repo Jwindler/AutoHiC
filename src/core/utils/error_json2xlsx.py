@@ -61,9 +61,9 @@ def excel2json(excel_path, json_path):
 
 
 def main():
-    error_path = "/home/jzj/Jupyter-Docker/buffer/02_am/am_1"
+    error_path = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2"
 
-    error_file = os.path.join(error_path, "overlap_filtered_errors.json")
+    error_file = os.path.join(error_path, "chr_len_filtered_errors.json")
     output_path = os.path.join(error_path, "errors.xlsx")
 
     error2xlsx(error_file, output_path)

@@ -131,7 +131,7 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
     Returns:
         insert peak index
     """
-    print("Test")
+    logger.debug("Test")
 
     # calculate self index
     bin_index = [i for i in
@@ -187,7 +187,6 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
 
     # get max peak index
     many_key_name = max(final_peaks, key=final_peaks.get)
-    logger.info("互作程度最大的index为 %s \n", many_key_name)
     logger.info("The greatest interaction peak index %s \n", many_key_name)
 
     return many_key_name
@@ -230,7 +229,7 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
 
     # update Insert region
     update_search_site = (insert_peak_index * fit_resolution, (insert_peak_index + 1) * fit_resolution)
-    logger.debug("New insert search region: %s", update_search_site)
+    logger.info("New insert search region: %s", update_search_site)
 
     # get fit_resolution max len
     get_conf()  # get config dict
@@ -249,31 +248,42 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
 
     # search ctg in insert peak
     contain_ctg = asy_operate.find_site_ctg_s(assembly_file, final_insert_region[0], final_insert_region[0] + 1)
+
     # json format
-    contain_ctg = list(json.loads(contain_ctg).keys())[0]
+    contain_ctg = json.loads(contain_ctg)
 
-    first_cut_ctg = {contain_ctg: math.ceil(final_insert_region[0] * ratio)}
+    # cut final insert location ctg left point
+    contain_ctg_first = list(contain_ctg.keys())[0]
 
-    # cut a ctg to two ctg
-    if "fragment" in contain_ctg or "debris" in contain_ctg:  # check whether the ctg is already cut
-        asy_operate.re_cut_ctg_s(modified_assembly_file, first_cut_ctg, modified_assembly_file)
-    else:
-        asy_operate.cut_ctg_s(modified_assembly_file, first_cut_ctg, modified_assembly_file)
+    first_cut_ctg = {contain_ctg_first: math.ceil(final_insert_region[0] * ratio)}
+
+    # 如果刚好边界等，不需要切割
+    if contain_ctg[contain_ctg_first]["start"] != final_insert_region[0]:
+        # cut a ctg to two ctg
+        if "fragment" in contain_ctg_first or "debris" in contain_ctg_first:  # check whether the ctg is already cut
+            asy_operate.re_cut_ctg_s(modified_assembly_file, first_cut_ctg, modified_assembly_file)
+        else:
+            asy_operate.cut_ctg_s(modified_assembly_file, first_cut_ctg, modified_assembly_file)
 
     # search ctg in insert peak
     contain_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, final_insert_region[1],
                                               final_insert_region[1] + 1)
 
     # json format
-    contain_ctg = list(json.loads(contain_ctg).keys())[0]
+    contain_ctg = json.loads(contain_ctg)
 
-    second_cut_ctg = {contain_ctg: math.ceil(final_insert_region[1] * ratio)}
+    # cut final insert location ctg right point
+    contain_ctg_second = list(contain_ctg.keys())[0]
 
-    # cut a ctg to two ctg
-    if "fragment" in contain_ctg or "debris" in contain_ctg:  # check whether the ctg is already cut
-        asy_operate.re_cut_ctg_s(modified_assembly_file, second_cut_ctg, modified_assembly_file)
-    else:
-        asy_operate.cut_ctg_s(modified_assembly_file, second_cut_ctg, modified_assembly_file)
+    second_cut_ctg = {contain_ctg_second: math.ceil(final_insert_region[1] * ratio)}
+
+    # 如果刚好边界等，不需要切割
+    if contain_ctg[contain_ctg_second]["start"] != final_insert_region[1]:
+        # cut a ctg to two ctg
+        if "fragment" in contain_ctg_second or "debris" in contain_ctg_second:  # check whether the ctg is already cut
+            asy_operate.re_cut_ctg_s(modified_assembly_file, second_cut_ctg, modified_assembly_file)
+        else:
+            asy_operate.cut_ctg_s(modified_assembly_file, second_cut_ctg, modified_assembly_file)
 
     # search ctg in insert peak
     contain_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, final_insert_region[0], final_insert_region[1])
@@ -324,7 +334,7 @@ def main():
 
     ratio = 1
     modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/test.assembly"
-    print(search_right_site_v8(hic_file, assembly_file, ratio, error_site, assembly_file))
+    print(search_right_site_v8(hic_file, assembly_file, ratio, error_site, modified_assembly_file))
 
 
 if __name__ == "__main__":

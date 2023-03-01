@@ -144,9 +144,6 @@ def adjust_translocation(tran_error_queue, hic_file, assembly_file, modified_ass
 
         logger.info("Cut translocation location ctg done \n")
 
-    logger.info("Re-search translocation location ctg information:\n")
-
-    for error in tran_error_queue:
         logger.info("Start calculate {0} insert information：\n".format(error))
         new_error_contains_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, tran_error_queue[error]["start"],
                                                              tran_error_queue[error]["end"])
@@ -176,7 +173,7 @@ def main():
     tran_error_queue = {
         "78": {
             "start": 79691379,
-            "end":   79738045
+            "end": 79738045
         }
     }
 

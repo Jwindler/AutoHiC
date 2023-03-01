@@ -78,10 +78,10 @@ def get_hic_real_len(hic_file, asy_file) -> int:
 
 def main():
     # hic file path
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/curated/curated_2/curated.2.hic"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/curated/curated.0.hic"
 
     # assembly file path
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/curated/curated_2/curated.2.assembly"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/curated/curated.0.assembly"
     print("hic_real_len: ", get_hic_real_len(hic_file, assembly_file))
 
 
