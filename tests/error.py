@@ -256,6 +256,38 @@ class ERRORS:
 
         return filtered_errors, len_filtered_errors_counter
 
+    def chr_len_filter(self, errors_dict: dict, chr_len: int = None,
+                       out_path="chr_len_filtered_errors.json",
+                       remove_error_path="chr_len_remove_error.txt", filter_cls=None):
+        if chr_len is None:
+            print("chr_len is None, please input chr_len")
+            return
+
+        if filter_cls is None:
+            filter_cls = self.classes
+        filtered_errors = dict()
+        chr_len_removed_errors = dict()
+        chr_len_filtered_errors_counter = dict()
+
+        for key in filter_cls:
+            filtered_errors[key] = list(
+                filter(lambda x: x["hic_loci"][1] < chr_len, errors_dict[key]))
+            chr_len_removed_errors[key] = list(
+                filter(lambda x: x["hic_loci"][1] > chr_len, errors_dict[key]))
+
+            chr_len_filtered_errors_counter[key] = {
+                "normal": len(filtered_errors[key]),
+                "abnormal": len(chr_len_removed_errors[key])
+            }
+
+        with open(os.path.join(self.out_path, out_path), "w") as outfile:
+            json.dump(filtered_errors, outfile)
+
+        with open(os.path.join(self.out_path, remove_error_path), "w") as outfile:
+            json.dump(chr_len_removed_errors, outfile)
+
+        return filtered_errors, chr_len_filtered_errors_counter
+
     def divide_error(self, all_filtered_error: dict):
         for _class in self.classes:
             if _class in all_filtered_error.keys():
