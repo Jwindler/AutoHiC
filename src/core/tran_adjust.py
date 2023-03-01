@@ -159,7 +159,7 @@ def adjust_translocation(tran_error_queue, hic_file, assembly_file, modified_ass
 
         # get insert ctg site
         error_site = (tran_error_queue[error]["start"], tran_error_queue[error]["end"])
-        temp_result, insert_left = search_right_site_v8(hic_file, assembly_file, ratio, error_site,
+        temp_result, insert_left = search_right_site_v8(hic_file, modified_assembly_file, ratio, error_site,
                                                         modified_assembly_file)
         error_tran_info[error] = {
             "moves_ctg": new_error_contains_ctg,
@@ -175,19 +175,19 @@ def main():
     # error queue, start and end are based on hic file, not assembly file
     tran_error_queue = {
         "78": {
-            "start": 904050000,
-            "end":   904615000
+            "start": 79691379,
+            "end":   79738045
         }
     }
 
     # hic file path
-    hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/04_ca/ca.2.hic"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/01_ci/ci.1.hic"
 
     # assembly file path
-    assembly_file = "/home/jzj/Data/Elements/buffer/10_genomes/04_ca/ca.2.assembly"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/01_ci/ci.1.assembly"
 
     # output assembly file path
-    modified_assembly_file = "/home/jzj/buffer/test.assembly"
+    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/test.assembly"
 
     adjust_translocation(tran_error_queue, hic_file, assembly_file, modified_assembly_file)
 
