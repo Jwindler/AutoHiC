@@ -81,7 +81,7 @@ asy_operate = AssemblyOperate(modified_assembly_file, ratio)
 asy_operate.moves_ctg(modified_assembly_file, error_tran_info, modified_assembly_file)
 
 # inversion
-asy_operate.ins_ctg(modified_assembly_file, error_inv_info, modified_assembly_file)
+asy_operate.inv_ctg_s(modified_assembly_file, error_inv_info, modified_assembly_file)
 
 # debris
 asy_operate.move_deb_to_end(modified_assembly_file, error_deb_info, modified_assembly_file)

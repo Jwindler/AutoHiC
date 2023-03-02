@@ -147,6 +147,7 @@ def adjust_inversion(error_queue, hic_file, assembly_file, modified_assembly_fil
         error_inv_info[error] = {
             "inv_ctg": list(new_error_contains_ctg.keys())
         }
+
     return error_inv_info
 
 
@@ -154,19 +155,19 @@ def main():
     # error queue, start and end are based on hic file, not assembly file
     error_queue = {
         "error_1": {
-            "start": 61779504,
-            "end": 62355990
+            "start": 61225000,
+            "end": 61784000
         }
     }
 
     # hic file path
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2/ci.2.hic"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2_1/ci.final.hic"
 
     # assembly file path
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2/ci.2_backup.assembly"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2_1/ci.final.assembly"
 
     # output assembly file path
-    modified_assembly_file = "/home/jzj/buffer/test.assembly"
+    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/test.assembly"
 
     adjust_inversion(error_queue, hic_file, assembly_file, modified_assembly_file)
 

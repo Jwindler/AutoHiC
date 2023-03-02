@@ -759,7 +759,7 @@ class AssemblyOperate(object):
                         temp_write_list.append(str(x))
                 f.write(" ".join(temp_write_list) + "\n")
 
-    def ins_ctg(self, assembly_file_path, error_inv_info, out_file_path):
+    def inv_ctg_s(self, assembly_file_path, error_inv_info, out_file_path):
         """
             Loop invert the order of the ctg
         Args:

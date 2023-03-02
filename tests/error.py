@@ -285,15 +285,19 @@ class ERRORS:
         chr_len_filtered_errors_counter = dict()
 
         for key in filter_cls:
-            filtered_errors[key] = list(
-                filter(lambda x: x["hic_loci"][1] < chr_len, errors_dict[key]))
-            chr_len_removed_errors[key] = list(
-                filter(lambda x: x["hic_loci"][1] > chr_len, errors_dict[key]))
+            try:
+                filtered_errors[key] = list(
+                    filter(lambda x: x["hic_loci"][1] < chr_len, errors_dict[key]))
+                chr_len_removed_errors[key] = list(
+                    filter(lambda x: x["hic_loci"][1] > chr_len, errors_dict[key]))
 
-            chr_len_filtered_errors_counter[key] = {
-                "normal": len(filtered_errors[key]),
-                "abnormal": len(chr_len_removed_errors[key])
-            }
+                chr_len_filtered_errors_counter[key] = {
+                    "normal": len(filtered_errors[key]),
+                    "abnormal": len(chr_len_removed_errors[key])
+                }
+            except KeyError:
+                print(f"KeyError: {key} not in errors_dict")
+                continue
 
         with open(os.path.join(self.out_path, out_path), "w") as outfile:
             json.dump(filtered_errors, outfile)
