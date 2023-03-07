@@ -1,3 +1,24 @@
+## [0.8.14](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.13...v0.8.14) (2023-03-07)
+
+
+### Bug Fixes
+
+* correct variable name ([0418ad7](https://github.com/Jwindler/HiC-OpenCV/commit/0418ad773294e8fb6ceca536260d85004f80beca))
+* fix 0 matrix error ([25660fd](https://github.com/Jwindler/HiC-OpenCV/commit/25660fd0b0c349b6f06109ebd615158e449bd6ce))
+* fix search insert ctg bug ([6ca1646](https://github.com/Jwindler/HiC-OpenCV/commit/6ca164607cb9d0f800d7e527f3fe227f398664c8))
+* update test ([4d6c3ca](https://github.com/Jwindler/HiC-OpenCV/commit/4d6c3ca109ef411ffbd4bd7463ebb1c5edbe82dd))
+
+
+### Features
+
+* add catch KeyError ([92bd09b](https://github.com/Jwindler/HiC-OpenCV/commit/92bd09b9e5c7f0e9ecd37576ca069cba4c7ca3bc))
+* add chr len filter ([b8d187f](https://github.com/Jwindler/HiC-OpenCV/commit/b8d187fdcebe521a7bf967c76b60b03623007f89))
+* add errors to xlsx ([233f0f6](https://github.com/Jwindler/HiC-OpenCV/commit/233f0f6e83846aca1a58e7005cd6b3da7891b1b7))
+* update api ([8838163](https://github.com/Jwindler/HiC-OpenCV/commit/88381637367fcbaedbf93ebec1181b84e9b10f24))
+* update plot chromosome png ([4650bf9](https://github.com/Jwindler/HiC-OpenCV/commit/4650bf99134d1cddf77541d67f1b217c1a77ff73))
+
+
+
 ## [0.8.12](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.13...v0.8.12) (2023-02-23)
 
 
