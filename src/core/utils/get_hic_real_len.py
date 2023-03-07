@@ -12,6 +12,7 @@
 import hicstraw
 
 from src.assembly.asy_operate import AssemblyOperate
+from src.core.utils.logger import logger
 
 
 def get_ratio(hic, asy_file) -> float:
@@ -54,7 +55,7 @@ def get_hic_real_len(hic_file, asy_file) -> int:
 
     # get ratio: asy_length / hic_length
     ratio = get_ratio(hic_file, asy_file)
-    print("ratio: ", ratio)
+    logger.info("ratio: %s\n", ratio)
     all_seqs_len = 0  # sequence total length
     real_seqs_len = 0  # real sequence total length
 
@@ -73,15 +74,13 @@ def get_hic_real_len(hic_file, asy_file) -> int:
                 for ctg in line.strip().split():
                     real_seqs_len += int(ctg_dict[abs(int(ctg))])
                 break
+    logger.info("hic_real_len: %s\n", round(real_seqs_len / ratio))
     return round(real_seqs_len / ratio)
 
 
 def main():
-    # hic file path
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/curated/curated.0.hic"
-
-    # assembly file path
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/curated/curated.0.assembly"
+    hic_file = "/home/jzj/Data/Elements/buffer/10_genomes/curated"
+    assembly_file = "/home/jzj/Data/Elements/raw_hic_data/Np/Np.1.assembly"
     print("hic_real_len: ", get_hic_real_len(hic_file, assembly_file))
 
 

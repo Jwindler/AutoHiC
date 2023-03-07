@@ -52,14 +52,14 @@ def adjust_all_error(hic_file_path, assembly_file_path, divided_error, modified_
             debris_queue = outfile.read()
             debris_queue = json.loads(debris_queue)
 
-        cut_errors_ctg(debris_queue, hic_file_path, modified_assembly_file, modified_assembly_file)
+        cut_errors_ctg(debris_queue, hic_file_path, assembly_file_path, modified_assembly_file)
 
         logger.info("debris rectify done")
     else:
         logger.info("no debris error")
 
     # move translocation ctg
-    error_tran_info = adjust_translocation(translocation_queue, hic_file_path, modified_assembly_file)
+    # error_tran_info = adjust_translocation(translocation_queue, hic_file_path, modified_assembly_file)
 
     # move inversion ctg
     # error_inv_info = adjust_inversion(inversion_queue, hic_file_path, modified_assembly_file)
@@ -74,7 +74,7 @@ def adjust_all_error(hic_file_path, assembly_file_path, divided_error, modified_
     asy_operate = AssemblyOperate(modified_assembly_file, ratio)
 
     logger.info("Start moving translocation ctg\n")
-    asy_operate.moves_ctg(modified_assembly_file, error_tran_info, modified_assembly_file)
+    # asy_operate.moves_ctg(modified_assembly_file, error_tran_info, modified_assembly_file)
     logger.info("Moving translocation ctg done\n")
 
     logger.info("Start moving inversion ctg\n")
@@ -87,10 +87,10 @@ def adjust_all_error(hic_file_path, assembly_file_path, divided_error, modified_
 
 
 def main():
-    hic_file_path = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2_2_1/ci_2_2_1.hic"
-    assembly_file_path = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2_2_1/ci_2_2_1.assembly"
+    hic_file_path = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2_2_1_1/ci.final.hic"
+    assembly_file_path = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2_2_1_1/ci.final.assembly"
 
-    divided_error = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2_2_1_1/adjust"
+    divided_error = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2_2_1_1_1/adjust"
 
     # 输出文件路径
     modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/test.assembly"

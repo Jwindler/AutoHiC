@@ -324,15 +324,15 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
 
 
 def main():
-    error_site = (16060000, 16265001)
+    error_site = (175835000, 175980000)
 
     # hic file path
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2/ci.2.hic"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/curated/curated.2.hic"
 
     # assembly file path
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/01_ci/ci_2/ci.2.assembly"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/curated/curated.2.assembly"
 
-    ratio = 1
+    ratio = 2.0000000008016556
     modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/test.assembly"
     print(search_right_site_v8(hic_file, assembly_file, ratio, error_site, modified_assembly_file))
 

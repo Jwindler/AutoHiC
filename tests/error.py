@@ -55,6 +55,12 @@ class ERRORS:
                 temp_dict["resolution"] = img_info[list(img_info.keys())[0]]["resolution"]
                 temp_dict["hic_loci"] = self.bbox2hic(error[0:4], img_info)
                 self.errors[classes].append(temp_dict)
+
+        with open(os.path.join(self.out_path, "error_summary.txt"), "a") as outfile:
+            outfile.write("Raw error number:\n")
+            json.dump(self.counter, outfile)
+            outfile.write("\n")
+
         return self.errors
 
     # convert bbox coordinate to hic coordinate
@@ -129,6 +135,11 @@ class ERRORS:
 
         with open(os.path.join(self.out_path, out_path), "w") as outfile:
             json.dump(filtered_errors, outfile)
+
+        with open(os.path.join(self.out_path, "error_summary.txt"), "a") as outfile:
+            outfile.write("Score filtered error number:\n")
+            json.dump(score_filtered_errors_counter, outfile)
+            outfile.write("\n")
 
         return filtered_errors, score_filtered_errors_counter
 
@@ -233,6 +244,11 @@ class ERRORS:
         with open(os.path.join(self.out_path, out_path), "w") as outfile:
             json.dump(ans_dict, outfile)
 
+        with open(os.path.join(self.out_path, "error_summary.txt"), "a") as outfile:
+            outfile.write("Overlap filtered error number:\n")
+            json.dump(overlap_filtered_errors_counter, outfile)
+            outfile.write("\n")
+
         # logger.info("Filter all error category Done")
         print("Filter all error category Done")
 
@@ -267,6 +283,11 @@ class ERRORS:
 
         with open(os.path.join(self.out_path, remove_error_path), "w") as outfile:
             json.dump(len_removed_errors, outfile)
+
+        with open(os.path.join(self.out_path, "error_summary.txt"), "a") as outfile:
+            outfile.write("Length filtered error number:\n")
+            json.dump(len_filtered_errors_counter, outfile)
+            outfile.write("\n")
 
         return filtered_errors, len_filtered_errors_counter
 
@@ -304,6 +325,11 @@ class ERRORS:
 
         with open(os.path.join(self.out_path, remove_error_path), "w") as outfile:
             json.dump(chr_len_removed_errors, outfile)
+
+        with open(os.path.join(self.out_path, "error_summary.txt"), "a") as outfile:
+            outfile.write("Chromosome real length filtered error number:\n")
+            json.dump(chr_len_filtered_errors_counter, outfile)
+            outfile.write("\n")
 
         return filtered_errors, chr_len_filtered_errors_counter
 

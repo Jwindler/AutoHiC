@@ -16,6 +16,7 @@ from matplotlib import pyplot as plt
 
 from src.core.utils.logger import logger
 from src.core.utils.get_conf import get_conf
+from src.core.utils.get_hic_real_len import get_hic_real_len
 from src.core import settings
 
 
@@ -35,12 +36,13 @@ def plot_hic_map(dense_matrix, color, maxcolor, genome_name, out_path, figure_si
     # fig.colorbar(im, ax=ax)
     if save:
         # FIXME: add other format to save
-        plt.savefig(os.path.join(out_path, genome_name) + "_chr." + fig_format, dpi=dpi, bbox_inches='tight')
+        plt.savefig(os.path.join(out_path, genome_name) + "_chr." + fig_format, dpi=dpi, bbox_inches='tight',
+                    pad_inches=0)
     plt.show()  # not show figure
     plt.close()
 
 
-def plot_chr(hic_date, genome_size=None, chr_name=None, genome_name=None, color="bright_red",
+def plot_chr(hic_file, assembly_file=None, genome_size=None, chr_name=None, genome_name=None, color="bright_red",
              color_threshold=None,
              resolution=None,
              out_path=None,
@@ -48,7 +50,8 @@ def plot_chr(hic_date, genome_size=None, chr_name=None, genome_name=None, color=
     """
         plot whole genome chromosome interaction map in one figure
     Args:
-        hic_date: hic data path
+        hic_file: hic data path
+        assembly_file: asy data path
         genome_name: genome name
         resolution: resolution
         out_path: output path
@@ -66,25 +69,29 @@ def plot_chr(hic_date, genome_size=None, chr_name=None, genome_name=None, color=
 
     """
     # check input arguments
-    if hic_date is None:
+    if hic_file is None:
         logger.error("hic data path is None, please check your input")
         raise ValueError("hic data path is None, please check it")
 
     if out_path is None:
-        out_path = os.path.dirname(hic_date)
+        out_path = os.path.dirname(hic_file)
 
-    hic = hicstraw.HiCFile(hic_date)
+    hic = hicstraw.HiCFile(hic_file)
 
-    hic_len = 0  # hic length
-    for chrom in hic.getChromosomes():
-        hic_len = chrom.length
+    hic_len = None  # hic length
+    if assembly_file is None:
+        for chrom in hic.getChromosomes():
+            hic_len = chrom.length
+            logger.info("chromosome length is %s" % hic_len)
+    else:
+        hic_len = get_hic_real_len(hic_file, assembly_file)
 
     # get config dict
     cfg = get_conf()
 
     if genome_name is None:
         logger.info("genome name is None, please check your genome input")
-        genome_name = os.path.basename(hic_date)
+        genome_name = os.path.basename(hic_file)
 
     if resolution is None:
         resolution = hic.getResolutions()[0]
@@ -107,9 +114,7 @@ def plot_chr(hic_date, genome_size=None, chr_name=None, genome_name=None, color=
         # get new interaction matrix object
         matrix_object_chr = hic.getMatrixZoomData('assembly', 'assembly', "observed", nor_method, "BP", resolution)
         numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(0, hic_len, 0, hic_len)
-        color_threshold = (np.percentile(numpy_matrix_chr, 99))
-        plot_hic_map(numpy_matrix_chr, color, color_threshold, out_path=out_path, genome_name=genome_name,
-                     figure_size=figure_size, dpi=dpi, fig_format=fig_format, save=save)
+
 
     else:
         logger.info("resolution max length less than hic length, use test resolution")
@@ -137,15 +142,18 @@ def plot_chr(hic_date, genome_size=None, chr_name=None, genome_name=None, color=
         # 去除全零行
         not_row = final_matrix[[not np.all(final_matrix[i] == 0) for i in range(final_matrix.shape[0])], :]
         # 去除全零列
-        bot_col = not_row[:, [not np.all(not_row[:, i] == 0) for i in range(not_row.shape[1])]]
-        color_threshold = (np.percentile(bot_col, 99))
-        plot_hic_map(bot_col, color, color_threshold, out_path=out_path, genome_name=genome_name,
-                     figure_size=figure_size, dpi=dpi, fig_format=fig_format, save=save)
+        numpy_matrix_chr = not_row[:, [not np.all(not_row[:, i] == 0) for i in range(not_row.shape[1])]]
+
+    color_threshold = (np.percentile(numpy_matrix_chr, 99))
+    plot_hic_map(numpy_matrix_chr, color, color_threshold, out_path=out_path, genome_name=genome_name,
+                 figure_size=figure_size, dpi=dpi, fig_format=fig_format, save=save)
 
 
 def main():
-    hic_date = "/media/jzj/Elements SE/buffer/10_genomes/04_ca/ca.2.hic"
-    plot_chr(hic_date)
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/chr_data_test/ASM360417v1.rawchrom.hic"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/chr_data_test/ASM360417v1.rawchrom.assembly"
+    out_path = "/home/jzj/Downloads"
+    plot_chr(hic_file, assembly_file=None, out_path=out_path, fig_format="png")
 
 
 if __name__ == "__main__":
