@@ -17,10 +17,6 @@ from matplotlib import pyplot as plt
 from src.core.utils.logger import logger
 from src.core.utils.get_conf import get_conf
 from src.core.utils.get_hic_real_len import get_hic_real_len
-from src.core import settings
-
-
-# FIXME: setting need to be modified
 
 
 def plot_hic_map(dense_matrix, color, maxcolor, genome_name, out_path, figure_size, dpi, fig_format, save,

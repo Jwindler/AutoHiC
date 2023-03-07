@@ -15,7 +15,7 @@ from collections import OrderedDict
 from src.assembly.asy_operate import AssemblyOperate
 from src.core.utils.get_ratio import get_ratio
 from src.core.utils.logger import logger
-from tests.search_right_site_v8 import search_right_site_v8
+from core.search_right_site_v8 import search_right_site_v8
 
 
 def adjust_translocation(errors_queue, hic_file, modified_assembly_file):

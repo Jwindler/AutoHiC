@@ -1,5 +1,4 @@
 import typer
-from src.core import settings  # export ENVIROMENT
 from src.scripts.autohic import mul_gen_png
 
 

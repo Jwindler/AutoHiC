@@ -22,7 +22,6 @@ from src.assembly.asy_operate import AssemblyOperate
 from src.core.utils.get_conf import get_conf
 from src.core.utils.logger import logger
 from src.core.utils.get_hic_real_len import get_hic_real_len
-from src.core import settings  # export ENVIRONMENT
 
 
 def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tuple, length_site: tuple = None):

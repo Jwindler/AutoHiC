@@ -79,7 +79,11 @@ def hic_loci2txt(chr_dict, txt_path):
     """
     with open(txt_path, "w") as f:
         for index, value in chr_dict.items():
-            f.write(f"{index}\t{value['hic_loci'][0]}\t{value['hic_loci'][1]}\t{value['hic_loci'][2]}\t{value['hic_loci'][3]}\n")
+            f.write(
+                f"{index}\t{value['hic_loci'][0]}\t"
+                f"{value['hic_loci'][1]}\t"
+                f"{value['hic_loci'][2]}\t"
+                f"{value['hic_loci'][3]}\n")
 
 
 def hic_loci2excel(chr_dict, excel_path):

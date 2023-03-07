@@ -12,13 +12,13 @@
 import json
 import os
 import uuid
+import random
 
 import hicstraw
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
-from src.assembly.make_asy import random_color
 from src.core.utils.get_conf import get_conf
 from src.core.utils.logger import logger
 
@@ -142,12 +142,11 @@ class GenBaseModel:
             logger.debug("Folder Already Exists")
 
     @staticmethod
-    def plot_hic_map(matrix, resolution, fig_save_dir, ran_color=False):
+    def plot_hic_map(matrix, fig_save_dir, ran_color=False):
         """
             plot hic map
         Args:
             matrix: hic matrix
-            resolution: hic resolution
             fig_save_dir: figure save dir
             ran_color: random color or not
 
@@ -162,7 +161,7 @@ class GenBaseModel:
         if vmax == 0:
             vmax = 2
         elif ran_color:
-            vmax = random_color()
+            vmax = random.randrange(1, 6000)
 
         # visualize
         plt.matshow(
@@ -245,9 +244,9 @@ class GenBaseModel:
 
         # plot hic contact map
         if ran_color:
-            self.plot_hic_map(numpy_matrix_chr, resolution, temp_folder2, ran_color=True)
+            self.plot_hic_map(numpy_matrix_chr, temp_folder2, ran_color=True)
         else:
-            self.plot_hic_map(numpy_matrix_chr, resolution, temp_folder2)
+            self.plot_hic_map(numpy_matrix_chr, temp_folder2)
 
         # create info record
         temp_field = self.info_records(

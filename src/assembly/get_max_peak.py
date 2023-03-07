@@ -166,7 +166,7 @@ def remove_peak(peaks_dict, know_peak):
         try:
             del peaks_dict[i]
         except KeyError:  # KeyError: 'key'
-            logger.error("remove_peak warning: self peak not in peaks_dict")
+            logger.error("Remove_peak warning: self peak not in peaks_dict")
 
     return peaks_dict
 
