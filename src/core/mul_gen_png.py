@@ -31,7 +31,7 @@ def write_records(records):
         f.writelines(records)
 
 
-def mul_process(hic_file, genome_id, out_file, methods, process_num=10, _resolution=None, ran_color=True):
+def mul_process(hic_file, genome_id, out_file, methods, process_num, random_color, _resolution=None):
     """
         multiprocessing generate hic image
     Args:
@@ -40,21 +40,22 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num=10, _resolut
         out_file: output file path
         methods: global or diagonal (default: diagonal)
         process_num: process number (default: 10)
+        random_color: random color (default: True)
         _resolution: resolution (default: None)
-        ran_color: random color (default: True)
 
     Returns:
         None
     """
-    logger.info("Multiple Process Initiating ...")
+    logger.info("Multiple Process Initiating ...\n")
 
     # initialize hic process class
     hic_operate = GenBaseModel(hic_file, genome_id, out_file)
 
     resolutions = hic_operate.get_resolutions()  # get resolution list
 
-    logger.info("threads: %s" % process_num)
+    logger.info("Number of processes is : %s\n" % process_num)
     pool = Pool(process_num)  # process number
+
     start = 0
     end = hic_operate.get_chr_len()  # get genome length
 
@@ -64,17 +65,17 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num=10, _resolut
         resolutions = [_resolution]
 
     for resolution in resolutions:
-        logger.info("Processing resolution: %s" % resolution)
+        logger.info("Processing resolution: %s\n" % resolution)
 
         # create resolution folder
-        temp_folder = os.path.join(hic_operate.genome_folder, str(resolution))
-        hic_operate.create_folder(temp_folder)
+        resolution_folder = os.path.join(hic_operate.genome_folder, str(resolution))
+        hic_operate.create_folder(resolution_folder)
 
         # range and increment
         temp_increase = hic_operate.increment(resolution)
 
         if methods == "global":  # sliding window method with global
-            flag = False  # flag
+            flag = False  # flag to judge whether the end is reached
             for site_1 in range(start, end, temp_increase["increase"]):
                 if site_1 + temp_increase["dim"] > end:
                     site_1 = end - temp_increase["dim"]
@@ -83,11 +84,13 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num=10, _resolut
                     if site_2 + temp_increase["dim"] > end:
                         site_2 = end - temp_increase["dim"]
                         pool.apply_async(hic_operate.gen_png, args=(
-                            resolution, site_1, site_1 + temp_increase["dim"], site_2, site_2 + temp_increase["dim"],),
+                            resolution, site_1, site_1 + temp_increase["dim"], site_2, site_2 + temp_increase["dim"],
+                            random_color,),
                                          callback=write_records)
                         break
                     pool.apply_async(hic_operate.gen_png, args=(
-                        resolution, site_1, site_1 + temp_increase["dim"], site_2, site_2 + temp_increase["dim"],),
+                        resolution, site_1, site_1 + temp_increase["dim"], site_2, site_2 + temp_increase["dim"],
+                        random_color,),
                                      callback=write_records)
                 if flag:
                     break
@@ -99,25 +102,19 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num=10, _resolut
                     site_end = end
                 if site < 0:  # solve white region padding bug
                     site = 0
-                if ran_color:
-                    pool.apply_async(hic_operate.gen_png, args=(
-                        resolution, site, site_end, site, site_end, True,),
-                                     callback=write_records)
-                else:
-                    pool.apply_async(hic_operate.gen_png, args=(
-                        resolution, site, site_end, site, site_end,),
-                                     callback=write_records)
+                pool.apply_async(hic_operate.gen_png, args=(
+                    resolution, site, site_end, site, site_end, random_color,),
+                                 callback=write_records)
 
     pool.close()  # close pool
     pool.join()  # wait for all subprocesses done
 
-    logger.info("Multiple Process Finished ...")
+    logger.info("Multiple process finished\n")
 
 
 def main():
     hic_file = "/home/jzj/Data/Test/raw_data/Np/Np.0.hic"
-    # mul_process(hic_file, "Np_global", "/home/jzj/Downloads", "global", 10)
-    mul_process(hic_file, "Np", "/home/jzj/Downloads", "diagonal", 10)
+    mul_process(hic_file, "Np", "/home/jzj/Downloads", "diagonal", 10, False)
 
 
 if __name__ == "__main__":

@@ -39,6 +39,8 @@ def get_ratio(hic, asy_file) -> float:
     for chrom in hic.getChromosomes():
         hic_length = chrom.length
 
+    logger.info("Ratio(assembly length / hic length) is %s\n", asy_length / hic_length)
+
     return asy_length / hic_length
 
 
@@ -55,7 +57,7 @@ def get_hic_real_len(hic_file, asy_file) -> int:
 
     # get ratio: asy_length / hic_length
     ratio = get_ratio(hic_file, asy_file)
-    logger.info("ratio: %s\n", ratio)
+
     all_seqs_len = 0  # sequence total length
     real_seqs_len = 0  # real sequence total length
 
@@ -74,7 +76,7 @@ def get_hic_real_len(hic_file, asy_file) -> int:
                 for ctg in line.strip().split():
                     real_seqs_len += int(ctg_dict[abs(int(ctg))])
                 break
-    logger.info("hic_real_len: %s\n", round(real_seqs_len / ratio))
+    logger.info("Hic file real len: %s\n", round(real_seqs_len / ratio))
     return round(real_seqs_len / ratio)
 
 

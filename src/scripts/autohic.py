@@ -19,26 +19,29 @@ def hic_file_name():
     pass
 
 
-def mul_gen_png(hic_file: str = typer.Option(..., "--hic-file", "-h", help="`.hic` 文件的绝对路径"),
-                result_name: str = typer.Option(None, "--result-name", "-n", help="输出结果的文件夹名称",
+def mul_gen_png(hic_file: str = typer.Option(..., "--hic-file", "-hic", help="hic file path"),
+                result_name: str = typer.Option("AutoHiC_result", "--result-name", "-n", help="output folder name",
                                                 rich_help_panel="Secondary Arguments"),
 
-                out_path: str = typer.Option("./", "--out-path", "-o", help="输出结果的文件夹路径",
+                out_path: str = typer.Option("./", "--out-path", "-o", help="output file or directory",
                                              rich_help_panel="Secondary Arguments"),
 
                 methods: str = typer.Option("diagonal", "--methods", "-m",
-                                            help="互作图的生成方法，global 全局，diagonal 对角线",
+                                            help="mode generate interactive png"
+                                                 "should be global or diagonal",
                                             rich_help_panel="Secondary Arguments"),
 
-                process_num: int = typer.Option(10, "--process-num", "-p", help="进程数，默认10",
-                                                rich_help_panel="Secondary Arguments")):
+                process_num: int = typer.Option(10, "--process-num", "-p", help="number of processes",
+                                                rich_help_panel="Secondary Arguments"),
+                random_color: bool = typer.Option(False, "--random", "-r", help="whether random color",
+                                                  rich_help_panel="Secondary Arguments")):
     """
-    多进程生成互作图片
+    Multiprocess generation of interactive img
     """
 
     if result_name is None:
         result_name = os.path.basename(hic_file).split(".")[0]
-    mul_process(hic_file, result_name, out_path, methods, process_num, ran_color=False)
+    mul_process(hic_file, result_name, out_path, methods, process_num, random_color)
 
 
 if __name__ == "__main__":

@@ -48,17 +48,17 @@ def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tup
             width_site[1] // fit_resolution * fit_resolution)
         width_site = update_width_site
 
-        # get full chromosome length
-        assembly_len = 0  # define assembly length
+        # get hic file full chromosome length
+        hic_len = 0  # define assembly length
 
         for chrom in hic_object.getChromosomes():
             if chrom.name == "assembly":
-                assembly_len = get_hic_real_len(hic_file, asy_file)
+                hic_len = get_hic_real_len(hic_file, asy_file)
     else:
-        assembly_len = length_site[1] - length_site[0]
+        hic_len = length_site[1] - length_site[0]
 
-    # 根据指定分辨率，获取矩阵对象
-    chr_matrix_object = hic_object.getMatrixZoomData(
+    # according to fit_resolution, get matrix_zoom_data
+    matrix_zoom_data = hic_object.getMatrixZoomData(
         'assembly', 'assembly', "observed", "KR", "BP", fit_resolution)
 
     # get fit_resolution max len
@@ -66,14 +66,14 @@ def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tup
     res_max_len = cfg["rse_max_len"][fit_resolution]
 
     # cut full length block number
-    len_block_num = math.ceil(assembly_len / res_max_len)
+    len_block_num = math.ceil(hic_len / res_max_len)
     # each block length
-    each_block_len = math.ceil(assembly_len / len_block_num)
+    each_block_len = math.ceil(hic_len / len_block_num)
     each_block_res_number = round(each_block_len / fit_resolution)
     iter_len = []
     for i in range(len_block_num):
         iter_len.append(each_block_res_number * i * fit_resolution)
-    iter_len.append(assembly_len)
+    iter_len.append(hic_len)
 
     # cut error site block number
     error_len_block_num = math.ceil((width_site[1] - width_site[0]) / res_max_len)
@@ -91,23 +91,23 @@ def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tup
         for j in range(len(error_iter_len) - 1):
             if length_site is None:
                 print(error_iter_len[j], error_iter_len[j + 1] - 1, iter_len[i], iter_len[i + 1] - 1)
-                numpy_matrix_chr = chr_matrix_object.getRecordsAsMatrix(error_iter_len[j], error_iter_len[j + 1] - 1,
-                                                                        iter_len[i], iter_len[i + 1] - 1)
+                matrix_data = matrix_zoom_data.getRecordsAsMatrix(error_iter_len[j], error_iter_len[j + 1] - 1,
+                                                                  iter_len[i], iter_len[i + 1] - 1)
             else:
                 print(error_iter_len[j], error_iter_len[j + 1] - 1, length_site[0] + iter_len[i],
                       length_site[0] + iter_len[i + 1])
-                numpy_matrix_chr = chr_matrix_object.getRecordsAsMatrix(error_iter_len[j], error_iter_len[j + 1] - 1,
-                                                                        length_site[0] + iter_len[i],
-                                                                        length_site[0] + iter_len[i + 1])
+                matrix_data = matrix_zoom_data.getRecordsAsMatrix(error_iter_len[j], error_iter_len[j + 1] - 1,
+                                                                  length_site[0] + iter_len[i],
+                                                                  length_site[0] + iter_len[i + 1])
             if temp_error_matrix is None:
                 # 稀疏矩阵
-                if numpy_matrix_chr.shape == (1, 1):
-                    numpy_matrix_chr = np.zeros((error_each_block_res_number, each_block_res_number))
-                temp_error_matrix = numpy_matrix_chr
-            elif numpy_matrix_chr.shape == (1, 1):
+                if matrix_data.shape == (1, 1):
+                    matrix_data = np.zeros((error_each_block_res_number, each_block_res_number))
+                temp_error_matrix = matrix_data
+            elif matrix_data.shape == (1, 1):
                 temp_error_matrix = np.zeros((error_each_block_res_number, each_block_res_number))
             else:
-                temp_error_matrix = np.vstack((temp_error_matrix, numpy_matrix_chr))
+                temp_error_matrix = np.vstack((temp_error_matrix, matrix_data))
 
         if full_len_matrix is None:
             full_len_matrix = temp_error_matrix

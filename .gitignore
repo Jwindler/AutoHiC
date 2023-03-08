@@ -12,6 +12,7 @@ __pycache__/
 # temp
 temp/
 iterated/
+tools/
 
 # Build and Release Folders
 bin-debug/

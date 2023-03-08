@@ -28,7 +28,7 @@ class GenBaseModel:
     cfg = get_conf()
 
     def __init__(self, hic_file, genome_id, out_file):
-        logger.info("Base Model Initiating ...")
+        logger.info("Base Model Initiating\n")
         self.hic_file = hic_file  # hic file path
         self.genome_id = genome_id  # genome id
         self.out_file = out_file  # output file path
@@ -38,7 +38,7 @@ class GenBaseModel:
         self.father_file = os.path.basename(self.hic_file).split(".")[0]
 
         self.genome_folder = os.path.join(self.out_file, self.genome_id)
-        logger.info("Create Genome Folder: %s" % self.genome_folder)
+        logger.info("Create genome folder: %s\n" % self.genome_folder)
         self.create_folder(self.genome_folder)
 
     def get_resolutions(self):
@@ -49,7 +49,9 @@ class GenBaseModel:
         hic_len = 0  # genome length
         hic = hicstraw.HiCFile(self.hic_file)  # create hic object
         for chrom in hic.getChromosomes():
-            hic_len = chrom.length
+            if chrom.name == "assembly":
+                hic_len = chrom.length
+        logger.info("Hic file sequence length is : %s\n" % hic_len)
         return hic_len
 
     @staticmethod
@@ -139,36 +141,37 @@ class GenBaseModel:
         try:
             os.makedirs(file_dir)
         except FileExistsError:  # folder exists
-            logger.debug("Folder Already Exists")
+            logger.error("Folder already exists")
 
     @staticmethod
-    def plot_hic_map(matrix, fig_save_dir, ran_color=False):
+    def plot_hic_map(matrix, fig_save_path, random_color):
         """
             plot hic map
         Args:
             matrix: hic matrix
-            fig_save_dir: figure save dir
-            ran_color: random color or not
+            fig_save_path: figure save dir
+            random_color: random color or not
 
         Returns:
 
         """
-        redmap = LinearSegmentedColormap.from_list(
+        red_map = LinearSegmentedColormap.from_list(
             "bright_red", [(1, 1, 1), (1, 0, 0)])
 
-        # vmax = GenBaseModel.maxcolor(resolution)
-        vmax = np.percentile(matrix, 99)  # get matrix top 99% value
-        if vmax == 0:
-            vmax = 2
-        elif ran_color:
-            vmax = random.randrange(1, 6000)
-
+        # v_max = GenBaseModel.maxcolor(resolution)
+        v_max = np.percentile(matrix, 99)  # get matrix top 99% value
+        if v_max == 0:
+            v_max = 2
+        elif random_color:
+            # choose random color from 2 to v_max
+            v_max = random.randrange(1, 6000)
+        print(v_max)
         # visualize
         plt.matshow(
             matrix,
-            cmap=redmap,
+            cmap=red_map,
             vmin=0,
-            vmax=vmax)
+            vmax=v_max)
 
         plt.axis('off')  # remove axis
 
@@ -178,16 +181,15 @@ class GenBaseModel:
 
         # save figure
         plt.savefig(
-            fig_save_dir,
+            fig_save_path,
             dpi=300,
-            format="jpg",
             bbox_inches='tight',
-            pad_inches=0)
+            pad_inches=0.1)
         plt.close()
 
     @staticmethod
     def info_records(
-            temp_folder2,
+            img_path,
             genome_id,
             resolution,
             chr_a,
@@ -197,7 +199,7 @@ class GenBaseModel:
             chr_b_s,
             chr_b_e):
         record = {
-            temp_folder2: {
+            img_path: {
                 "genome_id": genome_id,
                 "resolution": resolution,
                 "chr_A": chr_a,
@@ -211,7 +213,7 @@ class GenBaseModel:
 
         return json.dumps(record)
 
-    def gen_png(self, resolution, a_start, a_end, b_start, b_end, ran_color=False):
+    def gen_png(self, resolution, a_start, a_end, b_start, b_end, random_color, img_format="png"):
         """
             generate png
         Args:
@@ -220,7 +222,8 @@ class GenBaseModel:
             a_end: chr A end
             b_start: chr B start
             b_end: chr B end
-            ran_color: random color or not
+            random_color: random color or not
+            img_format: image format
 
         Returns:
 
@@ -229,28 +232,25 @@ class GenBaseModel:
         hic = hicstraw.HiCFile(self.hic_file)  # create hic object
 
         # create resolutions folder
-        temp_folder = os.path.join(self.genome_folder, str(resolution))
+        resolution_folder = os.path.join(self.genome_folder, str(resolution))
 
         # get matrix object by resolution
         matrix_object_chr = hic.getMatrixZoomData('assembly', 'assembly', "observed", "NONE", "BP", resolution)
 
-        temp_q = uuid.uuid4().hex  # generate random string
+        img_name = uuid.uuid4().hex  # generate random string
 
         # png file name
-        temp_folder2 = os.path.join(temp_folder, str(temp_q) + ".jpg")
+        img_path = os.path.join(resolution_folder, str(img_name) + "." + img_format)
 
         # get contact matrix
         numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(a_start, a_end, b_start, b_end)
 
         # plot hic contact map
-        if ran_color:
-            self.plot_hic_map(numpy_matrix_chr, temp_folder2, ran_color=True)
-        else:
-            self.plot_hic_map(numpy_matrix_chr, temp_folder2)
+        self.plot_hic_map(numpy_matrix_chr, img_path, random_color)
 
         # create info record
         temp_field = self.info_records(
-            temp_folder2,
+            img_path,
             self.genome_id,
             resolution,
             "assembly",
