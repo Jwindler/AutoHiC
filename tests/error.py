@@ -19,7 +19,7 @@ class ERRORS:
         self.info_file = info_file
         self.classes = classes
         self.out_path = out_path
-        self.img_size = img_size  # TODO: 自动获取图片大小
+        self.img_size = img_size
         self.errors, self.counter = dict(), dict()
         self.class_list = []
 
@@ -28,21 +28,17 @@ class ERRORS:
             self.errors[class_] = []
 
     # generate error structure
-    def create_structure(self, img_info, detection_result, epoch_flag=0):
+    def create_structure(self, img_info, detection_result):
         """
 
         Args:
             img_info:
             detection_result:
-            epoch_flag: detect epoch flag
 
         Returns:
 
         """
         for category, classes in zip(detection_result, self.classes):
-            if epoch_flag == 0 and classes == "chromosome":
-                continue  # skip chromosome when epoch is 0
-
             for index, error in enumerate(category):
                 error = error.tolist()
                 temp_dict = dict()
@@ -55,11 +51,6 @@ class ERRORS:
                 temp_dict["resolution"] = img_info[list(img_info.keys())[0]]["resolution"]
                 temp_dict["hic_loci"] = self.bbox2hic(error[0:4], img_info)
                 self.errors[classes].append(temp_dict)
-
-        with open(os.path.join(self.out_path, "error_summary.txt"), "a") as outfile:
-            outfile.write("Raw error number:\n")
-            json.dump(self.counter, outfile)
-            outfile.write("\n")
 
         return self.errors
 
@@ -91,6 +82,10 @@ class ERRORS:
         hic_loci = list(map(lambda temp: int(temp), [a_s, a_e, b_s, b_e]))
 
         return hic_loci
+
+    def loci_zoom(self, errors_dict, out_path="zoomed_errors.json"):
+        # TODO: zoom in the error loci
+        pass
 
     @staticmethod
     def cal_iou(box1, box2):
@@ -137,9 +132,12 @@ class ERRORS:
             json.dump(filtered_errors, outfile)
 
         with open(os.path.join(self.out_path, "error_summary.txt"), "a") as outfile:
+            outfile.write("Raw error number:\n")
+            json.dump(self.counter, outfile)
+            outfile.write("\n")
+
             outfile.write("Score filtered error number:\n")
             json.dump(score_filtered_errors_counter, outfile)
-            outfile.write("\n")
 
         return filtered_errors, score_filtered_errors_counter
 
@@ -285,9 +283,9 @@ class ERRORS:
             json.dump(len_removed_errors, outfile)
 
         with open(os.path.join(self.out_path, "error_summary.txt"), "a") as outfile:
+            outfile.write("\n")
             outfile.write("Length filtered error number:\n")
             json.dump(len_filtered_errors_counter, outfile)
-            outfile.write("\n")
 
         return filtered_errors, len_filtered_errors_counter
 
@@ -327,9 +325,9 @@ class ERRORS:
             json.dump(chr_len_removed_errors, outfile)
 
         with open(os.path.join(self.out_path, "error_summary.txt"), "a") as outfile:
+            outfile.write("\n")
             outfile.write("Chromosome real length filtered error number:\n")
             json.dump(chr_len_filtered_errors_counter, outfile)
-            outfile.write("\n")
 
         return filtered_errors, chr_len_filtered_errors_counter
 

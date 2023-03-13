@@ -15,17 +15,15 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib import pyplot as plt
 
 from src.core.utils.logger import logger
-from src.core.utils.get_conf import get_conf
-from src.core.utils.get_hic_real_len import get_hic_real_len
+from src.core.utils.get_cfg import get_hic_real_len, get_max_hic_len
 
 
-def plot_hic_map(dense_matrix, color, genome_name, out_path, figure_size, dpi, fig_format, save,
-                 chr_dict=None):
-    #
-    maxcolor = (np.percentile(dense_matrix, 99))
+
+def plot_hic_map(dense_matrix, color, genome_name, out_path, save, chr_dict=None, **kwargs):
+    maxcolor = (np.percentile(dense_matrix, 95))
 
     # TODO: chr_dict be used to add chromosome name
-    fig, ax = plt.subplots(figsize=figure_size)
+    fig, ax = plt.subplots(**kwargs)
     red_map = LinearSegmentedColormap.from_list(color, [(1, 1, 1), (1, 0, 0)])
 
     im = ax.matshow(dense_matrix, cmap=red_map, vmin=0, vmax=maxcolor)
@@ -36,8 +34,8 @@ def plot_hic_map(dense_matrix, color, genome_name, out_path, figure_size, dpi, f
     # fig.colorbar(im, ax=ax)
     if save:
         # FIXME: add other format to save
-        plt.savefig(os.path.join(out_path, genome_name) + "_chr." + fig_format, dpi=dpi, bbox_inches='tight',
-                    pad_inches=0)
+        plt.savefig(os.path.join(out_path, genome_name) + "_chr", bbox_inches='tight',
+                    pad_inches=0, **kwargs)
     plt.show()  # not show figure
     plt.close()
 
@@ -85,9 +83,6 @@ def plot_chr(hic_file, assembly_file=None, genome_size=None, chr_name=None, geno
         hic_len = get_hic_real_len(hic_file, assembly_file)
         logger.info("hic real full length is %s\n" % hic_len)
 
-    # get config dict
-    cfg = get_conf()
-
     if genome_name is None:
         logger.info("Genome name is None, please check your genome input\n")
         genome_name = os.path.basename(hic_file)
@@ -100,13 +95,13 @@ def plot_chr(hic_file, assembly_file=None, genome_size=None, chr_name=None, geno
     matrix_object_chr = hic.getMatrixZoomData('assembly', 'assembly', "observed", nor_method, "BP", resolution)
 
     # resolution max length and width
-    res_max_len = cfg["rse_max_len"][resolution]
+    res_max_len = get_max_hic_len(resolution)
 
     # check if you need to cut matrix
     if res_max_len > hic_len:
         logger.info("Resolution max length bigger than hic length\n")
         for res in hic.getResolutions():
-            if cfg["rse_max_len"][res] > hic_len:
+            if get_max_hic_len(res) > hic_len:
                 resolution = res
                 continue
         logger.info("Get contact matrix use resolution is %s\n" % resolution)
@@ -142,13 +137,12 @@ def plot_chr(hic_file, assembly_file=None, genome_size=None, chr_name=None, geno
         # 去除全零列
         numpy_matrix_chr = not_row[:, [not np.all(not_row[:, i] == 0) for i in range(not_row.shape[1])]]
 
-    # TODO: 根据 juicer box 来对比
     plot_hic_map(numpy_matrix_chr, color, out_path=out_path, genome_name=genome_name,
                  figure_size=figure_size, dpi=dpi, fig_format=fig_format, save=save)
 
 
 def main():
-    hic_file = "/home/jzj/Data/Elements/328_hic/sis1-161031-pseudohap.rawchrom.hic"
+    hic_file = "/home/jzj/Data/Elements/329_hic/AplCal3.0.rawchrom.hic"
     assembly_file = "/home/jzj/Jupyter-Docker/buffer/chr_data_test/ASM360417v1.rawchrom.assembly"
     out_path = "/home/jzj/Downloads"
     plot_chr(hic_file, assembly_file=None, out_path=out_path, fig_format="png")

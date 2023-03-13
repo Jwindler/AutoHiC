@@ -19,9 +19,8 @@ from scipy.signal import find_peaks
 
 from src.assembly import get_max_peak
 from src.assembly.asy_operate import AssemblyOperate
-from src.core.utils.get_conf import get_conf
 from src.core.utils.logger import logger
-from src.core.utils.get_hic_real_len import get_hic_real_len
+from src.core.utils.get_cfg import get_hic_real_len, get_max_hic_len
 
 
 def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tuple, length_site: tuple = None):
@@ -62,8 +61,7 @@ def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tup
         'assembly', 'assembly', "observed", "KR", "BP", fit_resolution)
 
     # get fit_resolution max len
-    cfg = get_conf()  # get config dict
-    res_max_len = cfg["rse_max_len"][fit_resolution]
+    res_max_len = get_max_hic_len(fit_resolution)
 
     # cut full length block number
     len_block_num = math.ceil(hic_len / res_max_len)
@@ -229,9 +227,6 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
     # update Insert region
     update_search_site = (insert_peak_index * fit_resolution, (insert_peak_index + 1) * fit_resolution)
     logger.info("New insert search region: %s", update_search_site)
-
-    # get fit_resolution max len
-    get_conf()  # get config dict
 
     # get insert region max interaction ctg
     update_full_len_matrix = get_full_len_matrix(hic_file, assembly_file, min(resolutions), error_site,

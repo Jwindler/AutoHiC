@@ -13,19 +13,16 @@ import json
 import os
 import uuid
 import random
+import numpy as np
 
 import hicstraw
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
-from src.core.utils.get_conf import get_conf
 from src.core.utils.logger import logger
 
 
 class GenBaseModel:
-    # get config dict
-    cfg = get_conf()
 
     def __init__(self, hic_file, genome_id, out_file):
         logger.info("Base Model Initiating\n")
@@ -55,78 +52,6 @@ class GenBaseModel:
         return hic_len
 
     @staticmethod
-    def maxcolor(resolution):
-        """
-            get resolution max color threshold
-        Args:
-            resolution: hic resolution
-
-        Returns:
-            max color threshold
-        """
-
-        # default color range
-        color_range_sets = GenBaseModel.cfg["color_range_sets"]
-
-        temp_return = None  # default return
-
-        # check resolution in color_range_sets
-        if resolution in color_range_sets.keys():
-            return color_range_sets[resolution]
-        else:  # get closest resolution
-            for key, value in color_range_sets.items():
-                if resolution < key:
-                    temp_return = value
-                    continue
-                else:
-                    return color_range_sets[key]
-
-            return temp_return
-
-    @staticmethod
-    def increment(resolution):
-        """
-            get resolution increment
-        Args:
-            resolution: hic resolution
-
-        Returns:
-            resolution increment
-        """
-
-        dim_increase = {}
-
-        # default color range
-        len_width_sets = GenBaseModel.cfg["len_width_sets"]
-
-        # default increment
-        increment_sets = GenBaseModel.cfg["increment_sets_detail"]
-
-        # check resolution in increment_sets
-        if resolution in increment_sets.keys():
-            dim_increase["increase"] = increment_sets[resolution]
-            dim_increase["dim"] = len_width_sets[resolution]
-            return dim_increase
-        else:  # get closest resolution value
-            for key, value in increment_sets.items():
-                if resolution < key:
-                    # slide increment
-                    dim_increase["increase"] = increment_sets[key]
-
-                    # slide dim range
-                    dim_increase["dim"] = len_width_sets[key]
-                    continue
-                else:
-                    # slide increment
-                    dim_increase["increase"] = increment_sets[key]
-
-                    # slide dim range
-                    dim_increase["dim"] = len_width_sets[key]
-
-                    return dim_increase
-            return dim_increase
-
-    @staticmethod
     def create_folder(file_dir):
         """
             create folder
@@ -144,11 +69,12 @@ class GenBaseModel:
             logger.error("Folder already exists")
 
     @staticmethod
-    def plot_hic_map(matrix, fig_save_path, random_color):
+    def plot_hic_map(matrix, v_max, fig_save_path, random_color):
         """
             plot hic map
         Args:
             matrix: hic matrix
+            v_max: max color value
             fig_save_path: figure save dir
             random_color: random color or not
 
@@ -157,15 +83,12 @@ class GenBaseModel:
         """
         red_map = LinearSegmentedColormap.from_list(
             "bright_red", [(1, 1, 1), (1, 0, 0)])
-
-        # v_max = GenBaseModel.maxcolor(resolution)
-        v_max = np.percentile(matrix, 99)  # get matrix top 99% value
+        v_max = (np.percentile(matrix, 99))
         if v_max == 0:
-            v_max = 2
+            v_max = 1
         elif random_color:
             # choose random color from 2 to v_max
-            v_max = random.randrange(1, 6000)
-        print(v_max)
+            v_max = random.randrange(1, v_max)
         # visualize
         plt.matshow(
             matrix,
@@ -213,11 +136,12 @@ class GenBaseModel:
 
         return json.dumps(record)
 
-    def gen_png(self, resolution, a_start, a_end, b_start, b_end, random_color, img_format="png"):
+    def gen_png(self, resolution, maxcolor, a_start, a_end, b_start, b_end, random_color, img_format="png"):
         """
             generate png
         Args:
             resolution: hic resolution
+            maxcolor: max color value
             a_start: chr A start
             a_end: chr A end
             b_start: chr B start
@@ -246,7 +170,7 @@ class GenBaseModel:
         numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(a_start, a_end, b_start, b_end)
 
         # plot hic contact map
-        self.plot_hic_map(numpy_matrix_chr, img_path, random_color)
+        self.plot_hic_map(numpy_matrix_chr, maxcolor, img_path, random_color)
 
         # create info record
         temp_field = self.info_records(

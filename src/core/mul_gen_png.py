@@ -13,6 +13,7 @@ import os
 from multiprocessing import Pool
 
 from src.core.common.hic_adv_model import GenBaseModel
+from src.core.utils.get_cfg import increment, get_max_color
 from src.core.utils.logger import logger
 
 info_path = ""  # define
@@ -41,7 +42,7 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num, random_colo
         methods: global or diagonal (default: diagonal)
         process_num: process number (default: 10)
         random_color: random color (default: True)
-        _resolution: resolution (default: None)
+        _resolution: specific resolution (default: None)
 
     Returns:
         None
@@ -49,18 +50,18 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num, random_colo
     logger.info("Multiple Process Initiating ...\n")
 
     # initialize hic process class
-    hic_operate = GenBaseModel(hic_file, genome_id, out_file)
+    hic_class = GenBaseModel(hic_file, genome_id, out_file)
 
-    resolutions = hic_operate.get_resolutions()  # get resolution list
+    resolutions = hic_class.get_resolutions()  # get resolution list
 
     logger.info("Number of processes is : %s\n" % process_num)
     pool = Pool(process_num)  # process number
 
     start = 0
-    end = hic_operate.get_chr_len()  # get genome length
+    end = hic_class.get_chr_len()  # get hic file length
 
     global info_path  # info.txt file path
-    info_path = os.path.join(hic_operate.genome_folder, "info.txt")
+    info_path = os.path.join(hic_class.genome_folder, "info.txt")
     if _resolution is not None:
         resolutions = [_resolution]
 
@@ -68,42 +69,52 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num, random_colo
         logger.info("Processing resolution: %s\n" % resolution)
 
         # create resolution folder
-        resolution_folder = os.path.join(hic_operate.genome_folder, str(resolution))
-        hic_operate.create_folder(resolution_folder)
+        resolution_folder = os.path.join(hic_class.genome_folder, str(resolution))
+        hic_class.create_folder(resolution_folder)
+
+        # get visualization max color
+        # maxcolor = get_max_color(hic_file, resolution)
+        maxcolor = 0  # FIXME: TEST
 
         # range and increment
-        temp_increase = hic_operate.increment(resolution)
+        site_increase = increment(resolution)
 
         if methods == "global":  # sliding window method with global
             flag = False  # flag to judge whether the end is reached
-            for site_1 in range(start, end, temp_increase["increase"]):
-                if site_1 + temp_increase["dim"] > end:
-                    site_1 = end - temp_increase["dim"]
+            for site_1 in range(start, end, site_increase["increase"]):
+                if site_increase["range"] > end:
+                    site_increase["range"] = end
+                if site_1 + site_increase["range"] > end:
+                    site_1 = end - site_increase["range"]
                     flag = True
-                for site_2 in range(start, end, temp_increase["increase"]):
-                    if site_2 + temp_increase["dim"] > end:
-                        site_2 = end - temp_increase["dim"]
-                        pool.apply_async(hic_operate.gen_png, args=(
-                            resolution, site_1, site_1 + temp_increase["dim"], site_2, site_2 + temp_increase["dim"],
+                for site_2 in range(start, end, site_increase["increase"]):
+                    if site_2 + site_increase["range"] > end:
+                        site_2 = end - site_increase["range"]
+                        pool.apply_async(hic_class.gen_png, args=(
+                            resolution, maxcolor, site_1, site_1 + site_increase["range"], site_2,
+                            site_2 + site_increase["range"],
                             random_color,),
                                          callback=write_records)
                         break
-                    pool.apply_async(hic_operate.gen_png, args=(
-                        resolution, site_1, site_1 + temp_increase["dim"], site_2, site_2 + temp_increase["dim"],
+                    pool.apply_async(hic_class.gen_png, args=(
+                        resolution, maxcolor, site_1, site_1 + site_increase["range"], site_2,
+                        site_2 + site_increase["range"],
                         random_color,),
                                      callback=write_records)
                 if flag:
                     break
         else:  # sliding window method with diagonal
-            for site in range(start, end, temp_increase["increase"]):
-                site_end = site + temp_increase["dim"]
+            for site in range(start, end, site_increase["increase"]):
+                if site_increase["range"] > end:
+                    site_increase["range"] = end
+                site_end = site + site_increase["range"]
                 if site_end > end:  # at the end
-                    site = end - temp_increase["dim"]
+                    site = end - site_increase["range"]
                     site_end = end
                 if site < 0:  # solve white region padding bug
                     site = 0
-                pool.apply_async(hic_operate.gen_png, args=(
-                    resolution, site, site_end, site, site_end, random_color,),
+                pool.apply_async(hic_class.gen_png, args=(
+                    resolution, maxcolor, site, site_end, site, site_end, random_color,),
                                  callback=write_records)
 
     pool.close()  # close pool

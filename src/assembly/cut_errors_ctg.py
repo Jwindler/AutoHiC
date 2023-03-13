@@ -12,7 +12,7 @@ import json
 import re
 
 from src.assembly.asy_operate import AssemblyOperate
-from src.core.utils.get_ratio import get_ratio
+from src.core.utils.get_cfg import get_ratio
 from src.core.utils.logger import logger
 
 

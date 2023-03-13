@@ -13,7 +13,7 @@ import json
 import os
 
 from src.assembly.asy_operate import AssemblyOperate
-from src.core.utils.get_ratio import get_ratio
+from src.core.utils.get_cfg import get_ratio
 from src.core.utils.logger import logger
 from assembly.cut_errors_ctg import cut_errors_ctg
 from core.deb_adjust_v2 import adjust_debris

@@ -13,7 +13,7 @@ import json
 from collections import OrderedDict
 
 from src.assembly.asy_operate import AssemblyOperate
-from src.core.utils.get_ratio import get_ratio
+from src.core.utils.get_cfg import get_ratio
 from src.core.utils.logger import logger
 from core.search_right_site_v8 import search_right_site_v8
 
