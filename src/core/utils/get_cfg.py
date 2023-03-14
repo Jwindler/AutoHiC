@@ -106,8 +106,8 @@ def increment(resolution):
     """
 
     dim_increase = {
-        "increase": resolution * 500,
-        "range": resolution * 400
+        "increase": resolution * 300,  # 生成图片的话，这个值要小一点
+        "range": resolution * 700
     }
 
     return dim_increase
@@ -137,7 +137,26 @@ def get_max_color(hic_file, resolution):
     return maxcolor
 
 
+def get_max_color_v2(hic_file, resolution):
+    if resolution <= 2000:
+        return 1
+    elif resolution <= 12500:
+        return 3
+    else:
+        # get hic object
+        hic_object = hicstraw.HiCFile(hic_file)
+
+        matrix_zoom_data = hic_object.getMatrixZoomData(
+            'assembly', 'assembly', "observed", "KR", "BP", resolution)
+        start = 0
+        end = resolution * 700
+        matrix_data = matrix_zoom_data.getRecordsAsMatrix(start, end, start, end)
+        return np.percentile(matrix_data, 95)
+
+
 def get_full_len_matrix(hic_file, resolution, assembly_file=None):
+    # FIXME: 有问题，需要修改(在小分辨率下，报错过，未修改）
+
     # get hic object
     hic_object = hicstraw.HiCFile(hic_file)
 
@@ -192,21 +211,9 @@ def get_full_len_matrix(hic_file, resolution, assembly_file=None):
 
 
 def main():
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/03_silkworm/silkworm.0.hic"
-    # assembly_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/03_silkworm/silkworm.0.assembly"
-    # print("hic_real_len: ", get_hic_real_len(hic_file, assembly_file))
-
-    import time
-
-    start_time = time.time()
-
-    # 需要计时的代码
-    print(get_max_color(hic_file, 1000))
-
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-
-    print(f"代码执行时间：{elapsed_time}秒")
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/01_ci/ci.2.hic"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/01_ci/ci.2.assembly"
+    print("hic_real_len: ", get_hic_real_len(hic_file, assembly_file))
 
 
 if __name__ == "__main__":

@@ -13,19 +13,6 @@ import random
 from src.assembly.asy_operate import AssemblyOperate
 
 
-def random_color(maxcolor: int = 6000) -> int:
-    """
-        get random color threshold
-    Args:
-        maxcolor: color threshold max value
-
-    Returns:
-        random color threshold
-    """
-
-    return random.randrange(1, 6000)
-
-
 def make_inv(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6) -> None:
     """
         generate inversion data set
@@ -40,7 +27,7 @@ def make_inv(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6)
 
     # get original information
     asy_operate = AssemblyOperate(asy_file, ratio=None)
-    ctgs, ctgs_orders = asy_operate._get_ctgs_orders(asy_file)
+    ctg_s, ctg_s_orders = asy_operate._get_ctg_orders(asy_file)
     ays_info = asy_operate.get_info()
 
     order_list = [x for x in range(1, int(ays_info["ctg_number"]) + 1)]
@@ -51,13 +38,13 @@ def make_inv(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6)
     with open(out_file_path, "w") as f:
 
         # write ctg information
-        for key, value in ctgs.items():
+        for key, value in ctg_s.items():
             f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
         # write new ctg order
-        for ctgs_order in ctgs_orders:
+        for ctg_s_order in ctg_s_orders:
             temp_write_list = []
-            for x in ctgs_order:
+            for x in ctg_s_order:
                 # update ctg order which need to be cut
                 if abs(int(x)) in random_inv_list:
                     if int(x) > 0:
@@ -83,7 +70,7 @@ def make_tran(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6
 
     # get original information
     asy_operate = AssemblyOperate(asy_file, ratio=None)
-    ctgs, ctgs_orders = asy_operate._get_ctgs_orders(asy_file)
+    ctg_s, ctg_s_orders = asy_operate._get_ctg_orders(asy_file)
     ays_info = asy_operate.get_info()
 
     # generate ctg order list
@@ -99,13 +86,13 @@ def make_tran(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0.6
     with open(out_file_path, "w") as f:
 
         # write ctg information
-        for key, value in ctgs.items():
+        for key, value in ctg_s.items():
             f.write(key + " " + value["order"] + " " + value["length"] + "\n")
 
         # write new ctg order
-        for ctgs_order in ctgs_orders:
+        for ctg_s_order in ctg_s_orders:
             temp_write_list = []
-            for x in ctgs_order:
+            for x in ctg_s_order:
                 # update ctg order which need to be cut
                 if abs(int(x)) in tran_dict:
                     temp_write_list.append(x)
@@ -133,7 +120,7 @@ def make_double(asy_file: str, out_file_path: str, random_p: "0 < float < 1" = 0
 
 
 def main():
-    make_inv("/home/jzj/buffer/Np_tran.assembly", "/home/jzj/buffer/Np_double.assembly", 0.6)
+    make_inv("/home/jzj/Jupyter-Docker/buffer/10_genomes/01_ci/ci.0.assembly", "/home/jzj/buffer/test.assembly", 0.5)
 
 
 if __name__ == "__main__":

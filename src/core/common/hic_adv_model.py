@@ -12,7 +12,6 @@
 import json
 import os
 import uuid
-import random
 import numpy as np
 
 import hicstraw
@@ -69,26 +68,22 @@ class GenBaseModel:
             logger.error("Folder already exists")
 
     @staticmethod
-    def plot_hic_map(matrix, v_max, fig_save_path, random_color):
+    def plot_hic_map(matrix, v_max, fig_save_path):
         """
             plot hic map
         Args:
             matrix: hic matrix
             v_max: max color value
             fig_save_path: figure save dir
-            random_color: random color or not
 
         Returns:
 
         """
         red_map = LinearSegmentedColormap.from_list(
             "bright_red", [(1, 1, 1), (1, 0, 0)])
-        v_max = (np.percentile(matrix, 99))
+        v_max = (np.percentile(matrix, 95))
         if v_max == 0:
             v_max = 1
-        elif random_color:
-            # choose random color from 2 to v_max
-            v_max = random.randrange(1, v_max)
         # visualize
         plt.matshow(
             matrix,
@@ -107,7 +102,7 @@ class GenBaseModel:
             fig_save_path,
             dpi=300,
             bbox_inches='tight',
-            pad_inches=0.1)
+            pad_inches=0)
         plt.close()
 
     @staticmethod
@@ -136,7 +131,7 @@ class GenBaseModel:
 
         return json.dumps(record)
 
-    def gen_png(self, resolution, maxcolor, a_start, a_end, b_start, b_end, random_color, img_format="png"):
+    def gen_png(self, resolution, maxcolor, a_start, a_end, b_start, b_end, img_format="png"):
         """
             generate png
         Args:
@@ -146,7 +141,6 @@ class GenBaseModel:
             a_end: chr A end
             b_start: chr B start
             b_end: chr B end
-            random_color: random color or not
             img_format: image format
 
         Returns:
@@ -170,7 +164,7 @@ class GenBaseModel:
         numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(a_start, a_end, b_start, b_end)
 
         # plot hic contact map
-        self.plot_hic_map(numpy_matrix_chr, maxcolor, img_path, random_color)
+        self.plot_hic_map(numpy_matrix_chr, maxcolor, img_path)
 
         # create info record
         temp_field = self.info_records(

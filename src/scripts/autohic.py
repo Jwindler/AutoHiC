@@ -32,16 +32,14 @@ def mul_gen_png(hic_file: str = typer.Option(..., "--hic-file", "-hic", help="hi
                                             rich_help_panel="Secondary Arguments"),
 
                 process_num: int = typer.Option(10, "--process-num", "-p", help="number of processes",
-                                                rich_help_panel="Secondary Arguments"),
-                random_color: bool = typer.Option(False, "--random", "-r", help="whether random color",
-                                                  rich_help_panel="Secondary Arguments")):
+                                                rich_help_panel="Secondary Arguments")):
     """
     Multiprocess generation of interactive img
     """
 
     if result_name is None:
         result_name = os.path.basename(hic_file).split(".")[0]
-    mul_process(hic_file, result_name, out_path, methods, process_num, random_color)
+    mul_process(hic_file, result_name, out_path, methods, process_num)
 
 
 if __name__ == "__main__":

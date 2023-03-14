@@ -13,7 +13,7 @@ import os
 from multiprocessing import Pool
 
 from src.core.common.hic_adv_model import GenBaseModel
-from src.core.utils.get_cfg import increment, get_max_color
+from src.core.utils.get_cfg import increment, get_max_color_v2
 from src.core.utils.logger import logger
 
 info_path = ""  # define
@@ -32,7 +32,7 @@ def write_records(records):
         f.writelines(records)
 
 
-def mul_process(hic_file, genome_id, out_file, methods, process_num, random_color, _resolution=None):
+def mul_process(hic_file, genome_id, out_file, methods, process_num, _resolution=None):
     """
         multiprocessing generate hic image
     Args:
@@ -41,7 +41,6 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num, random_colo
         out_file: output file path
         methods: global or diagonal (default: diagonal)
         process_num: process number (default: 10)
-        random_color: random color (default: True)
         _resolution: specific resolution (default: None)
 
     Returns:
@@ -73,8 +72,7 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num, random_colo
         hic_class.create_folder(resolution_folder)
 
         # get visualization max color
-        # maxcolor = get_max_color(hic_file, resolution)
-        maxcolor = 0  # FIXME: TEST
+        maxcolor = 1  # 后续生成了
 
         # range and increment
         site_increase = increment(resolution)
@@ -92,14 +90,12 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num, random_colo
                         site_2 = end - site_increase["range"]
                         pool.apply_async(hic_class.gen_png, args=(
                             resolution, maxcolor, site_1, site_1 + site_increase["range"], site_2,
-                            site_2 + site_increase["range"],
-                            random_color,),
+                            site_2 + site_increase["range"],),
                                          callback=write_records)
                         break
                     pool.apply_async(hic_class.gen_png, args=(
                         resolution, maxcolor, site_1, site_1 + site_increase["range"], site_2,
-                        site_2 + site_increase["range"],
-                        random_color,),
+                        site_2 + site_increase["range"],),
                                      callback=write_records)
                 if flag:
                     break
@@ -114,7 +110,7 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num, random_colo
                 if site < 0:  # solve white region padding bug
                     site = 0
                 pool.apply_async(hic_class.gen_png, args=(
-                    resolution, maxcolor, site, site_end, site, site_end, random_color,),
+                    resolution, maxcolor, site, site_end, site, site_end,),
                                  callback=write_records)
 
     pool.close()  # close pool

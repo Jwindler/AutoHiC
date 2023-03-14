@@ -18,9 +18,9 @@ from src.core.utils.logger import logger
 from src.core.utils.get_cfg import get_hic_real_len, get_max_hic_len
 
 
-
 def plot_hic_map(dense_matrix, color, genome_name, out_path, save, chr_dict=None, **kwargs):
-    maxcolor = (np.percentile(dense_matrix, 95))
+    # TODO: add percent parameter to set maxcolor
+    maxcolor = (np.percentile(dense_matrix, 95))  # 95 / 97 都可以，建议设置参数
 
     # TODO: chr_dict be used to add chromosome name
     fig, ax = plt.subplots(**kwargs)
