@@ -1,3 +1,12 @@
+## [0.8.16](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.15...v0.8.16) (2023-03-14)
+
+
+### Features
+
+* update get maxcolor manner ([37738f2](https://github.com/Jwindler/HiC-OpenCV/commit/37738f225b4e157dc522756b483fcf801dfa80e5))
+
+
+
 ## [0.8.14](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.13...v0.8.14) (2023-03-07)
 
 
