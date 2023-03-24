@@ -45,7 +45,7 @@ def error2xlsx(error_file_path, output_path):
 
 
 def excel2json(excel_path, json_path):
-    dataframe1 = pd.read_excel(excel_path, header=1)
+    dataframe1 = pd.read_excel(excel_path, header=0)
     id_list = dataframe1["ID"].values
     real_start = dataframe1["Real_Start"].values
     real_end = dataframe1["Real_End"].values
@@ -61,17 +61,17 @@ def excel2json(excel_path, json_path):
 
 
 def main():
-    error_path = "/home/jzj/Jupyter-Docker/buffer/result"
-
-    error_file = os.path.join(error_path, "chr_len_filtered_errors.json")
-    output_path = os.path.join(error_path, "errors.xlsx")
-
-    error2xlsx(error_file, output_path)
+    # error_path = "/home/jzj/Jupyter-Docker/buffer/ci_2"
+    #
+    # error_file = os.path.join(error_path, "chr_len_filtered_errors.json")
+    # output_path = os.path.join(error_path, "errors.xlsx")
+    #
+    # error2xlsx(error_file, output_path)
 
     # excel2json
-    # excel_path = "/home/jzj/HiC-OpenCV/temp/errors_space.xlsx"
-    # json_path = "/home/jzj/buffer/test.json"
-    # excel2json(excel_path, json_path)
+    excel_path = "/home/jzj/buffer/Book1.xlsx"
+    json_path = "/home/jzj/buffer/test.json"
+    excel2json(excel_path, json_path)
 
 
 if __name__ == "__main__":

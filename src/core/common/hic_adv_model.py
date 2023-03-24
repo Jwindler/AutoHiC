@@ -131,7 +131,7 @@ class GenBaseModel:
 
         return json.dumps(record)
 
-    def gen_png(self, resolution, maxcolor, a_start, a_end, b_start, b_end, img_format="png"):
+    def gen_png(self, resolution, maxcolor, a_start, a_end, b_start, b_end, img_format="jpg"):
         """
             generate png
         Args:

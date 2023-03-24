@@ -142,10 +142,10 @@ def plot_chr(hic_file, assembly_file=None, genome_size=None, chr_name=None, geno
 
 
 def main():
-    hic_file = "/home/jzj/Data/Elements/329_hic/AplCal3.0.rawchrom.hic"
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/chr_data_test/ASM360417v1.rawchrom.assembly"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/03_silkworm/silkworm.2.hic"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/03_silkworm/silkworm.2.assembly"
     out_path = "/home/jzj/Downloads"
-    plot_chr(hic_file, assembly_file=None, out_path=out_path, fig_format="png")
+    plot_chr(hic_file, assembly_file=assembly_file, out_path=out_path, fig_format="png")
 
 
 if __name__ == "__main__":

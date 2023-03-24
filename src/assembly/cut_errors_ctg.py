@@ -20,7 +20,7 @@ def cut_errors_ctg(errors_queue, hic_file, assembly_file, modified_assembly_file
     """
     cut errors ctg
     Args:
-        errors_queue: error queue
+        errors_queue: error queue:{ctg: {"start": start, "end": end}
         hic_file: hic file path
         assembly_file: assembly file path
         modified_assembly_file: modified assembly file path
