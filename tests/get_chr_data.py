@@ -8,6 +8,13 @@
 @time: 3/6/23 5:20 PM
 @function: 
 """
+import json
+import math
+
+from src.assembly.asy_operate import AssemblyOperate
+from src.core.utils.get_cfg import get_ratio
+from src.core.utils.logger import logger
+from collections import OrderedDict
 
 
 def bbox2hic(bbox, hic_len, img_size):
@@ -67,23 +74,34 @@ def score_filter(chr_dict, score_threshold):
     return chr_dict
 
 
-def hic_loci2txt(chr_dict, txt_path):
+def hic_loci2txt(chr_dict, txt_path, redundant_len=200000):
     """
 
     Args:
         chr_dict:
         txt_path:
+        redundant_len:
 
     Returns:
 
     """
+
+    chr_len_list = []
+    for index, value in chr_dict.items():
+        chr_len_list.append([value['hic_loci'][0], value['hic_loci'][1]])
+    chr_len_list_sorted = sorted(chr_len_list, key=lambda x: x[1])
+    for chr_index in range(len(chr_len_list_sorted) - 1):
+        chr_len_list_sorted[chr_index][1] = (chr_len_list_sorted[chr_index][1] + chr_len_list_sorted[chr_index + 1][
+            0]) // 2
+        chr_len_list_sorted[chr_index + 1][0] = chr_len_list_sorted[chr_index][1] + 1
+
+    #
+    chr_len_list_sorted[-1][1] = chr_len_list_sorted[-1][1] + redundant_len
+
     with open(txt_path, "w") as f:
-        for index, value in chr_dict.items():
-            f.write(
-                f"{index}\t{value['hic_loci'][0]}\t"
-                f"{value['hic_loci'][1]}\t"
-                f"{value['hic_loci'][2]}\t"
-                f"{value['hic_loci'][3]}\n")
+        f.write("Chr\tStart\tEnd\n")
+        for index, value in enumerate(chr_len_list_sorted):
+            f.write("{0}\t{1}\t{2}\n".format(index + 1, value[0], value[1]))
 
 
 def hic_loci2excel(chr_dict, excel_path):
@@ -108,8 +126,132 @@ def hic_loci2excel(chr_dict, excel_path):
     return excel_path
 
 
+def split_list(lst, val):
+    return [lst[:lst.index(val)], lst[lst.index(val) + 1:]] if val in lst else [lst]
+
+
+def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
+    chr_len_list = []
+    with open(chr_len_txt, 'r') as f:
+        for line in f.readlines():
+            line_split = line.strip().split("\t")
+            if line_split[0] == "Chr":
+                continue
+            chr_len_list.append(int(line_split[2]))
+
+    # get ratio of hic file and assembly file
+    ratio = get_ratio(hic_file, assembly_file)
+
+    # class AssemblyOperate class
+    asy_operate = AssemblyOperate(assembly_file, ratio)
+
+    flag = True  # flag to judge whether the file is modified
+
+    # cut chr ctg
+    for chr_len in chr_len_list:
+        if flag:
+            flag = False
+        else:
+            assembly_file = modified_assembly_file
+
+        # find ctg
+        error_contains_ctg = asy_operate.find_site_ctg_s(assembly_file, chr_len, chr_len + 1)
+
+        # json format
+        contain_ctg = json.loads(error_contains_ctg)
+
+        # cut final insert location ctg right point
+        contain_ctg_second = list(contain_ctg.keys())[0]
+
+        second_cut_ctg = {contain_ctg_second: math.ceil(chr_len * ratio) + 1}
+
+        # 如果刚好边界等，不需要切割
+        if contain_ctg[contain_ctg_second]["start"] != chr_len:
+            # check whether the ctg is already cut
+            if "fragment" in contain_ctg_second or "debris" in contain_ctg_second:
+                asy_operate.re_cut_ctg_s(assembly_file, second_cut_ctg, modified_assembly_file)
+            else:
+                asy_operate.cut_ctg_s(assembly_file, second_cut_ctg, modified_assembly_file)
+    logger.info("Cut errors ctg done \n")
+
+    # get chr cut ctg order
+    chr_cut_ctg_order = []
+    for chr_len in chr_len_list:
+        # find ctg
+        error_contains_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, chr_len, chr_len + 2)
+
+        # json format
+        contain_ctg = json.loads(error_contains_ctg)
+
+        # cut final insert location ctg right point
+        contain_ctg_second = list(contain_ctg.keys())[0]
+
+        each_chr_cut_ctg_order = asy_operate.get_ctg_info(ctg_name=contain_ctg_second,
+                                                          new_asy_file=modified_assembly_file)
+        chr_cut_ctg_order.append(str(each_chr_cut_ctg_order["ctg_order"]))
+
+    # cut chr ctg order
+    ctg_s = OrderedDict()  # ctg_s information
+    ctg_orders = []  # ctg_s orders
+
+    # get ctg number and total length
+    with open(modified_assembly_file, "r") as f:
+        for line in f:
+            if line.startswith(">"):
+                temp_line = line.strip().split()
+                ctg_s[temp_line[0]] = {
+                    "order": temp_line[1],
+                    "length": temp_line[2]
+                }
+            else:
+                temp_line = line.strip().split(" ")
+                ctg_orders.append(temp_line)
+    one_dim_ctg_orders = [item for sublist in ctg_orders for item in sublist]
+
+    # 切分成二维列表
+    def split_chr_list(chars_list, split_chars_list):
+        # 定义一个变量来存储当前子列表的起始位置
+        start_index = 0
+
+        # 定义一个空列表来存储切分后的二维列表
+        result_list = []
+
+        # 遍历 chars_list
+        for i in range(len(chars_list)):
+            # 如果当前字符是一个指定的切分字符
+            if chars_list[i] in split_chars_list:
+                # 将 chars_list 从起始位置到当前位置+1切分为一个子列表，并将其添加到 result_list 中
+                result_list.append(chars_list[start_index:i])
+                # 更新起始位置为当前位置的下一个位置
+                start_index = i
+
+        # 如果还有剩余字符，将它们添加到最后一个子列表中
+        if start_index < len(chars_list):
+            result_list.append(chars_list[start_index:])
+
+        return result_list
+
+    result_orders = split_chr_list(one_dim_ctg_orders, chr_cut_ctg_order)
+
+    # update order and write to new file
+    with open(modified_assembly_file + "new", "w") as f:
+        # write the new ctg information
+        for key, value in ctg_s.items():
+            f.write(key + " " + value["order"] + " " + value["length"] + "\n")
+
+        # write new ctg order information
+        for ctg_order in result_orders:
+            f.write(" ".join(ctg_order) + "\n")
+
+    logger.info("Get ctg_s information done \n")
+
+
 def main():
-    pass
+    chr_len_txt = "/home/jzj/Jupyter-Docker/buffer/chr.txt"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/03_silkworm/silkworm.2.hic"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/03_silkworm/silkworm.2.assembly"
+    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/test.assembly"
+    divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file)
 
 
 if __name__ == "__main__":

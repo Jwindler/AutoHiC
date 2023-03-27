@@ -15,81 +15,35 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib import pyplot as plt
 
 from src.core.utils.logger import logger
-from src.core.utils.get_cfg import get_hic_real_len, get_max_hic_len
+from src.core.utils.get_cfg import get_max_hic_len
 
 
-def plot_hic_map(dense_matrix, color, genome_name, out_path, save, chr_dict=None, **kwargs):
-    # TODO: add percent parameter to set maxcolor
-    maxcolor = (np.percentile(dense_matrix, 95))  # 95 / 97 都可以，建议设置参数
-
-    # TODO: chr_dict be used to add chromosome name
-    fig, ax = plt.subplots(**kwargs)
-    red_map = LinearSegmentedColormap.from_list(color, [(1, 1, 1), (1, 0, 0)])
-
-    im = ax.matshow(dense_matrix, cmap=red_map, vmin=0, vmax=maxcolor)
-    # ax.set_title(genome_name)
-    plt.axis('off')  # remove axis
-    # plt.xticks([])
-    # plt.yticks([])
-    # fig.colorbar(im, ax=ax)
-    if save:
-        # FIXME: add other format to save
-        plt.savefig(os.path.join(out_path, genome_name) + "_chr", bbox_inches='tight',
-                    pad_inches=0, **kwargs)
-    plt.show()  # not show figure
-    plt.close()
-
-
-def plot_chr(hic_file, assembly_file=None, genome_size=None, chr_name=None, genome_name=None, color="bright_red",
-             resolution=None,
-             out_path=None,
-             nor_method="NONE", figure_size=(8, 8), dpi=300, fig_format="jpg", save=True):
-    """
-        plot whole genome chromosome interaction map in one figure
-    Args:
-        hic_file: hic data path
-        assembly_file: asy data path
-        genome_name: genome name
-        resolution: resolution
-        out_path: output path
-        genome_size: genome size
-        nor_method: normalization method (NONE, VC, VC_SQRT, KR, SCALE, etc.)
-        chr_name: chromosome name
-        color: color
-        figure_size: figure size
-        dpi: figure dpi
-        fig_format: figure save format(jpg or svg)
-        save: save figure or not
-
-    Returns:
-
-    """
+# plot whole genome chromosome interaction map in one figure
+def plot_chr(hic_file, genome_name=None, hic_len=None, color="bright_red", resolution=None, out_path=None,
+             nor_method="NONE", color_percent=95, figure_size=(8, 8), dpi=300, fig_format="png"):
     # check input arguments
     if hic_file is None:
-        raise ValueError("hic data path is None, please check your input\n")
+        raise ValueError("hic data path is None, please check your input \n")
 
     if out_path is None:
-        logger.warning("Out path is None, use hic file path as out path\n")
+        logger.warning("Out path is None, use hic file path as out path \n")
         out_path = os.path.dirname(hic_file)
 
     hic = hicstraw.HiCFile(hic_file)
 
-    hic_len = None  # hic length
-    if assembly_file is None:
+    if hic_len is None:
         for chrom in hic.getChromosomes():
             hic_len = chrom.length
-        logger.info("hic file full length is %s\n" % hic_len)
-    else:
-        hic_len = get_hic_real_len(hic_file, assembly_file)
-        logger.info("hic real full length is %s\n" % hic_len)
+        logger.info("hic file full length is %s \n" % hic_len)
 
     if genome_name is None:
-        logger.info("Genome name is None, please check your genome input\n")
+        logger.warning("Genome name is None, please check your genome input \n")
         genome_name = os.path.basename(hic_file)
 
     if resolution is None:
         resolution = hic.getResolutions()[0]
-        logger.info("Resolution is None, use default resolution %s to plot\n" % resolution)
+        # fixme: 选择合适的分辨率
+        logger.info("Resolution is None, use default resolution %s to plot \n" % resolution)
 
     # get interaction matrix object
     matrix_object_chr = hic.getMatrixZoomData('assembly', 'assembly', "observed", nor_method, "BP", resolution)
@@ -99,7 +53,7 @@ def plot_chr(hic_file, assembly_file=None, genome_size=None, chr_name=None, geno
 
     # check if you need to cut matrix
     if res_max_len > hic_len:
-        logger.info("Resolution max length bigger than hic length\n")
+        logger.info("Resolution max length bigger than hic length \n")
         for res in hic.getResolutions():
             if get_max_hic_len(res) > hic_len:
                 resolution = res
@@ -137,15 +91,31 @@ def plot_chr(hic_file, assembly_file=None, genome_size=None, chr_name=None, geno
         # 去除全零列
         numpy_matrix_chr = not_row[:, [not np.all(not_row[:, i] == 0) for i in range(not_row.shape[1])]]
 
-    plot_hic_map(numpy_matrix_chr, color, out_path=out_path, genome_name=genome_name,
-                 figure_size=figure_size, dpi=dpi, fig_format=fig_format, save=save)
+    # matrix flip
+    dense_matrix = np.flipud(numpy_matrix_chr)
+
+    maxcolor = (np.percentile(dense_matrix, color_percent))
+
+    fig, ax = plt.subplots(figsize=figure_size)
+    red_map = LinearSegmentedColormap.from_list(color, [(1, 1, 1), (1, 0, 0)])
+
+    im = ax.matshow(dense_matrix, cmap=red_map, vmin=0, vmax=maxcolor)
+    # ax.set_title(genome_name)
+    plt.axis('off')  # remove axis
+    plt.xticks([])
+    plt.yticks([])
+    # fig.colorbar(im, ax=ax)
+
+    plt.savefig(os.path.join(out_path, genome_name) + "_chr", bbox_inches='tight', pad_inches=0, dpi=dpi,
+                format=fig_format)
+    plt.show()  # not show figure
+    plt.close()
 
 
 def main():
     hic_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/03_silkworm/silkworm.2.hic"
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/03_silkworm/silkworm.2.assembly"
-    out_path = "/home/jzj/Downloads"
-    plot_chr(hic_file, assembly_file=assembly_file, out_path=out_path, fig_format="png")
+    out_path = "/home/jzj/buffer"
+    plot_chr(hic_file, out_path=out_path, fig_format="png")
 
 
 if __name__ == "__main__":
