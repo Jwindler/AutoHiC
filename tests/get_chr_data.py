@@ -96,6 +96,7 @@ def hic_loci2txt(chr_dict, txt_path, redundant_len=200000):
         chr_len_list_sorted[chr_index + 1][0] = chr_len_list_sorted[chr_index][1] + 1
 
     #
+    chr_len_list_sorted[0][0] = 0
     chr_len_list_sorted[-1][1] = chr_len_list_sorted[-1][1] + redundant_len
 
     with open(txt_path, "w") as f:
@@ -234,7 +235,7 @@ def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
     result_orders = split_chr_list(one_dim_ctg_orders, chr_cut_ctg_order)
 
     # update order and write to new file
-    with open(modified_assembly_file + "new", "w") as f:
+    with open(modified_assembly_file, "w") as f:
         # write the new ctg information
         for key, value in ctg_s.items():
             f.write(key + " " + value["order"] + " " + value["length"] + "\n")
@@ -247,9 +248,9 @@ def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
 
 
 def main():
-    chr_len_txt = "/home/jzj/Jupyter-Docker/buffer/chr.txt"
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/03_silkworm/silkworm.2.hic"
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/03_silkworm/silkworm.2.assembly"
+    chr_len_txt = "/home/jzj/Jupyter-Docker/buffer/ci_chr.txt"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/ci_autohic/ci_0_autohic/ci.final.hic"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/ci_autohic/ci_0_autohic/ci.final.assembly"
     modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/test.assembly"
     divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file)
 
