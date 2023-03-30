@@ -56,10 +56,8 @@ def adjust_debris(errors_queue, hic_file, modified_assembly_file, black_list=Non
 
     if black_list is not None:
         with open(black_list, "r") as outfile:
-            # FIXME: read black list
             black_list = outfile.readlines()
             black_list = [sub.replace('\n', '') for sub in black_list]
-        # FIXME: add black list to error queue
         error_deb_info["black_list"] = {
             "deb_ctg": black_list
         }

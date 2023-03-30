@@ -71,9 +71,6 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num, _resolution
         resolution_folder = os.path.join(hic_class.genome_folder, str(resolution))
         hic_class.create_folder(resolution_folder)
 
-        # get visualization max color
-        maxcolor = 1  # 后续生成了
-
         # range and increment
         site_increase = increment(resolution)
 
@@ -89,12 +86,12 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num, _resolution
                     if site_2 + site_increase["range"] > end:
                         site_2 = end - site_increase["range"]
                         pool.apply_async(hic_class.gen_png, args=(
-                            resolution, maxcolor, site_1, site_1 + site_increase["range"], site_2,
+                            resolution, site_1, site_1 + site_increase["range"], site_2,
                             site_2 + site_increase["range"],),
                                          callback=write_records)
                         break
                     pool.apply_async(hic_class.gen_png, args=(
-                        resolution, maxcolor, site_1, site_1 + site_increase["range"], site_2,
+                        resolution, site_1, site_1 + site_increase["range"], site_2,
                         site_2 + site_increase["range"],),
                                      callback=write_records)
                 if flag:
@@ -110,7 +107,7 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num, _resolution
                 if site < 0:  # solve white region padding bug
                     site = 0
                 pool.apply_async(hic_class.gen_png, args=(
-                    resolution, maxcolor, site, site_end, site, site_end,),
+                    resolution, site, site_end, site, site_end,),
                                  callback=write_records)
 
     pool.close()  # close pool

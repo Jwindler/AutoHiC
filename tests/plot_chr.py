@@ -9,14 +9,14 @@
 @function: visualize Whole genome chromosome
 """
 import os
-import numpy as np
-import hicstraw
-from matplotlib.colors import LinearSegmentedColormap
-from matplotlib import pyplot as plt
-import matplotlib.lines as lines
 
-from src.core.utils.logger import logger
+import hicstraw
+import numpy as np
+from matplotlib import pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+
 from src.core.utils.get_cfg import get_max_hic_len
+from src.core.utils.logger import logger
 
 
 def plot_chr_inter(hic_file, out_path=None, color_percent=95, figure_size=(10, 10), dpi=300, fig_format="png"):
@@ -128,7 +128,6 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, color=
 
     if resolution is None:
         resolution = hic.getResolutions()[0]
-        # fixme: 选择合适的分辨率
         logger.info("Resolution is None, use default resolution %s to plot \n" % resolution)
 
     chr_len_list = []
@@ -198,31 +197,6 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, color=
 
     # set genome title
     ax.set_title(genome_name, fontsize=25)
-
-    # FIXME: 测试多个基因组增加染色体名字
-    # label_scale = dense_matrix.shape[1] / chr_len_list[-1]
-    # chr_len_list_mid = [0] + chr_len_list
-    # midpoints = []
-    # for i in range(len(chr_len_list_mid) - 1):
-    #     midpoint = (chr_len_list_mid[i] + chr_len_list_mid[i + 1]) / 2
-    #     midpoints.append(midpoint)
-
-    # TODO: 增加染色体框线
-    # add chr lines
-    # chr_line_list = chr_len_list[:-1]
-    # chr_line_list_scale = [x * label_scale for x in chr_line_list]
-    # for line_x in chr_line_list_scale:
-    #     fig.add_artist(lines.Line2D([line_x, line_x], [0, chr_line_list_scale[-1]], linestyle='--', color='w'))
-    #     fig.add_artist(lines.Line2D([0, chr_line_list_scale[-1]], [line_x, line_x], linestyle='--', color='w'))
-
-    # add x labels
-    # chr_ticks = [x * label_scale for x in midpoints]
-    # chr_labels = ["Chr" + str(i) for i in range(1, len(midpoints) + 1)]
-
-    # 设置横坐标的位置和标签
-    # ax.set_xticks(chr_ticks)
-    # ax.set_xticklabels(chr_labels)
-    # ax.xaxis.set_ticks_position("bottom")
 
     # 将纵坐标刻度设置为空
     ax.set_yticks([])

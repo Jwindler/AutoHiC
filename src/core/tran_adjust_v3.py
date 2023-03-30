@@ -47,7 +47,6 @@ def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_l
     black_list_set = None
     if black_list is not None:
         with open(black_list, "r") as outfile:
-            # FIXME: read black list
             black_list = outfile.readlines()
             black_list = [sub.replace('\n', '') for sub in black_list]
         black_list_set = set(black_list)
@@ -63,7 +62,7 @@ def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_l
         if black_list is not None:
             # error in black list
             error_set = set(new_error_contains_ctg)
-            if error_set & black_list_set:  # FIXME: error in black list
+            if error_set & black_list_set:
                 logger.info("Error {0} in black list, skip\n".format(error))
                 continue
 
@@ -85,7 +84,7 @@ def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_l
 
     # write error information to black list
     with open(black_list_output, "w") as outfile:
-        for index in error_tran_info:  # FIXME: write error information to black list
+        for index in error_tran_info:
             outfile.write("\n".join(list(error_tran_info[index]['moves_ctg'].keys())) + "\n")
     return error_tran_info
 

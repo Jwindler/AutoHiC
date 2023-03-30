@@ -68,12 +68,11 @@ class GenBaseModel:
             logger.error("Folder already exists")
 
     @staticmethod
-    def plot_hic_map(matrix, v_max, fig_save_path):
+    def plot_hic_map(matrix, fig_save_path):
         """
             plot hic map
         Args:
             matrix: hic matrix
-            v_max: max color value
             fig_save_path: figure save dir
 
         Returns:
@@ -131,12 +130,11 @@ class GenBaseModel:
 
         return json.dumps(record)
 
-    def gen_png(self, resolution, maxcolor, a_start, a_end, b_start, b_end, img_format="jpg"):
+    def gen_png(self, resolution, a_start, a_end, b_start, b_end, img_format="jpg"):
         """
             generate png
         Args:
             resolution: hic resolution
-            maxcolor: max color value
             a_start: chr A start
             a_end: chr A end
             b_start: chr B start
@@ -164,7 +162,7 @@ class GenBaseModel:
         numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(a_start, a_end, b_start, b_end)
 
         # plot hic contact map
-        self.plot_hic_map(numpy_matrix_chr, maxcolor, img_path)
+        self.plot_hic_map(numpy_matrix_chr, img_path)
 
         # create info record
         temp_field = self.info_records(
