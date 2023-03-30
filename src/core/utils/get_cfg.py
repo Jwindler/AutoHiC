@@ -106,7 +106,7 @@ def increment(resolution):
     """
 
     dim_increase = {
-        "increase": resolution * 400,  # 生成图片的话，这个值要小一点
+        "increase": resolution * 300,  # 生成图片的话，这个值要小一点
         "range": resolution * 700  # 700是最小，否则出现颜色阈值不正常的情况
     }
 
