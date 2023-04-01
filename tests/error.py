@@ -83,9 +83,28 @@ class ERRORS:
 
         return hic_loci
 
-    def loci_zoom(self, errors_dict, out_path="zoomed_errors.json"):
-        # TODO: zoom in the error loci
-        pass
+    def loci_zoom(self, errors_dict, threshold=3000, out_path="zoomed_errors.json", filter_cls=None):
+        print("zoom threshold: ", threshold)
+
+        if filter_cls is None:
+            filter_cls = self.classes
+        zoomed_errors = dict()
+
+        for key in filter_cls:
+            try:
+                zoomed_errors[key] = []
+                for error in errors_dict[key]:
+                    error["hic_loci"][0] = error["hic_loci"][0] + threshold
+                    error["hic_loci"][1] = error["hic_loci"][1] - threshold
+                    zoomed_errors[key].append(error)
+            except KeyError:
+                print(f"KeyError: {key} not in errors_dict")
+                continue
+
+        with open(os.path.join(self.out_path, out_path), "w") as outfile:
+            json.dump(zoomed_errors, outfile)
+
+        return zoomed_errors
 
     @staticmethod
     def cal_iou(box1, box2):
@@ -333,7 +352,7 @@ class ERRORS:
 
     def divide_error(self, all_filtered_error: dict):
         for _class in self.classes:
-            if _class in all_filtered_error.keys():
+            if _class in all_filtered_error.keys() and all_filtered_error[_class]:
                 divided_error = dict()
                 for tran_error in all_filtered_error[_class]:
                     divided_error[tran_error["id"]] = {  # one key may have multiple values
