@@ -1,3 +1,21 @@
+## [0.8.17](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.16...v0.8.17) (2023-04-01)
+
+
+### Bug Fixes
+
+* modify some warrings in code ([f3cdbde](https://github.com/Jwindler/HiC-OpenCV/commit/f3cdbde3a93351897374ea4ea7775a2091dc8d6a))
+* remove files ([ed0b70e](https://github.com/Jwindler/HiC-OpenCV/commit/ed0b70e45e3d0743a3058c5a0f325e97d82c0954))
+
+
+### Features
+
+* add split chr and update plot chr ([f3036c6](https://github.com/Jwindler/HiC-OpenCV/commit/f3036c6a81590340a2595d4dd61305af204ba3fb))
+* add translocation black list fun ([02d748c](https://github.com/Jwindler/HiC-OpenCV/commit/02d748c85d15870a14805784e53f49fcf3640d60))
+* add zoom error function ([4507e34](https://github.com/Jwindler/HiC-OpenCV/commit/4507e343a0402b2158930655b938f6d694cc5898))
+* update plot chr feature ([0694312](https://github.com/Jwindler/HiC-OpenCV/commit/0694312fe14286f96e5f320bd3b18027a7da3dbe))
+
+
+
 ## [0.8.16](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.15...v0.8.16) (2023-03-14)
 
 
