@@ -1,0 +1,26 @@
+# Paths and Settings
+JOB_NAME=AutoHiC
+RESULT_DIR=/home/jzj/buffer
+N_CPU=20
+
+# Data
+GENOME_NAME=Np
+REFERENCE_GENOME=/data/jzj/juicer/references/Np.fasta
+
+# Juicer options
+JUICER_DIR=/home/jzj/buffer/juicer
+FASTQ_DIR=/data/jzj/juicer/HiCPro/rawdata
+ENZYME=DpnII
+
+
+# 3D-DNA options
+TD_DNA_DIR=/home/jzj/buffer/3d-dna
+NUMBER_OF_EDIT_ROUNDS=2
+
+# AutoHiC options
+ERROR_FILTER_SCORE=0.9
+ERROR_FILTER_IOU_SCORE=0.8
+ERROR_MIN_LEN=15000
+ERROR_MAX_LEN=10000000
+
+# Do not edit below this line
