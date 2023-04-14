@@ -94,7 +94,7 @@ def plot_chr_inter(hic_file, out_path=None, color_percent=95, figure_size=(10, 1
     ax.set_yticks([])
     ax.set_xticks([])
 
-    plt.savefig(os.path.join(out_path, "chromosome"), bbox_inches='tight', pad_inches=0, dpi=dpi,
+    plt.savefig(os.path.join(out_path, "chromosome.png"), bbox_inches='tight', pad_inches=0, dpi=dpi,
                 format=fig_format)
     plt.show()  # not show figure
     plt.close()
@@ -211,11 +211,11 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, color=
 
 
 def main():
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/03_silkworm/silkworm.2.hic"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/ci_5/ci.5.hic"
     out_path = "/home/jzj/buffer"
     chr_len_file = "/home/jzj/buffer/chr.txt"
-    plot_chr(hic_file, chr_len_file=chr_len_file, out_path=out_path, fig_format="svg")
-    # plot_chr_inter(hic_file, out_path)
+    # plot_chr(hic_file, chr_len_file=chr_len_file, out_path=out_path, fig_format="svg")
+    plot_chr_inter(hic_file, out_path)
 
 
 if __name__ == "__main__":

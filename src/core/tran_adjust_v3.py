@@ -18,8 +18,7 @@ from src.core.utils.logger import logger
 from core.search_right_site_v8 import search_right_site_v8
 
 
-def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_list_output="./black_list.txt",
-                         black_list=None):
+def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_list_output, black_list=None):
     """
     Translocation adjust
     Args:
@@ -74,6 +73,12 @@ def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_l
         error_site = (errors_queue[error]["start"], errors_queue[error]["end"])
         temp_result, insert_left = search_right_site_v8(hic_file, modified_assembly_file, ratio, error_site,
                                                         modified_assembly_file)
+
+        new_error_contains_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, errors_queue[error]["start"],
+                                                             errors_queue[error]["end"])
+
+        new_error_contains_ctg = json.loads(new_error_contains_ctg)  # str to dict
+
         error_tran_info[error] = {
             "moves_ctg": new_error_contains_ctg,
             "insert_site": temp_result,

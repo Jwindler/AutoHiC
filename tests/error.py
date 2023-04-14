@@ -365,6 +365,10 @@ class ERRORS:
                 continue
         print("Divide all error category Done")
 
+    # TODO: 错误重复检测 > 仅针对易位错误
+
+    # TODO: 根据分辨率 和 误差中位数 缩放错误位置
+
 
 def main():
     info_file = "/home/jzj/Jupyter-Docker/buffer/silkworm_test/info.txt"

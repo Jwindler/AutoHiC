@@ -106,7 +106,7 @@ def increment(resolution):
     """
 
     dim_increase = {
-        "increase": resolution * 300,  # 生成图片的话，这个值要小一点
+        "increase": resolution * 400,  # 生成图片的话，这个值要小一点 300
         "range": resolution * 700  # 700是最小，否则出现颜色阈值不正常的情况
     }
 
@@ -211,8 +211,8 @@ def get_full_len_matrix(hic_file, resolution, assembly_file=None):
 
 
 def main():
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/01_ci/ci.0.hic"
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/01_ci/ci.0.assembly"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/genomes/02_br/br.2.hic"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/genomes/02_br/br.2.assembly"
     print("hic_real_len: ", get_hic_real_len(hic_file, assembly_file))
 
 

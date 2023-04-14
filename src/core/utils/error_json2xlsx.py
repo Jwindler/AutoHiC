@@ -8,7 +8,7 @@
 @time: 2/24/23 10:34 AM
 @function: 
 """
-
+import os
 import json
 import pandas as pd
 
@@ -60,17 +60,17 @@ def excel2json(excel_path, json_path):
 
 
 def main():
-    # error_path = "/home/jzj/Jupyter-Docker/buffer/ci_2"
-    #
-    # error_file = os.path.join(error_path, "chr_len_filtered_errors.json")
-    # output_path = os.path.join(error_path, "errors.xlsx")
-    #
-    # error2xlsx(error_file, output_path)
+    error_path = "/home/jzj/Jupyter-Docker/buffer/br_1"
+
+    error_file = os.path.join(error_path, "chr_len_filtered_errors.json")
+    output_path = os.path.join(error_path, "errors.xlsx")
+
+    error2xlsx(error_file, output_path)
 
     # excel2json
-    excel_path = "/home/jzj/buffer/Book1.xlsx"
-    json_path = "/home/jzj/buffer/test.json"
-    excel2json(excel_path, json_path)
+    # excel_path = "/home/jzj/buffer/Book1.xlsx"
+    # json_path = "/home/jzj/buffer/test.json"
+    # excel2json(excel_path, json_path)
 
 
 if __name__ == "__main__":
