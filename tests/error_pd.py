@@ -4,27 +4,33 @@
 """
 @author: jzj
 @contact: jzjlab@163.com
-@file: error.py
-@time: 10/26/22 7:47 PM
-@function: assembly error class
+@file: error_pd.py
+@time: 4/18/23 8:48 PM
+@function: construct error pd
 """
+
 import json
 import os
 from collections import defaultdict
+import pandas as pd
 
+
+# FIXME: update logger when to use
 
 class ERRORS:
-    def __init__(self, classes, info_file, out_path, img_size=(1116, 1116)):
+    __slots__ = "filter_dict", "df", "info_file", "classes", "out_path", "img_size"
+
+    def __init__(self, classes, info_file, out_path, img_size):
         self.info_file = info_file
         self.classes = classes
         self.out_path = out_path
         self.img_size = img_size
-        self.errors, self.counter = dict(), dict()
-        self.class_list = []
 
-        for class_ in classes:
-            self.counter[class_] = 0
-            self.errors[class_] = []
+        # 创建一个空的DataFrame
+        self.df = pd.DataFrame()
+
+        # 创建一个记录每次过滤的字典
+        self.filter_dict = dict()
 
     # generate error structure
     def create_structure(self, img_info, detection_result):
@@ -41,17 +47,20 @@ class ERRORS:
             for index, error in enumerate(category):
                 error = error.tolist()
                 temp_dict = dict()
-                self.counter[classes] += 1
-                temp_dict["id"] = self.counter[classes]
                 temp_dict["image_id"] = list(img_info.keys())[0]
                 temp_dict["category"] = classes
-                temp_dict["bbox"] = error[0:4]
-                temp_dict["score"] = error[4]
+                temp_dict["bbox_1"], temp_dict["bbox_2"], temp_dict["bbox_3"], temp_dict["bbox_4"] = error[0:4]
+                temp_dict["score"] = round(error[4], 2)
                 temp_dict["resolution"] = img_info[list(img_info.keys())[0]]["resolution"]
-                temp_dict["hic_loci"] = self.bbox2hic(error[0:4], img_info)
-                self.errors[classes].append(temp_dict)
+                temp_dict["hic_loci_1"], temp_dict["hic_loci_2"], temp_dict["hic_loci_3"], temp_dict[
+                    "hic_loci_4"] = self.bbox2hic(error[0:4], img_info)
 
-        return self.errors
+                # 将字典数据添加到DataFrame中
+                if error[4] > 0.9:
+                    df_new_row = pd.DataFrame(temp_dict, index=[0])
+                    self.df = pd.concat([self.df, df_new_row])
+
+        return self.df
 
     # convert bbox coordinate to hic coordinate
     def bbox2hic(self, bbox, img_info):
@@ -78,32 +87,10 @@ class ERRORS:
         b_s = y * h_ration + img_chr_b_s
         b_e = h * h_ration + img_chr_b_s
 
+        # to int
         hic_loci = list(map(lambda temp: int(temp), [a_s, a_e, b_s, b_e]))
 
         return hic_loci
-
-    def loci_zoom(self, errors_dict, threshold=3000, out_path="zoomed_errors.json", filter_cls=None):
-        print("zoom threshold: ", threshold)
-
-        if filter_cls is None:
-            filter_cls = self.classes
-        zoomed_errors = dict()
-
-        for key in filter_cls:
-            try:
-                zoomed_errors[key] = []
-                for error in errors_dict[key]:
-                    error["hic_loci"][0] = error["hic_loci"][0] + threshold
-                    error["hic_loci"][1] = error["hic_loci"][1] - threshold
-                    zoomed_errors[key].append(error)
-            except KeyError:
-                print(f"KeyError: {key} not in errors_dict")
-                continue
-
-        with open(os.path.join(self.out_path, out_path), "w") as outfile:
-            json.dump(zoomed_errors, outfile)
-
-        return zoomed_errors
 
     @staticmethod
     def cal_iou(box1, box2):
@@ -130,49 +117,6 @@ class ERRORS:
         iou = intersection / union
         return iou
 
-    # filter error according to score
-    def filter_all_errors(self, score: float = 0.9, out_path="score_filtered_errors.json", filter_cls=None):
-        score_filtered_errors_counter = dict()  # record the number of filtered errors
-        if filter_cls is None:
-            filter_cls = self.classes
-        filtered_errors = self.errors
-
-        for key in filter_cls:
-            filtered_errors[key] = list(filter(lambda x: x["score"] > score, filtered_errors[key]))
-            score_filtered_errors_counter[key] = 0  # error counter
-
-        # count the number of errors
-        for scored_class in filtered_errors:
-            for _ in filtered_errors[scored_class]:
-                score_filtered_errors_counter[scored_class] += 1
-
-        with open(os.path.join(self.out_path, out_path), "w") as outfile:
-            json.dump(filtered_errors, outfile)
-
-        with open(os.path.join(self.out_path, "error_summary.txt"), "a") as outfile:
-            outfile.write("Raw error number:\n")
-            json.dump(self.counter, outfile)
-            outfile.write("\n")
-
-            outfile.write("Score filtered error number:\n")
-            json.dump(score_filtered_errors_counter, outfile)
-
-        return filtered_errors, score_filtered_errors_counter
-
-    def score_filter_specific_class(self, errors_dict: dict, score: float = 0.9,
-                                    out_path="_score_filter_specific_class.json", filter_cls=None):
-        if filter_cls is None:
-            raise ValueError("Please specify the class to filter")
-        else:
-            errors_dict[filter_cls] = list(filter(lambda x: x["score"] > score, errors_dict[filter_cls]))
-            with open(os.path.join(self.out_path, filter_cls + out_path), "w") as outfile:
-                json.dump(errors_dict[filter_cls], outfile)
-
-        # count the score_filter_specific_class_counter
-        score_filter_specific_class_counter = len(errors_dict[filter_cls])
-
-        return errors_dict[filter_cls], score_filter_specific_class_counter
-
     @staticmethod
     def transform_bbox(detection_bbox):
         """
@@ -193,6 +137,85 @@ class ERRORS:
             return True
         else:
             return False
+
+    # filter error according to score
+    def filter_all_errors(self, score: float = 0.9, out_path="score_filtered_errors.xlsx", filter_cls=None):
+        score_filtered_errors_counter = dict()  # record the number of filtered errors
+        all_errors_counter = dict()
+        if filter_cls is None:
+            filter_cls = self.classes
+        filtered_errors = self.df[self.df['score'] > score]
+
+        # save to excel
+        filtered_errors.to_excel(os.path.join(self.out_path, out_path), sheet_name='Sheet1', index=False)
+
+        for key in filter_cls:
+            score_filtered_errors_counter[key] = filtered_errors[filtered_errors['category'] == key].shape[0]
+            all_errors_counter[key] = self.df[self.df['category'] == key].shape[0]
+
+        self.filter_dict["Raw error number"] = all_errors_counter
+        self.filter_dict["Score filtered error number"] = score_filtered_errors_counter
+
+        return filtered_errors, score_filtered_errors_counter
+
+    def len_filter(self, errors_df, min_len: int = 50000, max_len: int = 10000000,
+                   out_path="len_filtered_errors.xlsx", remove_error_path="len_remove_error.xlsx", filter_cls=None):
+        len_filtered_errors_counter = dict()
+        len_removed_errors_counter = dict()
+
+        if filter_cls is None:
+            filter_cls = self.classes
+
+        filtered_errors = errors_df[
+            (errors_df['hic_loci_2'] - errors_df['hic_loci_1'] > min_len) & (errors_df['hic_loci_2'] - errors_df[
+                'hic_loci_1'] < max_len)]
+        # save to excel
+        filtered_errors.to_excel(os.path.join(self.out_path, out_path), sheet_name='Sheet1', index=False)
+
+        len_removed_errors = errors_df[
+            (errors_df['hic_loci_2'] - errors_df['hic_loci_1'] < min_len) | (errors_df['hic_loci_2'] - errors_df[
+                'hic_loci_1'] > max_len)]
+
+        # save to excel
+        len_removed_errors.to_excel(os.path.join(self.out_path, remove_error_path), sheet_name='Sheet1', index=False)
+
+        for key in filter_cls:
+            try:
+                len_filtered_errors_counter[key] = filtered_errors[filtered_errors['category'] == key].shape[0]
+                len_removed_errors_counter[key] = len_removed_errors[len_removed_errors['category'] == key].shape[0]
+            except KeyError:
+                print(f"KeyError: {key} not in errors_dict")
+                continue
+
+        self.filter_dict["Length filtered error number"] = len_filtered_errors_counter
+        self.filter_dict["Length removed error number"] = len_removed_errors_counter
+
+        return filtered_errors, len_filtered_errors_counter
+
+    def pd2json(self, error_df, out_path="len_filtered_errors.json"):
+        len_filtered_errors = dict()
+        df = error_df.sort_values("category", inplace=False)
+
+        error_class = df['category'].unique()
+        for class_ in error_class:
+            len_filtered_errors[class_] = []
+        id_counter = 0
+        for index, row in df.iterrows():
+            temp_dict = {
+                "id": id_counter,
+                "image_id": row["image_id"],
+                "category": row["category"],
+                "bbox": [row["bbox_1"], row["bbox_2"], row["bbox_3"], row["bbox_4"]],
+                "score": row["score"],
+                "resolution": row["resolution"],
+                "hic_loci": [row["hic_loci_1"], row["hic_loci_2"], row["hic_loci_3"], row["hic_loci_4"]]
+            }
+            len_filtered_errors[row["category"]].append(temp_dict)
+            id_counter += 1
+        with open(os.path.join(self.out_path, out_path), "w") as outfile:
+            json.dump(len_filtered_errors, outfile)
+
+        return len_filtered_errors
 
     # filter error according to overlap and iou
     def de_diff_overlap(self, errors_dict: dict, iou_score: float = 0.8, out_path="overlap_filtered_errors.json",
@@ -260,52 +283,12 @@ class ERRORS:
         with open(os.path.join(self.out_path, out_path), "w") as outfile:
             json.dump(ans_dict, outfile)
 
-        with open(os.path.join(self.out_path, "error_summary.txt"), "a") as outfile:
-            outfile.write("Overlap filtered error number:\n")
-            json.dump(overlap_filtered_errors_counter, outfile)
-            outfile.write("\n")
+        self.filter_dict["Overlap filtered error number"] = overlap_filtered_errors_counter
 
         # logger.info("Filter all error category Done")
         print("Filter all error category Done")
 
         return ans_dict, overlap_filtered_errors_counter
-
-    def len_filter(self, errors_dict: dict, min_len: int = 50000, max_len: int = 10000000,
-                   out_path="len_filtered_errors.json", remove_error_path="len_remove_error.txt", filter_cls=None):
-        if filter_cls is None:
-            filter_cls = self.classes
-        filtered_errors = dict()
-        len_removed_errors = dict()
-        len_filtered_errors_counter = dict()
-
-        for key in filter_cls:
-            try:
-                filtered_errors[key] = list(
-                    filter(lambda x: min_len <= x["hic_loci"][1] - x["hic_loci"][0] <= max_len, errors_dict[key]))
-                len_removed_errors[key] = list(
-                    filter(lambda x: x["hic_loci"][1] - x["hic_loci"][0] < min_len or x["hic_loci"][1] - x["hic_loci"][
-                        0] > max_len, errors_dict[key]))
-
-                len_filtered_errors_counter[key] = {
-                    "normal": len(filtered_errors[key]),
-                    "abnormal": len(len_removed_errors[key])
-                }
-            except KeyError:
-                print(f"KeyError: {key} not in errors_dict")
-                continue
-
-        with open(os.path.join(self.out_path, out_path), "w") as outfile:
-            json.dump(filtered_errors, outfile)
-
-        with open(os.path.join(self.out_path, remove_error_path), "w") as outfile:
-            json.dump(len_removed_errors, outfile)
-
-        with open(os.path.join(self.out_path, "error_summary.txt"), "a") as outfile:
-            outfile.write("\n")
-            outfile.write("Length filtered error number:\n")
-            json.dump(len_filtered_errors_counter, outfile)
-
-        return filtered_errors, len_filtered_errors_counter
 
     def chr_len_filter(self, errors_dict: dict, chr_len: int = None,
                        out_path="chr_len_filtered_errors.json",
@@ -342,12 +325,34 @@ class ERRORS:
         with open(os.path.join(self.out_path, remove_error_path), "w") as outfile:
             json.dump(chr_len_removed_errors, outfile)
 
-        with open(os.path.join(self.out_path, "error_summary.txt"), "a") as outfile:
-            outfile.write("\n")
-            outfile.write("Chromosome real length filtered error number:\n")
-            json.dump(chr_len_filtered_errors_counter, outfile)
+        self.filter_dict["Chromosome real length filtered error number"] = chr_len_filtered_errors_counter
+        with open(os.path.join(self.out_path, "error_summary.json"), "a") as outfile:
+            json.dump(self.filter_dict, outfile)
 
         return filtered_errors, chr_len_filtered_errors_counter
+
+    def loci_zoom(self, errors_dict, threshold=3000, out_path="zoomed_errors.json", filter_cls=None):
+        print("zoom threshold: ", threshold)
+
+        if filter_cls is None:
+            filter_cls = self.classes
+        zoomed_errors = dict()
+
+        for key in filter_cls:
+            try:
+                zoomed_errors[key] = []
+                for error in errors_dict[key]:
+                    error["hic_loci"][0] = error["hic_loci"][0] + threshold
+                    error["hic_loci"][1] = error["hic_loci"][1] - threshold
+                    zoomed_errors[key].append(error)
+            except KeyError:
+                print(f"KeyError: {key} not in errors_dict")
+                continue
+
+        with open(os.path.join(self.out_path, out_path), "w") as outfile:
+            json.dump(zoomed_errors, outfile)
+
+        return zoomed_errors
 
     def divide_error(self, all_filtered_error: dict):
         for _class in self.classes:
@@ -363,3 +368,7 @@ class ERRORS:
             else:
                 continue
         print("Divide all error category Done")
+
+    # TODO: 错误重复检测 > 仅针对易位错误
+
+    # TODO: 根据分辨率 和 误差中位数 缩放错误位置

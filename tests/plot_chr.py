@@ -211,10 +211,10 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, color=
 
 
 def main():
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/ci_5/ci.5.hic"
-    out_path = "/home/jzj/buffer"
-    chr_len_file = "/home/jzj/buffer/chr.txt"
-    # plot_chr(hic_file, chr_len_file=chr_len_file, out_path=out_path, fig_format="svg")
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/br.final.hic"
+    out_path = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr"
+    chr_len_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/chr.txt"
+    plot_chr(hic_file, genome_name="br", chr_len_file=chr_len_file, out_path=out_path, fig_format="svg")
     plot_chr_inter(hic_file, out_path)
 
 

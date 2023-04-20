@@ -87,7 +87,7 @@ def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_l
 
     logger.info("Translocation errors insert location search done\n")
 
-    # write error information to black list
+    # write error information to blacklist
     with open(black_list_output, "w") as outfile:
         for index in error_tran_info:
             outfile.write("\n".join(list(error_tran_info[index]['moves_ctg'].keys())) + "\n")
