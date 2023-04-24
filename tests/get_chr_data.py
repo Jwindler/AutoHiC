@@ -74,9 +74,7 @@ def score_filter(chr_dict, score_threshold):
     return chr_dict
 
 
-# TODO: 根据 hic len长度进行过滤
-
-def hic_loci2txt(chr_dict, txt_path, redundant_len=200000):
+def hic_loci2txt(chr_dict, txt_path, hic_len=None, redundant_len=200000):
     """
 
     Args:
@@ -99,7 +97,10 @@ def hic_loci2txt(chr_dict, txt_path, redundant_len=200000):
 
     #
     chr_len_list_sorted[0][0] = 0
-    chr_len_list_sorted[-1][1] = chr_len_list_sorted[-1][1] + redundant_len
+    if hic_len is not None:
+        chr_len_list_sorted[-1][1] = hic_len
+    else:
+        chr_len_list_sorted[-1][1] = chr_len_list_sorted[-1][1] + redundant_len
 
     with open(txt_path, "w") as f:
         f.write("Chr\tStart\tEnd\n")
@@ -250,10 +251,10 @@ def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
 
 
 def main():
-    chr_len_txt = "/home/jzj/Jupyter-Docker/buffer/br_4/chr/chr.txt"
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/br_4/br.4.hic"
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/br_4/br.4.assembly"
-    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/br_4/chr/test_chr.assembly"
+    chr_len_txt = "/home/jzj/Jupyter-Docker/buffer/aj_4/chr/chr.txt"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/aj_4/aj.4.hic"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/aj_4/aj.4.assembly"
+    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/aj_4/chr/test_chr.assembly"
     divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file)
 
 

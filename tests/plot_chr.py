@@ -15,11 +15,12 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
-from src.core.utils.get_cfg import get_max_hic_len
+from src.core.utils.get_cfg import get_max_hic_len, get_hic_real_len
 from src.core.utils.logger import logger
 
 
-def plot_chr_inter(hic_file, out_path=None, color_percent=95, figure_size=(10, 10), dpi=300, fig_format="png"):
+def plot_chr_inter(hic_file, asy_file=None, out_path=None, color_percent=95, figure_size=(10, 10), dpi=300,
+                   fig_format="png"):
     # check input arguments
     if hic_file is None:
         raise ValueError("hic data path is None, please check your input \n")
@@ -31,8 +32,11 @@ def plot_chr_inter(hic_file, out_path=None, color_percent=95, figure_size=(10, 1
     hic = hicstraw.HiCFile(hic_file)
 
     hic_len = int
-    for chrom in hic.getChromosomes():
-        hic_len = chrom.length
+    if asy_file is not None:
+        hic_len = get_hic_real_len(hic_file, asy_file)
+    else:
+        for chrom in hic.getChromosomes():
+            hic_len = chrom.length
     logger.info("hic file full length is %s \n" % hic_len)
 
     resolution = hic.getResolutions()[0]
@@ -211,11 +215,12 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, color=
 
 
 def main():
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/br.final.hic"
-    out_path = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr"
-    chr_len_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/chr.txt"
-    plot_chr(hic_file, genome_name="br", chr_len_file=chr_len_file, out_path=out_path, fig_format="svg")
-    plot_chr_inter(hic_file, out_path)
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/05_pb/pb_3/chr/pb.final.hic"
+    asy_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/05_pb/pb_3/chr/pb.final.assembly"
+    out_path = "/home/jzj/Jupyter-Docker/buffer/genomes_test/05_pb/pb_3/chr"
+    # chr_len_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/chr.txt"
+    # plot_chr(hic_file, genome_name="br", chr_len_file=chr_len_file, out_path=out_path, fig_format="svg")
+    plot_chr_inter(hic_file, asy_file, out_path)
 
 
 if __name__ == "__main__":

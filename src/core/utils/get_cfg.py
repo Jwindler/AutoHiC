@@ -211,8 +211,8 @@ def get_full_len_matrix(hic_file, resolution, assembly_file=None):
 
 
 def main():
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/genomes/05_pb/pb.2.hic"
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/genomes/05_pb/pb.2.assembly"
+    hic_file = "/home/jzj/Downloads/ca.3.hic"
+    assembly_file = "/home/jzj/Downloads/ca.3.assembly"
     print("hic_real_len: ", get_hic_real_len(hic_file, assembly_file))
 
 

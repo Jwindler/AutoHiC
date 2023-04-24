@@ -12,6 +12,7 @@
 import cv2
 import pandas as pd
 import os
+import json
 
 
 def draw_box_corner(draw_img, bbox, length, corner_color):
@@ -108,10 +109,21 @@ def vis_error(error_xlsx, out_dir):
         bbox2jpg(img_path, bbox, label, out_path)
 
 
+def json_vis(error_json, out_dir):
+    with open(error_json, 'r') as f:
+        error_dict = json.load(f)
+    print("Done loading json file.")
+    for key in error_dict.keys():
+        for index, error in enumerate(error_dict[key]):
+            basename = str(index + 1) + "_" + os.path.basename(error["image_id"])
+            out_path = os.path.join(out_dir, basename)
+            bbox2jpg(error["image_id"], error["bbox"], error["category"], out_path)
+
+
 def main():
-    error_xlsx = ""
-    out_dir = "/home/jzj/Jupyter-Docker/buffer/result/infer_result"
-    vis_error(error_xlsx, out_dir)
+    error_json = "/home/jzj/Downloads/chr_len_filtered_errors.json"
+    out_dir = "/home/jzj/Downloads"
+    json_vis(error_json, out_dir)
 
 
 if __name__ == "__main__":

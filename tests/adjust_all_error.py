@@ -97,13 +97,13 @@ def adjust_all_error(hic_file_path, assembly_file_path, divided_error, modified_
 
 
 def main():
-    hic_file_path = "/home/jzj/Jupyter-Docker/buffer/silkworm_5/silkworm.5.hic"
-    assembly_file_path = "/home/jzj/Jupyter-Docker/buffer/silkworm_5/silkworm.5.assembly"
+    hic_file_path = "/home/jzj/Jupyter-Docker/buffer/ca_3/ca.3.hic"
+    assembly_file_path = "/home/jzj/Jupyter-Docker/buffer/ca_3/ca.3.assembly"
 
-    divided_error = "/home/jzj/Jupyter-Docker/buffer/silkworm_5"
+    divided_error = "/home/jzj/Jupyter-Docker/buffer/ca_3"
 
     # 输出文件路径
-    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/silkworm_6/test.assembly"
+    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/ca_4/test.assembly"
     black_list = None
 
     adjust_all_error(hic_file_path, assembly_file_path, divided_error, modified_assembly_file, black_list)

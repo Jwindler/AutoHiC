@@ -15,7 +15,7 @@ from collections import defaultdict
 import pandas as pd
 
 
-# FIXME: update logger when to use
+# FIXME: update logger when to use > 后续整合实现
 
 class ERRORS:
     __slots__ = "filter_dict", "df", "info_file", "classes", "out_path", "img_size"
@@ -192,6 +192,37 @@ class ERRORS:
 
         return filtered_errors, len_filtered_errors_counter
 
+    def repeat_filter(self, errors_df, error_space, out_path="repeat_errors.xlsx"):
+
+        # TODO: slecet min length translocation
+        # select translocation
+        tran_pd = errors_df[errors_df["category"] == "translocation"]
+        else__pd = errors_df[errors_df["category"] != "translocation"]
+
+        # sort by hic_loci_1
+        df_sorted = tran_pd.sort_values(by=['hic_loci_1'], na_position='first')
+
+        result_pd = None
+        repeat_pd = None
+        for index in range(len(df_sorted)):
+            if result_pd is None:
+                result_pd = df_sorted.iloc[0:1]
+                continue
+            else:
+                temp_value_1 = df_sorted.iloc[index:index + 1, 8].values[0]
+                temp_value_2 = result_pd.iloc[-1:, 9].values[0]
+                temp_value = abs(temp_value_1 - temp_value_2)
+                if temp_value < error_space:
+                    repeat_pd = pd.concat([repeat_pd, df_sorted[index:index + 1]], axis=0)
+                else:
+                    result_pd = pd.concat([result_pd, df_sorted[index:index + 1]], axis=0)
+        result_pd = pd.concat([result_pd, else__pd], axis=0)
+
+        # save to excel
+        repeat_pd.to_excel(os.path.join(self.out_path, out_path), sheet_name='Sheet1', index=False)
+
+        return result_pd
+
     def pd2json(self, error_df, out_path="len_filtered_errors.json"):
         len_filtered_errors = dict()
         df = error_df.sort_values("category", inplace=False)
@@ -294,7 +325,7 @@ class ERRORS:
                        out_path="chr_len_filtered_errors.json",
                        remove_error_path="chr_len_remove_error.txt", filter_cls=None):
         if chr_len is None:
-            # TODO: 接入 get_real_chr_len 函数
+            # TODO: 接入 get_real_chr_len 函数 > 整合中实现
             print("chr_len is None, please input chr_len")
             return
 
@@ -368,7 +399,3 @@ class ERRORS:
             else:
                 continue
         print("Divide all error category Done")
-
-    # TODO: 错误重复检测 > 仅针对易位错误
-
-    # TODO: 根据分辨率 和 误差中位数 缩放错误位置
