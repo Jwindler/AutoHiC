@@ -106,7 +106,7 @@ def increment(resolution):
     """
 
     dim_increase = {
-        "increase": resolution * 600,  # 生成图片的话，这个值要小一点 300
+        "increase": resolution * 600,  # 生成图片的话，这个值要小一点 400
         "range": resolution * 700  # 700是最小，否则出现颜色阈值不正常的情况
     }
 
@@ -211,8 +211,8 @@ def get_full_len_matrix(hic_file, resolution, assembly_file=None):
 
 
 def main():
-    hic_file = "/home/jzj/Downloads/ca.3.hic"
-    assembly_file = "/home/jzj/Downloads/ca.3.assembly"
+    hic_file = "/home/jzj/Downloads/human_scan.5.hic"
+    assembly_file = "/home/jzj/Downloads/human_scan.5.assembly"
     print("hic_real_len: ", get_hic_real_len(hic_file, assembly_file))
 
 

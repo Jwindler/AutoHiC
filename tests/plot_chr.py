@@ -98,7 +98,7 @@ def plot_chr_inter(hic_file, asy_file=None, out_path=None, color_percent=95, fig
     ax.set_yticks([])
     ax.set_xticks([])
 
-    plt.savefig(os.path.join(out_path, "chromosome.png"), bbox_inches='tight', pad_inches=0, dpi=dpi,
+    plt.savefig(os.path.join(out_path, "chromosome.svg"), bbox_inches='tight', pad_inches=0, dpi=dpi,
                 format=fig_format)
     plt.show()  # not show figure
     plt.close()
@@ -215,12 +215,12 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, color=
 
 
 def main():
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/05_pb/pb_3/chr/pb.final.hic"
-    asy_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/05_pb/pb_3/chr/pb.final.assembly"
-    out_path = "/home/jzj/Jupyter-Docker/buffer/genomes_test/05_pb/pb_3/chr"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/genomes/11_sa/sa.0.hic"
+    asy_file = "/home/jzj/Jupyter-Docker/buffer/genomes/11_sa/sa.0.assembly"
+    out_path = "/home/jzj/buffer"
     # chr_len_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/chr.txt"
-    # plot_chr(hic_file, genome_name="br", chr_len_file=chr_len_file, out_path=out_path, fig_format="svg")
-    plot_chr_inter(hic_file, asy_file, out_path)
+    #plot_chr(hic_file, genome_name="br", chr_len_file=chr_len_file, out_path=out_path, fig_format="svg")
+    plot_chr_inter(hic_file, asy_file, out_path, fig_format="svg")
 
 
 if __name__ == "__main__":

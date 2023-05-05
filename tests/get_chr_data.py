@@ -251,10 +251,10 @@ def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
 
 
 def main():
-    chr_len_txt = "/home/jzj/Jupyter-Docker/buffer/aj_4/chr/chr.txt"
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/aj_4/aj.4.hic"
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/aj_4/aj.4.assembly"
-    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/aj_4/chr/test_chr.assembly"
+    chr_len_txt = "/home/jzj/Jupyter-Docker/buffer/genomes_test/13_new_human/new_human_5/chr/chr.txt"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/13_new_human/new_human_5/human_scan.5.hic"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/13_new_human/new_human_5/human_scan.5.assembly"
+    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/13_new_human/new_human_5/chr/test_chr.assembly"
     divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file)
 
 

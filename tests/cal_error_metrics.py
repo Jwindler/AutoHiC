@@ -23,7 +23,7 @@ def loci_zoom(errors_json_file):
 
 
 def main():
-    error_json = "/home/jzj/Jupyter-Docker/buffer/ci_autohic/ci_0/debris_error.json"
+    error_json = "/home/jzj/Jupyter-Docker/buffer/genomes_test/08_ca/ca_4/translocation_error.json"
     print(loci_zoom(error_json))
 
 

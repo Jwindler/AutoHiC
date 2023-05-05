@@ -11,8 +11,13 @@
 
 import json
 import os
+import random
 from collections import defaultdict
+
+import cv2
 import pandas as pd
+from PIL import Image
+from mmdet.apis import init_detector, inference_detector
 
 
 # FIXME: update logger when to use > 后续整合实现
@@ -194,7 +199,7 @@ class ERRORS:
 
     def repeat_filter(self, errors_df, error_space, out_path="repeat_errors.xlsx"):
 
-        # TODO: slecet min length translocation
+        # TODO: select min length translocation
         # select translocation
         tran_pd = errors_df[errors_df["category"] == "translocation"]
         else__pd = errors_df[errors_df["category"] != "translocation"]
@@ -348,6 +353,10 @@ class ERRORS:
                 }
             except KeyError:
                 print(f"KeyError: {key} not in errors_dict")
+                chr_len_filtered_errors_counter[key] = {
+                    "normal": 0,
+                    "abnormal": 0
+                }
                 continue
 
         with open(os.path.join(self.out_path, out_path), "w") as outfile:
@@ -399,3 +408,185 @@ class ERRORS:
             else:
                 continue
         print("Divide all error category Done")
+
+
+def draw_box_corner(draw_img, bbox, length, corner_color):
+    # Top Left
+    cv2.line(draw_img, (bbox[0], bbox[1]), (bbox[0] + length, bbox[1]), corner_color, thickness=2)
+    cv2.line(draw_img, (bbox[0], bbox[1]), (bbox[0], bbox[1] + length), corner_color, thickness=2)
+    # Top Right
+    cv2.line(draw_img, (bbox[2], bbox[1]), (bbox[2] - length, bbox[1]), corner_color, thickness=2)
+    cv2.line(draw_img, (bbox[2], bbox[1]), (bbox[2], bbox[1] + length), corner_color, thickness=2)
+    # Bottom Left
+    cv2.line(draw_img, (bbox[0], bbox[3]), (bbox[0] + length, bbox[3]), corner_color, thickness=2)
+    cv2.line(draw_img, (bbox[0], bbox[3]), (bbox[0], bbox[3] - length), corner_color, thickness=2)
+    # Bottom Right
+    cv2.line(draw_img, (bbox[2], bbox[3]), (bbox[2] - length, bbox[3]), corner_color, thickness=2)
+    cv2.line(draw_img, (bbox[2], bbox[3]), (bbox[2], bbox[3] - length), corner_color, thickness=2)
+
+
+def draw_label_type(draw_img, bbox, label_color):
+    label = str(bbox[-1])
+    label_size = cv2.getTextSize(label + '0', cv2.FONT_HERSHEY_TRIPLEX, 0.7, 2)[0]
+    if bbox[1] - label_size[1] - 3 < 0:
+        cv2.rectangle(draw_img,
+                      (bbox[0], bbox[1] + 2),
+                      (bbox[0] + label_size[0], bbox[1] + label_size[1] + 3),
+                      color=label_color,
+                      thickness=-1
+                      )
+        cv2.putText(draw_img, label,
+                    (bbox[0], bbox[1] + label_size[1] + 3),
+                    cv2.FONT_HERSHEY_TRIPLEX,
+                    0.7,
+                    (0, 0, 0),
+                    thickness=1
+                    )
+    else:
+        cv2.rectangle(draw_img,
+                      (bbox[0], bbox[1] - label_size[1] - 3),
+                      (bbox[0] + label_size[0], bbox[1] - 3),
+                      color=label_color,
+                      thickness=-1
+                      )
+        cv2.putText(draw_img, label,
+                    (bbox[0], bbox[1] - 3),
+                    cv2.FONT_HERSHEY_TRIPLEX,
+                    0.7,
+                    (0, 0, 0),
+                    thickness=1
+                    )
+
+
+def test_corner_box(img, bbox, corner_l=20, is_transparent=False, draw_type=False, draw_corner=False,
+                    box_color=(255, 0, 255)):
+    draw_img = img.copy()
+    pt1 = (bbox[0], bbox[1])
+    pt2 = (bbox[2], bbox[3])
+
+    out_img = img
+    if is_transparent:
+        alpha = 0.8
+        # alpha = 0.5
+        cv2.rectangle(draw_img, pt1, pt2, color=box_color, thickness=-1)
+        out_img = cv2.addWeighted(img, alpha, draw_img, 1 - alpha, 0)
+
+    cv2.rectangle(out_img, pt1, pt2, color=box_color, thickness=2)
+
+    if draw_type:
+        draw_label_type(out_img, bbox, label_color=box_color)
+    if draw_corner:
+        draw_box_corner(out_img, bbox, length=corner_l, corner_color=(0, 255, 0))
+    return out_img
+
+
+def bbox2jpg(img_path, bbox, label, out_path):
+    img = cv2.imread(img_path)
+
+    bbox = [int(x) for x in bbox] + [label]
+    box_color = (255, 144, 30)
+    out_img = test_corner_box(img, bbox, corner_l=30, is_transparent=True, draw_type=True, draw_corner=True,
+                              box_color=box_color)
+
+    cv2.imwrite(out_path, out_img)
+
+
+def vis_error(error_xlsx, out_dir):
+    df = pd.read_excel(error_xlsx)
+    if not os.path.exists(out_dir):  # check if folder is exists
+        os.mkdir(out_dir)
+    for index, row in df.iterrows():
+        img_path = row['image_id']
+        bbox = [row['bbox_1'], row['bbox_2'], row['bbox_3'], row['bbox_4']]
+        label = row['category']
+        basename = str(index + 1) + "_" + os.path.basename(img_path)
+        out_path = os.path.join(out_dir, basename)
+        bbox2jpg(img_path, bbox, label, out_path)
+
+
+def json_vis(error_json, out_dir):
+    with open(error_json, 'r') as f:
+        error_dict = json.load(f)
+    print("Done loading json file.")
+    for key in error_dict.keys():
+        for index, error in enumerate(error_dict[key]):
+            basename = str(index + 1) + "_" + os.path.basename(error["image_id"])
+            out_path = os.path.join(out_dir, basename)
+            bbox2jpg(error["image_id"], error["bbox"], error["category"], out_path)
+
+
+def infer_error(model_cfg, pretrained_model, img_path, out_path, device='cuda:0', score=0.9, error_min_len=15000,
+                error_max_len=20000000, iou_score=0.8, chr_len=1453515699):
+    # 初始化检测器
+    model = init_detector(model_cfg, pretrained_model, device=device)
+
+    info_file = os.path.join(img_path, "info.txt")
+    infos = []
+    with open(info_file, "r") as f:
+        for line in f.readlines():
+            info = json.loads(line)
+            infos.append(info)
+
+    classes = ("translocation", "inversion", "debris")
+
+    if not os.path.exists(out_path):  # check if folder is exists
+        os.mkdir(out_path)
+
+    # get img size
+    img_size = None
+    contents = os.listdir(img_path)
+
+    for item in contents:
+        item_path = os.path.join(img_path, item)
+        if os.path.isdir(item_path):
+            random_file = random.choice(os.listdir(item_path))
+            img_size = Image.open(os.path.join(item_path, random_file)).size
+            print(img_size)
+            break
+
+    error_class = ERRORS(classes, info_file, out_path, img_size=img_size)
+
+    # for info in infos:
+    for info in infos:
+        detection_result = inference_detector(model, list(info.keys())[0])
+
+        error_class.create_structure(info, detection_result[0])
+
+    # 分数过滤
+    score_filtered_errors, score_filtered_errors_counter = error_class.filter_all_errors(score=score,
+                                                                                         filter_cls=classes)
+
+    # 长度过滤
+    len_filtered_errors, len_filtered_errors_counter = error_class.len_filter(score_filtered_errors,
+                                                                              min_len=error_min_len,
+                                                                              max_len=error_max_len,
+                                                                              out_path="len_filtered_errors.xlsx",
+                                                                              remove_error_path="len_remove_error.xlsx",
+                                                                              filter_cls=None)
+    # dataframe to json
+    len_filtered_errors_json = error_class.pd2json(len_filtered_errors)
+
+    # 重叠过滤
+    overlap_filtered_errors, overlap_filtered_errors_counter = error_class.de_diff_overlap(len_filtered_errors_json,
+                                                                                           iou_score=iou_score)
+
+    # 染色体长度过滤
+    chr_filtered_errors, chr_filtered_errors_counter = error_class.chr_len_filter(overlap_filtered_errors,
+                                                                                  chr_len=chr_len)
+
+    # zoom error
+    zoom_threshold = 0
+    zoomed_error = error_class.loci_zoom(chr_filtered_errors, threshold=zoom_threshold, out_path="zoomed_errors.json",
+                                         filter_cls=None)
+
+    # 划分到数据集
+    error_class.divide_error(zoomed_error)
+
+    # 错误可视化
+    # infer result out_dir
+    infer_out_dir = os.path.join(out_path, "infer_result")
+    if not os.path.exists(infer_out_dir):  # check if folder is exists
+        os.mkdir(infer_out_dir)
+
+    error_json = os.path.join(out_path, "chr_len_filtered_errors.json")
+    json_vis(error_json, infer_out_dir)

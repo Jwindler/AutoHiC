@@ -58,6 +58,8 @@ class LoggerHandler(logging.Logger):
 
 # initialing logger
 logger = LoggerHandler(file="/home/jzj/Jupyter-Docker/buffer/log.txt")
+# TODO: 修改到主流程中，并更新指定日志文件
+
 
 if __name__ == '__main__':
     logger = LoggerHandler(file="/home/jzj/buffer/test_insert_loci.log")
