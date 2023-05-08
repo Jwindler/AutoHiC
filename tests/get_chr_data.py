@@ -9,12 +9,17 @@
 @function: 
 """
 import json
+import os
 import math
+import torch
 
 from src.assembly.asy_operate import AssemblyOperate
 from src.core.utils.get_cfg import get_ratio
 from src.core.utils.logger import logger
+from src.core.utils.get_cfg import get_cfg, get_hic_real_len
 from collections import OrderedDict
+from mmdet.apis import init_detector, inference_detector
+from PIL import Image
 
 
 def bbox2hic(bbox, hic_len, img_size):
@@ -34,6 +39,29 @@ def bbox2hic(bbox, hic_len, img_size):
     hic_loci = list(map(lambda temp: int(temp), [a_s, a_e, b_s, b_e]))
 
     return hic_loci
+
+
+def create_structure(detection_result, hic_len, img_size):
+    """
+
+    Args:
+        detection_result:
+        hic_len:
+        img_size:
+
+    Returns:
+
+    """
+    chr_dict = dict()
+
+    for index, error in enumerate(detection_result):
+        chr_dict[index] = {
+            "bbox": error[0:4].tolist(),
+            "score": error[4],
+            "hic_loci": bbox2hic(error[0:4], hic_len, img_size=img_size)
+        }
+
+    return chr_dict
 
 
 def get_chr_data(detection_result, hic_len, img_size):
@@ -80,6 +108,7 @@ def hic_loci2txt(chr_dict, txt_path, hic_len=None, redundant_len=200000):
     Args:
         chr_dict:
         txt_path:
+        hic_len:
         redundant_len:
 
     Returns:
@@ -250,11 +279,39 @@ def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
     logger.info("Get ctg_s information done \n")
 
 
+def split_chr(img_file, asy_file, hic_file, cfg_file):
+    # 检查是否有显卡
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
+    # get cfg
+    cfg_data = get_cfg(cfg_file)
+
+    # infer png
+    config_file = cfg_data["CHR_MODEL_CFG"]
+    checkpoint_file = cfg_data["CHR_PRETRAINED_MODEL"]
+    model = init_detector(config_file, checkpoint_file, device=device)
+    result = inference_detector(model, img_file)
+    #
+    hic_len = get_hic_real_len(hic_file, asy_file)
+    img_size = Image.open(img_file).size
+
+    chr_data = create_structure(result[0][0], hic_len, img_size)
+    score_filtered_chr = score_filter(chr_data, 0.6)
+
+    chr_output = os.path.join(os.path.dirname(img_file), "chr.txt")
+    hic_loci2txt(score_filtered_chr, chr_output, redundant_len=200000)
+
+    # split chr
+    modified_assembly_file = os.path.join(os.path.dirname(img_file), "chr.assembly")
+    divide_chr(chr_output, hic_file, asy_file, modified_assembly_file)
+    return modified_assembly_file
+
+
 def main():
-    chr_len_txt = "/home/jzj/Jupyter-Docker/buffer/genomes_test/13_new_human/new_human_5/chr/chr.txt"
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/13_new_human/new_human_5/human_scan.5.hic"
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/13_new_human/new_human_5/human_scan.5.assembly"
-    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/13_new_human/new_human_5/chr/test_chr.assembly"
+    chr_len_txt = "/home/jzj/Jupyter-Docker/buffer/br_4/chr/chr.txt"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/br_4/br.4.hic"
+    assembly_file = "/home/jzj/Jupyter-Docker/buffer/br_4/br.4.assembly"
+    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/br_4/chr/test_chr.assembly"
     divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file)
 
 

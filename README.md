@@ -9,11 +9,15 @@
 
 
 
-
-
 ## Overview
 
 
+
+
+
+## Citations
+
+If you use this pipline, please cite the following paper:
 
 
 
@@ -23,17 +27,65 @@
 
 
 
-## Usage
+## Usages
 
-### Installation and Dependencies
+### Install
+
+```sh
+git clone https://github.com/Jwindler/AutoHiC.git
+```
+
+
+
+- conda
+
+```sh
+conda create -n autohic python=3.8 -y
+
+conda activate autohic
+
+# CPU
+conda install pytorch torchvision cpuonly -c pytorch -y
+
+# GPU
+conda install pytorch torchvision -c pytorch -y
+
+cd ./src/model
+
+pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
+```
+
+
+
+### config
+
+- SETTING THE CONFIGURATION FILE
+
+```sh
+# 参考
+http://nservant.github.io/HiC-Pro/MANUAL.html#setting-the-configuration-file
+```
+
+
+
+### run
+
+```sh
+python autohic.py cft-autohic.txt
+```
 
 
 
 
 
+### results
+
+```sh
+# 参考
+https://github.com/aidenlab/3d-dna
+```
 
 
-## Citing
 
 
 
@@ -49,7 +101,5 @@
 
 ## LICENSE
 
-
-
-
+**This software is distributed under The MIT License (MIT).**
 

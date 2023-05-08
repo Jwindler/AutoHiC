@@ -10,6 +10,8 @@
 """
 
 import math
+import json
+import subprocess
 
 import hicstraw
 import numpy as np
@@ -210,9 +212,50 @@ def get_full_len_matrix(hic_file, resolution, assembly_file=None):
     return full_len_matrix
 
 
+def get_cfg(cfg_dir, key=None):
+    config = {}
+    with open(cfg_dir, 'r') as f:
+        for line in f:
+            if line.startswith('#'):
+                continue
+            key, value = line.strip().split('=')
+            config[key] = value
+    if key:
+        try:
+            return config[key]
+        except KeyError:
+            raise KeyError("Please check you config file")
+    else:
+        return config
+
+
+def get_error_sum(error_json) -> int:
+    with open(error_json, "r") as f:
+        error_count = json.loads(f.read())
+
+    final_count = error_count["Chromosome real length filtered error number"]
+    tran_inv_sum = final_count["translocation"]["normal"] + final_count["inversion"]["normal"]
+    return tran_inv_sum
+
+
+def subprocess_popen(statement):
+    p = subprocess.Popen(statement, shell=True, stdout=subprocess.PIPE)
+    while p.poll() is None:
+        if p.wait() != 0:
+            print("命令执行失败，请检查设备连接状态")
+            return False
+        else:
+            re = p.stdout.readlines()  # 获取原始执行结果
+            result = []
+            for i in range(len(re)):  # 由于原始结果需要转换编码，所以循环转为utf8编码并且去除\n换行
+                res = re[i].decode('utf-8').strip('\r\n')
+                result.append(res)
+            return result
+
+
 def main():
-    hic_file = "/home/jzj/Downloads/human_scan.5.hic"
-    assembly_file = "/home/jzj/Downloads/human_scan.5.assembly"
+    hic_file = "/home/jzj/Downloads/br.4.hic"
+    assembly_file = "/home/jzj/Downloads/br.4.assembly"
     print("hic_real_len: ", get_hic_real_len(hic_file, assembly_file))
 
 

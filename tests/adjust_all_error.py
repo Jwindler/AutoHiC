@@ -97,13 +97,13 @@ def adjust_all_error(hic_file_path, assembly_file_path, divided_error, modified_
 
 
 def main():
-    hic_file_path = "/home/jzj/Jupyter-Docker/buffer/new_human_4/human_scan.4.hic"
-    assembly_file_path = "/home/jzj/Jupyter-Docker/buffer/new_human_4/human_scan.4.assembly"
+    hic_file_path = "/home/jzj/Jupyter-Docker/buffer/br_3/br.3.hic"
+    assembly_file_path = "/home/jzj/Jupyter-Docker/buffer/br_3/br.3.assembly"
 
-    divided_error = "/home/jzj/Jupyter-Docker/buffer/new_human_4"
+    divided_error = "/home/jzj/Jupyter-Docker/buffer/br_3"
 
     # 输出文件路径
-    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/new_human_5/test.assembly"
+    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/br_4/test.assembly"
     black_list = None
 
     adjust_all_error(hic_file_path, assembly_file_path, divided_error, modified_assembly_file, black_list)

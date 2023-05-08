@@ -4,7 +4,7 @@
 """
 @author: jzj
 @contact: jzjlab@163.com
-@file: model.py
+@file: error_model.py
 @time: 4/3/23 8:43 PM
 @function: 
 """

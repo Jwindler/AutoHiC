@@ -69,6 +69,8 @@ def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_l
 
         logger.info("Search {0} translocation error insert location：".format(error))
 
+        # TODO:插入位置如果没有找到，则跳过这个错误
+
         # get insert ctg site
         error_site = (errors_queue[error]["start"], errors_queue[error]["end"])
         temp_result, insert_left = search_right_site_v8(hic_file, modified_assembly_file, ratio, error_site,

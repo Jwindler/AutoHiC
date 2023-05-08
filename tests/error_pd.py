@@ -20,8 +20,6 @@ from PIL import Image
 from mmdet.apis import init_detector, inference_detector
 
 
-# FIXME: update logger when to use > 后续整合实现
-
 class ERRORS:
     __slots__ = "filter_dict", "df", "info_file", "classes", "out_path", "img_size"
 
@@ -330,7 +328,6 @@ class ERRORS:
                        out_path="chr_len_filtered_errors.json",
                        remove_error_path="chr_len_remove_error.txt", filter_cls=None):
         if chr_len is None:
-            # TODO: 接入 get_real_chr_len 函数 > 整合中实现
             print("chr_len is None, please input chr_len")
             return
 
@@ -551,6 +548,9 @@ def infer_error(model_cfg, pretrained_model, img_path, out_path, device='cuda:0'
         detection_result = inference_detector(model, list(info.keys())[0])
 
         error_class.create_structure(info, detection_result[0])
+
+    if len(error_class.df) == 0:  # no detect error
+        return True
 
     # 分数过滤
     score_filtered_errors, score_filtered_errors_counter = error_class.filter_all_errors(score=score,
