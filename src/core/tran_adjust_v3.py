@@ -69,13 +69,16 @@ def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_l
 
         logger.info("Search {0} translocation error insert location：".format(error))
 
-        # TODO:插入位置如果没有找到，则跳过这个错误
-
-        # get insert ctg site
-        error_site = (errors_queue[error]["start"], errors_queue[error]["end"])
-        temp_result, insert_left = search_right_site_v8(hic_file, modified_assembly_file, ratio, error_site,
-                                                        modified_assembly_file)
-
+        # 插入位置如果没有找到，则跳过这个错误
+        try:
+            # get insert ctg site
+            error_site = (errors_queue[error]["start"], errors_queue[error]["end"])
+            temp_result, insert_left = search_right_site_v8(hic_file, modified_assembly_file, ratio, error_site,
+                                                            modified_assembly_file)
+        except Exception as e:
+            logger.info(e)
+            logger.info("Error {0} insert location search failed, skip\n".format(error))
+            continue
         new_error_contains_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, errors_queue[error]["start"],
                                                              errors_queue[error]["end"])
 
