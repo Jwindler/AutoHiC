@@ -41,11 +41,7 @@ def mul_gen_png(hic_file: str = typer.Option(..., "--hic-file", "-hic", help="hi
 
 @app.command(name="autohic")
 def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic config file path")):
-    # TODO: 增加每一种错误，是否修改的选项
-
-    # run Juicer + 3d-dna
-    run_sh = "bash /home/jzj/Jupyter-Docker/buffer/run.sh " + cfg_dir
-    subprocess_popen(run_sh)
+    # TODO: 1.子命令增加 log 2. 步骤增加 log
 
     # get cfg
     cfg_data = get_cfg(cfg_dir)
@@ -56,7 +52,6 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     iou_score = cfg_data["ERROR_FILTER_IOU_SCORE"]
 
     output_dir = os.path.join(cfg_data["RESULT_DIR"], cfg_data["JOB_NAME"])
-    merged_nodups_path = os.path.join(output_dir, "hic_results", "aligned", "merged_nodups.txt")
 
     model_cfg = cfg_data["MODEL_CFG"]
     pretrained_model = cfg_data["PRETRAINED_MODEL"]
@@ -68,6 +63,12 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     logger_file = os.path.join(output_dir, "log.txt")
     LoggerHandler(file=logger_file)
 
+    # Stage 1: run Juicer + 3d-dna
+    run_sh_dir = os.path.join(cfg_data["AutoHiC_DIR"], "bin/run.sh")
+    run_sh = "bash " + run_sh_dir + cfg_dir
+    subprocess_popen(run_sh)
+
+    # # Stage 2: select the mini error num hic file
     # get hic file
     hic_file_dir = os.path.join(output_dir, "hic_results", "3d-dna")
     hic_pattern = r"[\d\.]*hic"
@@ -81,7 +82,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
     # run autohic
     autohic_results = os.path.join(output_dir, "autohic_results")
-    adjust_count = 0
+    adjust_epoch = 0
     error_count_dict = {}
     for hic_file in hic_files:
         adjust_name = hic_file.split(".")[1]
@@ -110,33 +111,46 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
             "assembly_file": assembly_file,
             "adjust_path": adjust_path
         }
-        adjust_count += 1
+        adjust_epoch += 1
 
     # 选择处理的hic文件，进行处理
     min_hic = min(error_count_dict, key=lambda k: error_count_dict[k]["error_sum"])
 
-    final_hic_file = error_count_dict[min_hic]["hic_file"]
-    final_assembly_file = error_count_dict[min_hic]["assembly_file"]
+    merged_nodups_path = os.path.join(output_dir, "hic_results", "aligned", "merged_nodups.txt")
+    adjust_hic_file = error_count_dict[min_hic]["hic_file"]
+    adjust_asy_file = error_count_dict[min_hic]["assembly_file"]
     error_sum = error_count_dict[min_hic]["error_sum"]
+
+    first_flag = True
     while error_sum > 0:
-        adjust_name = str(adjust_count)
+        adjust_name = str(adjust_epoch)
         adjust_path = os.path.join(autohic_results, adjust_name)
         os.mkdir(adjust_path)
 
-        hic_file_path = error_count_dict[min_hic]["hic_file"]
-        assembly_file_path = error_count_dict[min_hic]["assembly_file"]
-        divided_error = error_count_dict[min_hic]["adjust_path"]
+        # FIXME： 第二次循环的时候文件名不对
+        if first_flag:
+            hic_file_path = error_count_dict[min_hic]["hic_file"]
+            assembly_file_path = error_count_dict[min_hic]["assembly_file"]
+            divided_error = error_count_dict[min_hic]["adjust_path"]
+        else:
+            hic_file_path = adjust_hic_file
+            assembly_file_path = adjust_asy_file
+            divided_error = os.path.dirname(adjust_asy_file)
         modified_assembly_file = os.path.join(adjust_path, "test.assembly")
 
-        adjust_all_error(hic_file_path, assembly_file_path, divided_error, modified_assembly_file, black_list=None)
+        translocation_flag = cfg_data["TRANSLOCATION_ADJUST"]
+        inversion_flag = cfg_data["INVERSION_ADJUST"]
+        debris_flag = cfg_data["DEBRIS_ADJUST"]
+        adjust_all_error(hic_file_path, assembly_file_path, divided_error, modified_assembly_file, black_list=None,
+                         tran_flag=translocation_flag, inv_flag=inversion_flag, deb_flag=debris_flag)
 
-        # 运行3d-dna 第二步
+        # 运行 3d-dna 第二步
         # 1. cd folder
         run_sh = "cd " + adjust_path
         subprocess_popen(run_sh)
 
         # 2. run 3d-dna
-        run_sh = "bash " + os.path.join(cfg_data["TD_DNA_DIR"],
+        run_sh = "bash " + os.path.join(cfg_data["3D_DNA_DIR"],
                                         "run-asm-pipeline-post-review.sh") + " -r " + modified_assembly_file + " " + \
                  cfg_data["REFERENCE_GENOME"] + " " + merged_nodups_path
         subprocess_popen(run_sh)
@@ -146,7 +160,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         assembly_file = hic_file_path.replace(".hic", ".assembly")
 
         # generate hic img
-        mul_process(hic_file_path, adjust_count, hic_img_dir, "dia", cfg_data["N_CPU"])
+        mul_process(hic_file_path, adjust_epoch, hic_img_dir, "dia", cfg_data["N_CPU"])
 
         # infer error
         chr_len = get_hic_real_len(hic_file_path, assembly_file)
@@ -154,46 +168,49 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
                                    error_min_len=error_min_len,
                                    error_max_len=error_max_len, iou_score=iou_score, chr_len=chr_len)
         if infer_return:  # no detect error
+            adjust_hic_file = hic_file_path
+            adjust_asy_file = assembly_file
             break
 
         # get error sum
         error_summary_json = os.path.join(hic_img_dir, "error_summary.json")
 
-        error_count_dict[adjust_count] = {
+        error_count_dict[adjust_epoch] = {
             "error_sum": get_error_sum(error_summary_json),
             "hic_file": hic_file_path,
             "assembly_file": assembly_file,
             "adjust_path": hic_img_dir
         }
-        error_sum = error_count_dict[adjust_count]["error_sum"]
-        final_hic_file = hic_file_path
-        final_assembly_file = assembly_file
-        adjust_count += 1
-
+        error_sum = error_count_dict[adjust_epoch]["error_sum"]
+        adjust_hic_file = hic_file_path
+        adjust_asy_file = assembly_file
+        adjust_epoch += 1
+        first_flag = False
     #
     chr_adjust_path = os.path.join(autohic_results, "chr")
     os.mkdir(chr_adjust_path)
 
     # 生成chr png
-    plot_chr_inter(final_hic_file, final_assembly_file, chr_adjust_path, fig_format="png")
+    plot_chr_inter(adjust_hic_file, adjust_asy_file, chr_adjust_path, fig_format="png")
 
     # 检测chr png
     img_path = os.path.join(chr_adjust_path, "chromosome.png")
 
     # infer img
-    chr_asy_file = split_chr(img_path, final_assembly_file, final_hic_file, cfg_dir)
+    chr_asy_file = split_chr(img_path, adjust_asy_file, adjust_hic_file, cfg_dir)
 
     # 运行3d-dna 第二步
     run_sh = "cd " + chr_adjust_path
     subprocess_popen(run_sh)
 
     # 2. run 3d-dna
-    run_sh = "bash " + os.path.join(cfg_data["TD_DNA_DIR"],
+    run_sh = "bash " + os.path.join(cfg_data["3D_DNA_DIR"],
                                     "run-asm-pipeline-post-review.sh") + " -r " + chr_asy_file + " " + \
              cfg_data["REFERENCE_GENOME"] + " " + merged_nodups_path
     subprocess_popen(run_sh)
 
     # 获取最终数据
+    # TODO： 最终模块
 
 
 if __name__ == "__main__":
