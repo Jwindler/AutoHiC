@@ -1,3 +1,22 @@
+## [0.8.18](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.17...v0.8.18) (2023-05-10)
+
+
+### Bug Fixes
+
+* fix search insert site fun ([50a7591](https://github.com/Jwindler/HiC-OpenCV/commit/50a759123a1a520586e0aa20825e51f5305a4dcd))
+* update main py ([734c3da](https://github.com/Jwindler/HiC-OpenCV/commit/734c3da877f396861338650c04e1a1ffeb7300ed))
+
+
+### Features
+
+* add pands to save var and vis error self built ([743ea94](https://github.com/Jwindler/HiC-OpenCV/commit/743ea94da58a0de6037129314ff3ed5f71a5234c))
+* add some new functions and update pipline ([aa25932](https://github.com/Jwindler/HiC-OpenCV/commit/aa25932e1cdd525a120376575da0626045a2f7af))
+* fix bug ([83535c2](https://github.com/Jwindler/HiC-OpenCV/commit/83535c29c46bd1c0f3ad0e2fd2d0d5bf7fb675bb))
+* update pipline ([d13db48](https://github.com/Jwindler/HiC-OpenCV/commit/d13db4820dc0d3202c6bc85c12f9e17d9451dc24))
+* update some features ([57bab1c](https://github.com/Jwindler/HiC-OpenCV/commit/57bab1cda045c5464e32d88f169111afdb3b3bb5))
+
+
+
 ## [0.8.17](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.16...v0.8.17) (2023-04-01)
 
 
