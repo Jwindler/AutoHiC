@@ -1,11 +1,10 @@
 import os
-import re
 
 import torch
 import typer
 
 from src.core.mul_gen_png import mul_process
-from src.core.utils.get_cfg import get_hic_real_len, get_cfg, get_error_sum, subprocess_popen
+from src.core.utils.get_cfg import get_hic_real_len, get_cfg, get_error_sum
 from src.core.utils.logger import LoggerHandler
 from tests.adjust_all_error import adjust_all_error
 from tests.error_pd import infer_error
@@ -15,28 +14,28 @@ from tests.plot_chr import plot_chr_inter
 app = typer.Typer()
 
 
-@app.command(name="gen")
-def mul_gen_png(hic_file: str = typer.Option(..., "--hic-file", "-hic", help="hic file path"),
-                result_name: str = typer.Option("AutoHiC_result", "--result-name", "-n", help="output folder name",
-                                                rich_help_panel="Secondary Arguments"),
-
-                out_path: str = typer.Option("./", "--out-path", "-o", help="output file or directory",
-                                             rich_help_panel="Secondary Arguments"),
-
-                methods: str = typer.Option("diagonal", "--methods", "-m",
-                                            help="mode generate interactive png"
-                                                 "should be global or diagonal",
-                                            rich_help_panel="Secondary Arguments"),
-
-                process_num: int = typer.Option(10, "--process-num", "-p", help="number of processes",
-                                                rich_help_panel="Secondary Arguments")):
-    """
-    Multiprocess generation of interactive img
-    """
-
-    if result_name is None:
-        result_name = os.path.basename(hic_file).split(".")[0]
-    mul_process(hic_file, result_name, out_path, methods, process_num)
+# @app.command(name="gen")
+# def mul_gen_png(hic_file: str = typer.Option(..., "--hic-file", "-hic", help="hic file path"),
+#                 result_name: str = typer.Option("AutoHiC_result", "--result-name", "-n", help="output folder name",
+#                                                 rich_help_panel="Secondary Arguments"),
+#
+#                 out_path: str = typer.Option("./", "--out-path", "-o", help="output file or directory",
+#                                              rich_help_panel="Secondary Arguments"),
+#
+#                 methods: str = typer.Option("diagonal", "--methods", "-m",
+#                                             help="mode generate interactive png"
+#                                                  "should be global or diagonal",
+#                                             rich_help_panel="Secondary Arguments"),
+#
+#                 process_num: int = typer.Option(10, "--process-num", "-p", help="number of processes",
+#                                                 rich_help_panel="Secondary Arguments")):
+#     """
+#     Multiprocess generation of interactive img
+#     """
+#
+#     if result_name is None:
+#         result_name = os.path.basename(hic_file).split(".")[0]
+#     mul_process(hic_file, result_name, out_path, methods, process_num)
 
 
 @app.command(name="autohic")
@@ -46,10 +45,10 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     # get cfg
     cfg_data = get_cfg(cfg_dir)
 
-    score = cfg_data["ERROR_FILTER_SCORE"]
-    error_min_len = cfg_data["ERROR_MIN_LEN"]
-    error_max_len = cfg_data["ERROR_MAX_LEN"]
-    iou_score = cfg_data["ERROR_FILTER_IOU_SCORE"]
+    score = float(cfg_data["ERROR_FILTER_SCORE"])
+    error_min_len = int(cfg_data["ERROR_MIN_LEN"])
+    error_max_len = int(cfg_data["ERROR_MAX_LEN"])
+    iou_score = float(cfg_data["ERROR_FILTER_IOU_SCORE"])
 
     output_dir = os.path.join(cfg_data["RESULT_DIR"], cfg_data["JOB_NAME"])
 
@@ -65,20 +64,18 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
     # Stage 1: run Juicer + 3d-dna
     run_sh_dir = os.path.join(cfg_data["AutoHiC_DIR"], "bin/run.sh")
-    run_sh = "bash " + run_sh_dir + cfg_dir
-    subprocess_popen(run_sh)
+    run_sh = "bash " + run_sh_dir + " " + cfg_dir
+    # subprocess_popen(run_sh)
+    print(run_sh)
 
     # # Stage 2: select the mini error num hic file
     # get hic file
     hic_file_dir = os.path.join(output_dir, "hic_results", "3d-dna")
-    hic_pattern = r"[\d\.]*hic"
     hic_files = []
-    # 遍历路径下的所有文件和文件夹
-    for filename in os.listdir(hic_file_dir):
-        # 使用正则表达式匹配文件名
-        if re.match(hic_pattern, filename):
-            # 打印与模式匹配的文件名
-            hic_files.append(filename)
+
+    for epoch in range(int(cfg_data["NUMBER_OF_EDIT_ROUNDS"]) + 1):
+        filename = cfg_data["GENOME_NAME"] + "." + str(epoch) + ".hic"
+        hic_files.append(filename)
 
     # run autohic
     autohic_results = os.path.join(output_dir, "autohic_results")
@@ -91,14 +88,14 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         os.mkdir(adjust_path)
         # 1. gen hic img
         hic_file_path = os.path.join(hic_file_dir, hic_file)
-        mul_process(hic_file_path, adjust_name, adjust_path, "dia", cfg_data["N_CPU"])
+        mul_process(hic_file_path, "png", adjust_path, "dia", int(cfg_data["N_CPU"]))
 
         # 2. detect hic img
         # get real chr len
         assembly_file = hic_file_path.replace(".hic", ".assembly")
         chr_len = get_hic_real_len(hic_file_path, assembly_file)
 
-        hic_img_dir = os.path.join(adjust_path, adjust_name)
+        hic_img_dir = os.path.join(adjust_path, "png")
         infer_error(model_cfg, pretrained_model, hic_img_dir, adjust_path, device=device, score=score,
                     error_min_len=error_min_len,
                     error_max_len=error_max_len, iou_score=iou_score, chr_len=chr_len)
@@ -115,6 +112,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
     # 选择处理的hic文件，进行处理
     min_hic = min(error_count_dict, key=lambda k: error_count_dict[k]["error_sum"])
+    # TODO: 两者错误数目一致
 
     merged_nodups_path = os.path.join(output_dir, "hic_results", "aligned", "merged_nodups.txt")
     adjust_hic_file = error_count_dict[min_hic]["hic_file"]
@@ -147,15 +145,17 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         # 运行 3d-dna 第二步
         # 1. cd folder
         run_sh = "cd " + adjust_path
-        subprocess_popen(run_sh)
+        # subprocess_popen(run_sh)
+        print(run_sh)
 
         # 2. run 3d-dna
-        run_sh = "bash " + os.path.join(cfg_data["3D_DNA_DIR"],
+        run_sh = "bash " + os.path.join(cfg_data["TD_DNA_DIR"],
                                         "run-asm-pipeline-post-review.sh") + " -r " + modified_assembly_file + " " + \
                  cfg_data["REFERENCE_GENOME"] + " " + merged_nodups_path
-        subprocess_popen(run_sh)
+        # subprocess_popen(run_sh)
+        print(run_sh)
 
-        hic_img_dir = os.path.join(adjust_path, adjust_name)
+        hic_img_dir = os.path.join(adjust_path, "png")
         hic_file_path = os.path.join(adjust_path, adjust_name, cfg_data["GENOME_NAME"] + ".final.hic")
         assembly_file = hic_file_path.replace(".hic", ".assembly")
 
@@ -201,17 +201,25 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
     # 运行3d-dna 第二步
     run_sh = "cd " + chr_adjust_path
-    subprocess_popen(run_sh)
+    # subprocess_popen(run_sh)
+    print(run_sh)
 
     # 2. run 3d-dna
-    run_sh = "bash " + os.path.join(cfg_data["3D_DNA_DIR"],
+    run_sh = "bash " + os.path.join(cfg_data["TD_DNA_DIR"],
                                     "run-asm-pipeline-post-review.sh") + " -r " + chr_asy_file + " " + \
              cfg_data["REFERENCE_GENOME"] + " " + merged_nodups_path
-    subprocess_popen(run_sh)
+    # subprocess_popen(run_sh)
+    print(run_sh)
 
     # 获取最终数据
     # TODO： 最终模块
 
 
+def main():
+    cfg_file = "/home/jzj/Jupyter-Docker/buffer/cft-autohic.txt"
+    whole(cfg_file)
+
+
 if __name__ == "__main__":
-    app()
+    # app()
+    main()

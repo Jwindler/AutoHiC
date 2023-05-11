@@ -218,8 +218,14 @@ def get_cfg(cfg_dir, key=None):
         for line in f:
             if line.startswith('#'):
                 continue
-            key, value = line.strip().split('=')
-            config[key] = value
+            try:
+                key = line.strip().split('=')[0]
+                value = line.strip().split('=')[1]
+                config[key] = value
+            except IndexError:
+                key = line.strip().split('=')[0]
+                print("Please check you {} parameter".format(key))
+                continue
     if key:
         try:
             return config[key]

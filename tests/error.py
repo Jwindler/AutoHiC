@@ -311,7 +311,6 @@ class ERRORS:
                        out_path="chr_len_filtered_errors.json",
                        remove_error_path="chr_len_remove_error.txt", filter_cls=None):
         if chr_len is None:
-            # TODO: 接入 get_real_chr_len 函数
             print("chr_len is None, please input chr_len")
             return
 

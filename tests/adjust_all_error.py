@@ -12,13 +12,13 @@
 import json
 import os
 
-from src.assembly.asy_operate import AssemblyOperate
-from src.core.utils.get_cfg import get_ratio
-from src.core.utils.logger import logger
 from assembly.cut_errors_ctg import cut_errors_ctg
 from core.deb_adjust_v3 import adjust_debris
 from core.inv_adjust_v2 import adjust_inversion
 from core.tran_adjust_v3 import adjust_translocation
+from src.assembly.asy_operate import AssemblyOperate
+from src.core.utils.get_cfg import get_ratio
+from src.core.utils.logger import logger
 
 
 def adjust_all_error(hic_file_path, assembly_file_path, divided_error, modified_assembly_file, black_list=None,

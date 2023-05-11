@@ -28,5 +28,6 @@ def main():
             hic_files.append(filename)
     print(hic_files)
 
+
 if __name__ == "__main__":
     main()

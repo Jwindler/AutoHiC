@@ -10,12 +10,12 @@ REFERENCE_GENOME=/data/jzj/juicer/references/Np.fasta
 
 # Juicer options
 JUICER_DIR=/home/jzj/buffer/juicer
-FASTQ_DIR=/data/jzj/juicer/HiCPro/rawdata
+FASTQ_DIR=/data/jzj/juicer/HiCPro/rawdata  # Directory containing fastq files
 ENZYME=DpnII
 
 
 # 3D-DNA options
-3D_DNA_DIR=/home/jzj/buffer/3d-dna
+TD_DNA_DIR=/home/jzj/buffer/3d-dna
 NUMBER_OF_EDIT_ROUNDS=2
 
 # AutoHiC options

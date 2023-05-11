@@ -1,5 +1,5 @@
 _base_ = [
-    './error_cascade_mask_rcnn_swin_fpn.py',
+    './chr_cascade_mask_rcnn_swin_fpn.py',
     './coco_instance.py',
     './schedule_1x.py', './default_runtime.py'
 ]
@@ -26,7 +26,7 @@ model = dict(
                 conv_out_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=3,
+                num_classes=1,
                 bbox_coder=dict(
                     type='DeltaXYWHBBoxCoder',
                     target_means=[0., 0., 0., 0.],
@@ -45,7 +45,7 @@ model = dict(
                 conv_out_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=3,
+                num_classes=1,
                 bbox_coder=dict(
                     type='DeltaXYWHBBoxCoder',
                     target_means=[0., 0., 0., 0.],
@@ -64,7 +64,7 @@ model = dict(
                 conv_out_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=3,
+                num_classes=1,
                 bbox_coder=dict(
                     type='DeltaXYWHBBoxCoder',
                     target_means=[0., 0., 0., 0.],
