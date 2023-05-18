@@ -98,7 +98,7 @@ def plot_chr_inter(hic_file, asy_file=None, out_path=None, color_percent=95, fig
     ax.set_yticks([])
     ax.set_xticks([])
 
-    plt.savefig(os.path.join(out_path, "chromosome.svg"), bbox_inches='tight', pad_inches=0, dpi=dpi,
+    plt.savefig(os.path.join(out_path, "chromosome.png"), bbox_inches='tight', pad_inches=0, dpi=dpi,
                 format=fig_format)
     plt.show()  # not show figure
     plt.close()

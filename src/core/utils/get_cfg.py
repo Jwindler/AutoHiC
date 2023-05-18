@@ -108,7 +108,7 @@ def increment(resolution):
     """
 
     dim_increase = {
-        "increase": resolution * 600,  # 生成图片的话，这个值要小一点 400
+        "increase": resolution * 400,  # 生成图片的话，这个值要小一点 400
         "range": resolution * 700  # 700是最小，否则出现颜色阈值不正常的情况
     }
 
@@ -225,6 +225,7 @@ def get_cfg(cfg_dir, key=None):
             except IndexError:
                 key = line.strip().split('=')[0]
                 print("Please check you {} parameter".format(key))
+                # FIXME: 测试获取配置，报错提醒
                 continue
     if key:
         try:

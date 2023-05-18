@@ -9,10 +9,11 @@
 @function: 
 """
 
+import json
+import os
+
 import cv2
 import pandas as pd
-import os
-import json
 
 
 def draw_box_corner(draw_img, bbox, length, corner_color):

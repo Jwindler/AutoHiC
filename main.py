@@ -68,7 +68,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     # subprocess_popen(run_sh)
     print(run_sh)
 
-    # # Stage 2: select the mini error num hic file
+    # # Stage 2: select the min error num hic file
     # get hic file
     hic_file_dir = os.path.join(output_dir, "hic_results", "3d-dna")
     hic_files = []
@@ -85,10 +85,11 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         adjust_name = hic_file.split(".")[1]
 
         adjust_path = os.path.join(autohic_results, adjust_name)
-        os.mkdir(adjust_path)
+        # os.mkdir(adjust_path)
+
         # 1. gen hic img
         hic_file_path = os.path.join(hic_file_dir, hic_file)
-        mul_process(hic_file_path, "png", adjust_path, "dia", int(cfg_data["N_CPU"]))
+        # mul_process(hic_file_path, "png", adjust_path, "dia", int(cfg_data["N_CPU"]))
 
         # 2. detect hic img
         # get real chr len
@@ -96,9 +97,9 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         chr_len = get_hic_real_len(hic_file_path, assembly_file)
 
         hic_img_dir = os.path.join(adjust_path, "png")
-        infer_error(model_cfg, pretrained_model, hic_img_dir, adjust_path, device=device, score=score,
-                    error_min_len=error_min_len,
-                    error_max_len=error_max_len, iou_score=iou_score, chr_len=chr_len)
+        # infer_error(model_cfg, pretrained_model, hic_img_dir, adjust_path, device=device, score=score,
+        #             error_min_len=error_min_len,
+        #             error_max_len=error_max_len, iou_score=iou_score, chr_len=chr_len)
 
         # 3. get error sum
         error_summary_json = os.path.join(adjust_path, "error_summary.json")
@@ -123,13 +124,14 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     while error_sum > 0:
         adjust_name = str(adjust_epoch)
         adjust_path = os.path.join(autohic_results, adjust_name)
-        os.mkdir(adjust_path)
+        # os.mkdir(adjust_path)
 
         # FIXME： 第二次循环的时候文件名不对
         if first_flag:
             hic_file_path = error_count_dict[min_hic]["hic_file"]
             assembly_file_path = error_count_dict[min_hic]["assembly_file"]
             divided_error = error_count_dict[min_hic]["adjust_path"]
+            first_flag = False
         else:
             hic_file_path = adjust_hic_file
             assembly_file_path = adjust_asy_file
@@ -160,7 +162,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         assembly_file = hic_file_path.replace(".hic", ".assembly")
 
         # generate hic img
-        mul_process(hic_file_path, adjust_epoch, hic_img_dir, "dia", cfg_data["N_CPU"])
+        mul_process(hic_file_path, "png", adjust_path, "dia", int(cfg_data["N_CPU"]))
 
         # infer error
         chr_len = get_hic_real_len(hic_file_path, assembly_file)
@@ -185,11 +187,12 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         adjust_hic_file = hic_file_path
         adjust_asy_file = assembly_file
         adjust_epoch += 1
-        first_flag = False
+
     #
     chr_adjust_path = os.path.join(autohic_results, "chr")
     os.mkdir(chr_adjust_path)
 
+    # TODO: 是否拆分chr
     # 生成chr png
     plot_chr_inter(adjust_hic_file, adjust_asy_file, chr_adjust_path, fig_format="png")
 
@@ -216,7 +219,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
 
 def main():
-    cfg_file = "/home/jzj/Jupyter-Docker/buffer/cft-autohic.txt"
+    cfg_file = "/home/jzj/Jupyter-Docker/buffer/AutoHiC_ci/cft-autohic.txt"
     whole(cfg_file)
 
 
