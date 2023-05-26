@@ -12,7 +12,7 @@ import json
 import re
 from collections import OrderedDict
 
-from src.core.utils.logger import logger
+from src.utils.logger import logger
 
 
 class AssemblyOperate(object):

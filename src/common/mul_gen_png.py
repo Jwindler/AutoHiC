@@ -12,9 +12,9 @@
 import os
 from multiprocessing import Pool
 
-from src.core.common.hic_adv_model import GenBaseModel
-from src.core.utils.get_cfg import increment
-from src.core.utils.logger import logger
+from src.common.hic_adv_model import GenBaseModel
+from src.utils.get_cfg import increment
+from src.utils.logger import logger
 
 info_path = ""  # define
 

@@ -15,7 +15,7 @@ import hicstraw
 import numpy as np
 from scipy.signal import find_peaks
 
-from src.core.utils.logger import logger
+from src.utils.logger import logger
 
 
 def get_error_matrix(

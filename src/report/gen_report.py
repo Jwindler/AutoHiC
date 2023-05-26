@@ -21,8 +21,11 @@ from src.report import read_data
 def image_to_base64(image_path):
     """
         将图片转为 Base64流
-    :param image_path: 图片路径
-    :return:
+    Args:
+        image_path: 图片路径
+
+    Returns:
+
     """
     with open(image_path, "rb") as file:
         base64_data = base64.b64encode(file.read())  # base64编码
@@ -30,8 +33,18 @@ def image_to_base64(image_path):
 
 
 def report(data, output_path, template_path):
-    env = Environment(loader=FileSystemLoader('./'))
-    template = env.get_template(template_path)
+    """
+        generate report
+    Args:
+        data: data dict
+        output_path: report output path
+        template_path: report template path
+
+    Returns:
+        None
+    """
+    env = Environment(loader=FileSystemLoader(template_path))
+    template = env.get_template("report_template.html")
     with open(os.path.join(output_path, "result.html"), 'w+') as report_file:
         html_content = template.render(
             report_title="AutoHiC Report",
@@ -45,87 +58,37 @@ def report(data, output_path, template_path):
         report_file.write(html_content)
 
 
-def gen_report_cfg(scf_path, chr_path, output_path, extra_info, quast_thread):
-    pass
-
-
-def main():
-    # 文件路径
-    scf_path = '/home/pzx/PycharmProjects/pythonProject_hic/Html/07.read_data/seqkit_test/ci_contig.fa'
-    chr_path = '/home/pzx/PycharmProjects/pythonProject_hic/Html/07.read_data/seqkit_test/cp_autohic.fa'
-    output_path = '/home/pzx/PycharmProjects/pythonProject_hic/Html/07.read_data/quast_result'
-    # FIXME: 两个quast在同一个文件夹下会冲突吗？
-
-    # jzj提供的info
-    extra_info = {'species': 'spider',
-                  'num_chr': 23,
-                  'anchor_ratio': 93,
-                  'inversion_len': 1111,
-                  'debris_len': 1111,
-                  'translocation_len': 1111, }
-
-    # 跑quast的线程数
-    quast_thread = 6
+def gen_report_cfg(scf_path, chr_path, quast_output, ctg_extra_info, autohic_extra_info, quast_thread, before_adjust,
+                   after_adjust, inv_pairs, tran_pairs, deb_pairs, hic_records, template_path, report_output):
+    ctg_output_path = os.path.join(quast_output, "contig")
+    chr_output_path = os.path.join(quast_output, "chromosome")
+    os.mkdir(ctg_output_path)
+    os.mkdir(chr_output_path)
 
     # 从read.py获取数据
     summary_data, bef_anchor_data, err_ratio, chr_len_gc, chr_fig_path = read_data.gen_chr_png(scf_path, chr_path,
-                                                                                               output_path,
-                                                                                               extra_info,
+                                                                                               ctg_output_path,
+                                                                                               chr_output_path,
+                                                                                               ctg_extra_info,
+                                                                                               autohic_extra_info,
                                                                                                quast_thread,
-                                                                                               num_one_line=28)
-
-    image_demo = './images/image_test.png'
-    before_adjust_png_path = ""
-    after_adjust_png_path = ""
+                                                                                               num_one_line=24)
     data = {
         "report_title": 'AutoHiC Report',
         "summaries": summary_data,
-        "adjust": [image_to_base64(before_adjust_png_path), image_to_base64(after_adjust_png_path)],
+        "adjust": [image_to_base64(before_adjust), image_to_base64(after_adjust)],
         "errors": [
             {
-                "name": 'Inversion',
-                "pairs": [
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                ],
-            },
-            {
                 "name": 'Translocation',
-                "pairs": [
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                ],
+                "pairs": tran_pairs,
             },
             {
-                "name": 'Chimeric_join',
-                "pairs": [
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                    [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-                     {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-                ],
+                "name": 'Inversion',
+                "pairs": inv_pairs,
+            },
+            {
+                "name": 'Debris',
+                "pairs": deb_pairs,
             },
         ],
         "additional": [
@@ -140,14 +103,8 @@ def main():
             },
             {
                 "name": 'Number of error corrections',
-                "table_header": ['Error type', 'Inversion', 'Translocation', 'Debris', 'Total'],
-                "table_data": [
-                    ['0.hic', '3', '2', '1', '6'],
-                    ['0.hic', '3', '2', '1', '6'],
-                    ['0.hic', '3', '2', '1', '6'],
-                    ['0.hic', '3', '2', '1', '6'],
-                    ['0.hic', '3', '2', '1', '6'],
-                ],
+                "table_header": ['Error type', 'Translocation', 'Inversion', 'Debris', 'Total'],
+                "table_data": hic_records,
             },
             {
                 "name": 'Chromosome length',
@@ -157,8 +114,92 @@ def main():
         ],
         "chromosome_image": image_to_base64(chr_fig_path).replace('png', 'svg+xml'),
     }
-    template_path = "./template.html"
-    report(data, output_path, template_path)
+
+    report(data, report_output, template_path)
+
+
+def main():
+    # 文件路径
+    ctg_path = '/home/jzj/Jupyter-Docker/buffer/AutoHiC_test/data/reference/hd.fa'
+    chr_path = '/home/jzj/Jupyter-Docker/buffer/AutoHiC_test/autohic_results/chr/hd.FINAL.fasta'
+    quast_output = '/home/jzj/Jupyter-Docker/buffer/AutoHiC_test/autohic_results/quast'
+
+    template_path = "/home/jzj/HiC-OpenCV/src/report"
+
+    # jzj提供的info
+    ctg_extra_info = {'species': 'spider',
+                      'num_chr': 23,
+                      'inversion_len': 1111,
+                      'debris_len': 1111,
+                      'translocation_len': 1111, }
+
+    autohic_extra_info = {'species': 'spider',
+                          'num_chr': 23,
+                          'anchor_ratio': 93,
+                          'inversion_len': 1111,
+                          'debris_len': 1111,
+                          'translocation_len': 1111, }
+
+    # 跑quast的线程数
+    quast_thread = 2  # 从配置文件获取
+
+    before_adjust_png_path = "/home/jzj/buffer/image_test.png"
+    after_adjust_png_path = "/home/jzj/buffer/image_test.png"
+
+    image_demo = "/home/jzj/buffer/image_test.png"
+
+    inversion_pairs = [
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+    ]
+
+    translocation_pairs = [
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+    ]
+    debris_pairs = [
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
+         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+    ]
+
+    hic_error_records = [
+        ['0.hic', '3', '2', '1', '6'],
+        ['0.hic', '3', '2', '1', '6'],
+        ['0.hic', '3', '2', '1', '6'],
+        ['0.hic', '3', '2', '1', '6'],
+        ['0.hic', '3', '2', '1', '6'],
+    ]
+
+    report_output = "/home/jzj/Jupyter-Docker/buffer"
+
+    gen_report_cfg(ctg_path, chr_path, quast_output, ctg_extra_info, autohic_extra_info, quast_thread,
+                   before_adjust_png_path,
+                   after_adjust_png_path, inversion_pairs, translocation_pairs, debris_pairs, hic_error_records,
+                   template_path, report_output)
 
 
 if __name__ == '__main__':

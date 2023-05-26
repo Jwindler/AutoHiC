@@ -15,8 +15,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
-from src.core.utils.get_cfg import get_max_hic_len, get_hic_real_len
-from src.core.utils.logger import logger
+from src.utils.get_cfg import get_max_hic_len, get_hic_real_len
+from src.utils.logger import logger
 
 
 def plot_chr_inter(hic_file, asy_file=None, out_path=None, color_percent=95, figure_size=(10, 10), dpi=300,
@@ -134,14 +134,17 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, color=
         resolution = hic.getResolutions()[0]
         logger.info("Resolution is None, use default resolution %s to plot \n" % resolution)
 
-    chr_len_list = []
-    with open(chr_len_file, 'r') as f:
-        for line in f.readlines():
-            line_split = line.strip().split("\t")
-            if line_split[0] == "Chr":
-                continue
-            chr_len_list.append(int(line_split[2]))
-        hic_len = chr_len_list[-1]
+    if chr_len_file is None:
+        pass
+    else:
+        chr_len_list = []
+        with open(chr_len_file, 'r') as f:
+            for line in f.readlines():
+                line_split = line.strip().split("\t")
+                if line_split[0] == "Chr":
+                    continue
+                chr_len_list.append(int(line_split[2]))
+            hic_len = chr_len_list[-1]
 
     # get interaction matrix object
     matrix_object_chr = hic.getMatrixZoomData('assembly', 'assembly', "observed", nor_method, "BP", resolution)
@@ -219,8 +222,8 @@ def main():
     asy_file = "/home/jzj/Jupyter-Docker/buffer/genomes/11_sa/sa.0.assembly"
     out_path = "/home/jzj/buffer"
     # chr_len_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/chr.txt"
-    #plot_chr(hic_file, genome_name="br", chr_len_file=chr_len_file, out_path=out_path, fig_format="svg")
-    plot_chr_inter(hic_file, asy_file, out_path, fig_format="svg")
+    plot_chr(hic_file, genome_name="br", chr_len_file=None, out_path=out_path, fig_format="svg")
+    # plot_chr_inter(hic_file, asy_file, out_path, fig_format="png")
 
 
 if __name__ == "__main__":

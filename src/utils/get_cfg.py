@@ -9,16 +9,16 @@
 @function: get hic file real length
 """
 
-import math
 import json
+import math
+import os
 import subprocess
 
 import hicstraw
 import numpy as np
 
 from src.assembly.asy_operate import AssemblyOperate
-
-from src.core.utils.logger import logger
+from src.utils.logger import logger
 
 
 def get_ratio(hic, asy_file) -> int:
@@ -245,6 +245,26 @@ def get_error_sum(error_json) -> int:
     return tran_inv_sum
 
 
+def get_each_error(error_json) -> list:
+    """
+        calculate each error number
+    Args:
+        error_json: error json file
+
+    Returns:
+        each error number list
+    """
+    with open(error_json, "r") as f:
+        error_count = json.loads(f.read())
+
+    final_count = error_count["Chromosome real length filtered error number"]
+    error_sum = final_count["translocation"]["normal"] + final_count["inversion"]["normal"] + final_count["debris"][
+        "normal"]
+    each_error_num = [final_count["translocation"]["normal"], final_count["inversion"]["normal"],
+                      final_count["debris"]["normal"], error_sum]
+    return each_error_num
+
+
 def subprocess_popen(statement):
     p = subprocess.Popen(statement, shell=True, stdout=subprocess.PIPE)
     while p.poll() is None:
@@ -258,6 +278,60 @@ def subprocess_popen(statement):
                 res = re[i].decode('utf-8').strip('\r\n')
                 result.append(res)
             return result
+
+
+def calculate_genome_size(file_path):
+    """
+    Calculate genome size from fasta file
+    Args:
+        file_path: fasta file path
+
+    Returns:
+        genome size
+    """
+    genome_size = 0
+    with open(file_path, 'r') as file:
+        for line in file:
+            if line.startswith('>'):
+                continue  # Skip header lines
+            genome_size += len(line.strip())
+    return genome_size
+
+
+def cal_anchor_rate(ctg, scaffold):
+    """
+        Calculate anchor rate
+    Args:
+        ctg: ctg genome file
+        scaffold: scaffold genome file
+
+    Returns:
+        anchor rate
+    """
+    ctg_len = calculate_genome_size(ctg)
+    scaffold_len = calculate_genome_size(scaffold)
+    return scaffold_len / ctg_len
+
+
+def get_error_len(errors_json_file):
+    """
+        Get error length from error json file
+    Args:
+        errors_json_file: error json file
+
+    Returns:
+        error length
+    """
+    if os.path.exists(errors_json_file):
+        with open(errors_json_file, "r") as f:
+            errors_dict = json.load(f)
+        error_full_len = 0
+
+        for error in errors_dict:
+            error_full_len += errors_dict[error]["end"] - errors_dict[error]["start"]
+    else:
+        error_full_len = 0
+    return error_full_len
 
 
 def main():

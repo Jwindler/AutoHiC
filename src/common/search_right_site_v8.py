@@ -19,8 +19,8 @@ from scipy.signal import find_peaks
 
 from src.assembly import get_max_peak
 from src.assembly.asy_operate import AssemblyOperate
-from src.core.utils.logger import logger
-from src.core.utils.get_cfg import get_hic_real_len, get_max_hic_len
+from src.utils.get_cfg import get_hic_real_len, get_max_hic_len
+from src.utils.logger import logger
 
 
 def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tuple, length_site: tuple = None):

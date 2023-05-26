@@ -12,8 +12,8 @@ import json
 import re
 
 from src.assembly.asy_operate import AssemblyOperate
-from src.core.utils.get_cfg import get_ratio
-from src.core.utils.logger import logger
+from src.utils.get_cfg import get_ratio
+from src.utils.logger import logger
 
 
 def cut_errors_ctg(errors_queue, hic_file, assembly_file, modified_assembly_file) -> None:

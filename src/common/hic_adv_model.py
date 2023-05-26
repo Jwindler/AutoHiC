@@ -12,13 +12,13 @@
 import json
 import os
 import uuid
-import numpy as np
 
 import hicstraw
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
-from src.core.utils.logger import logger
+from src.utils.logger import logger
 
 
 class GenBaseModel:

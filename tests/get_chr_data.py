@@ -9,17 +9,17 @@
 @function: 
 """
 import json
-import os
 import math
+import os
+from collections import OrderedDict
+
 import torch
+from PIL import Image
+from mmdet.apis import init_detector, inference_detector
 
 from src.assembly.asy_operate import AssemblyOperate
-from src.core.utils.get_cfg import get_ratio
-from src.core.utils.logger import logger
-from src.core.utils.get_cfg import get_cfg, get_hic_real_len
-from collections import OrderedDict
-from mmdet.apis import init_detector, inference_detector
-from PIL import Image
+from src.utils.get_cfg import get_cfg, get_hic_real_len, get_ratio
+from src.utils.logger import logger
 
 
 def bbox2hic(bbox, hic_len, img_size):
@@ -304,7 +304,12 @@ def split_chr(img_file, asy_file, hic_file, cfg_file):
     # split chr
     modified_assembly_file = os.path.join(os.path.dirname(img_file), "chr.assembly")
     divide_chr(chr_output, hic_file, asy_file, modified_assembly_file)
-    return modified_assembly_file
+
+    # get chr number
+    with open(chr_output, 'r') as file:
+        chr_count = sum(1 for line in file) - 1
+
+    return modified_assembly_file, chr_count
 
 
 def main():
