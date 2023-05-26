@@ -1,6 +1,6 @@
 # Auto-HiC
 
-![](https://img.shields.io/badge/release-v0.8.18-blue)![a](https://img.shields.io/badge/license-MIT-brightgreen)
+![](https://img.shields.io/badge/release-v0.8.19-blue)![a](https://img.shields.io/badge/license-MIT-brightgreen)
 
 
 

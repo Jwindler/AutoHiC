@@ -1,3 +1,14 @@
+## [0.8.19](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.18...v0.8.19) (2023-05-26)
+
+
+### Features
+
+* add chromosome model and update some fun ([02b34de](https://github.com/Jwindler/HiC-OpenCV/commit/02b34de3ee541b2984ddcf2353094093ee3bb0e9))
+* add HTML report module ([f7dc591](https://github.com/Jwindler/HiC-OpenCV/commit/f7dc591b50fc3dbad2500bc0a3f6368149a73626))
+* add report module ([66e583a](https://github.com/Jwindler/HiC-OpenCV/commit/66e583a7e4c5d33e645a60d1b76d2844c13c86cd))
+
+
+
 ## [0.8.18](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.17...v0.8.18) (2023-05-10)
 
 
