@@ -13,6 +13,7 @@ import os
 import pandas as pd
 
 from src.report import gen_chr_fig
+from src.utils import get_cfg
 
 
 def run_quast(input_path, output_path, extra_info, quast_thread, ctg_flag=False):
@@ -31,8 +32,8 @@ def run_quast(input_path, output_path, extra_info, quast_thread, ctg_flag=False)
 
     # 跑quast
     statement = 'quast.py ' + input_path + ' -o ' + output_path + ' -t ' + str(quast_thread) + ' --large'
-    # subprocess_popen(statement)
-    print(statement)
+    get_cfg.subprocess_popen(statement)
+    # print(statement)
 
     # extra_info
     num_chr = extra_info['num_chr']
@@ -47,7 +48,10 @@ def run_quast(input_path, output_path, extra_info, quast_thread, ctg_flag=False)
 
     # 计算Structural_errors_ratio
     total_length = int(sum_data.loc['Total length', :][0])
-    structural_err_ratio = '%.8f' % (total_err_len / total_length)
+    if (total_err_len / total_length) == 0:
+        structural_err_ratio = '0'
+    else:
+        structural_err_ratio = '%.8f' % (total_err_len / total_length)
     inv_err_ratio = '%.8f' % (extra_info['inversion_len'] / total_length)
     tran_err_ratio = '%.8f' % (extra_info['translocation_len'] / total_length)
     deb_err_ratio = '%.8f' % (extra_info['debris_len'] / total_length)
@@ -76,7 +80,7 @@ def run_quast(input_path, output_path, extra_info, quast_thread, ctg_flag=False)
         summary_data = [['Species', extra_info['species']],
                         ['Assembly size (bp)', int(sum_data.loc['Total length', :][0])],
                         ['Scaffold N50 (bp)', int(sum_data.loc['N50', :][0])],
-                        ['Scaffold_N90 (bp)', int(sum_data.loc['N90', :][0])],
+                        ['Scaffold N90 (bp)', int(sum_data.loc['N90', :][0])],
                         ['CC ratio (%)', cc_ratio],
                         ['Structural errors ratio (%)', structural_err_ratio],
                         ['Number of chromosomes', num_chr],
@@ -161,10 +165,10 @@ def gen_chr_png(scf_path, chr_path, scf_output_path, chr_output_path, ctg_extra_
     """
 
     # 为表格summary,err_ratio跑quast并读取数据
-    summary_data, err_ratio = run_quast(chr_path, chr_output_path, autohic_extra_info, quast_thread)
+    summary_data, _ = run_quast(chr_path, chr_output_path, autohic_extra_info, quast_thread)
 
     # 为表格Before anchoring 跑quast并读取数据
-    bef_anchor_data, _ = run_quast(scf_path, scf_output_path, ctg_extra_info, quast_thread, ctg_flag=True)
+    bef_anchor_data, err_ratio = run_quast(scf_path, scf_output_path, ctg_extra_info, quast_thread, ctg_flag=True)
 
     # 计算染色体长度、gc含量
     chr_len_gc, chr_len = readfasta(chr_path, chr_output_path)

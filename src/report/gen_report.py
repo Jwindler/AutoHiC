@@ -121,80 +121,54 @@ def gen_report_cfg(scf_path, chr_path, quast_output, ctg_extra_info, autohic_ext
 def main():
     # 文件路径
     ctg_path = '/home/jzj/Jupyter-Docker/buffer/AutoHiC_test/data/reference/hd.fa'
-    chr_path = '/home/jzj/Jupyter-Docker/buffer/AutoHiC_test/autohic_results/chr/hd.FINAL.fasta'
-    quast_output = '/home/jzj/Jupyter-Docker/buffer/AutoHiC_test/autohic_results/quast'
+    chr_path = '/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/br_autohic.fasta'
+    quast_output = '/home/jzj/Jupyter-Docker/buffer/test'
 
     template_path = "/home/jzj/HiC-OpenCV/src/report"
 
     # jzj提供的info
-    ctg_extra_info = {'species': 'spider',
-                      'num_chr': 23,
-                      'inversion_len': 1111,
-                      'debris_len': 1111,
-                      'translocation_len': 1111, }
+    ctg_extra_info = {'species': 'Brassica rapa',
+                      'num_chr': 11,
+                      'inversion_len': 6674931,
+                      'debris_len': 18205,
+                      'translocation_len': 286694, }
 
-    autohic_extra_info = {'species': 'spider',
-                          'num_chr': 23,
-                          'anchor_ratio': 93,
-                          'inversion_len': 1111,
-                          'debris_len': 1111,
-                          'translocation_len': 1111, }
+    autohic_extra_info = {'species': 'Brassica rapa',
+                          'num_chr': 11,
+                          'anchor_ratio': 92.37,
+                          'inversion_len': 0,
+                          'debris_len': 0,
+                          'translocation_len': 0, }
 
     # 跑quast的线程数
-    quast_thread = 2  # 从配置文件获取
+    quast_thread = 4  # 从配置文件获取
 
-    before_adjust_png_path = "/home/jzj/buffer/image_test.png"
-    after_adjust_png_path = "/home/jzj/buffer/image_test.png"
+    before_adjust_png_path = "/home/jzj/bprojects/autohic/fig/6.html_report/br_demo/before.png"
+    after_adjust_png_path = "/home/jzj/bprojects/autohic/fig/6.html_report/br_demo/after.png"
 
-    image_demo = "/home/jzj/buffer/image_test.png"
-
-    inversion_pairs = [
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-    ]
+    inversion_pairs = []
 
     translocation_pairs = [
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+        {"image": image_to_base64("/home/jzj/bprojects/autohic/fig/6.html_report/br_demo/br_tran.jpg"),
+         "start": 21648009,
+         "end": 21934703},
     ]
+
     debris_pairs = [
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
-        [{"image": image_to_base64(image_demo), "start": 22, "end": 333},
-         {"image": image_to_base64(image_demo), "start": 222, "end": 33223}],
+        {"image": image_to_base64("/home/jzj/bprojects/autohic/fig/6.html_report/br_demo/br_deb.jpg"),
+         "start": 146416633,
+         "end": 146434838},
     ]
 
     hic_error_records = [
-        ['0.hic', '3', '2', '1', '6'],
-        ['0.hic', '3', '2', '1', '6'],
-        ['0.hic', '3', '2', '1', '6'],
-        ['0.hic', '3', '2', '1', '6'],
-        ['0.hic', '3', '2', '1', '6'],
+        ['0.hic', '15', '0', '1', '16'],
+        ['1.hic', '1', '0', '0', '1'],
+        ['2.hic', '1', '0', '1', '3'],
+        ['3.hic', '1', '0', '1', '2'],
+        ['4.hic', '0', '0', '0', '0'],
     ]
 
-    report_output = "/home/jzj/Jupyter-Docker/buffer"
+    report_output = "/home/jzj/buffer"
 
     gen_report_cfg(ctg_path, chr_path, quast_output, ctg_extra_info, autohic_extra_info, quast_thread,
                    before_adjust_png_path,

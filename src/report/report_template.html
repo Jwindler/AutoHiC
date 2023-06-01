@@ -7,7 +7,7 @@
 </head>
 <style>
     body {
-        font-family: "Source Serif Pro", Georgia, serif;
+        font-family: inherit;
     }
 
     .section {
@@ -58,12 +58,12 @@
 
     .content-side {
         padding: 10px 20px;
-        overflow-y: scroll;
-        height: 100vh;
+        /*overflow-y: scroll;*/
+        /*height: 100vh;*/
     }
 
     #container {
-        height: 100vh;
+        /*height: 100vh;*/
     }
 
     .nav-item {
@@ -132,7 +132,9 @@
 
         </div>
 
-        <div class="col-2 col-md-3 col-xxl-2 nav-side d-none d-md-block">
+        <div class="col-2 col-md-3 col-xxl-2 nav-side d-none d-md-block"></div>
+
+        <div class="col-2 col-md-3 col-xxl-2 nav-side d-none d-md-block" style="position: fixed;">
 
             <div class="title"><h2>{{report_title}}</h2></div>
             <ul id="navbar" class="nav nav-pills flex-column">
@@ -221,18 +223,25 @@
                             <div class="tab-content" id="myTabContent">
                                 {% for pair in item.pairs %}
                                 <div class="tab-pane fade {{'  show active' if loop.index == 1 else '' }}" id="{{item.name}}-tab-pane-{{loop.index}}" role="tabpanel" aria-labelledby="{{item.name}}-pair-tab-{{loop.index}}" tabindex="{{loop.index}}">
-                                    <table id="error_" class="table ">
-                                        <tbody>
-                                        <tr>
-                                            <td><img src="{{pair[0].image}}" style="width: 100%"/></td>
-                                            <td><img src="{{pair[0].image}}" style="width: 100%"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">Error location: {{pair[0].start}}-{{pair[0].end}}</td>
-                                            <td class="text-center">Error location: {{pair[0].start}}-{{pair[1].end}}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="row"  style="justify-content: center">
+                                        <div class=" col-sm-12 col-md-12 col-lg-8 col-xl-6">
+                                            <img src="{{pair.image}}" style="width: 100%; margin: 0 auto;"/>
+                                            <div style="text-align: center">
+                                                <span>Location: {{pair.start}} - {{pair.end}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+<!--                                    <table id="error_" class="table ">-->
+<!--                                        <tbody>-->
+<!--                                        <tr>-->
+<!--                                            <td><img src="{{pair.image}}" style="width: 50%; margin: 0 auto;"/></td>-->
+<!--                                        </tr>-->
+<!--                                        <tr>-->
+<!--                                            <td class="text-center">Location: {{pair.start}}-{{pair.end}}</td>-->
+<!--                                        </tr>-->
+<!--                                        </tbody>-->
+<!--                                    </table>-->
                                 </div>
                                 {% endfor%}
                             </div>
@@ -283,8 +292,11 @@
             </div>
 
             <div class="section chromosome">
-                <div>
-                    <img src="{{chromosome_image}}" style="width: 1545px"/>
+
+                <div class="row"  style="justify-content: center">
+                    <div class=" col-sm-12 col-md-12 col-lg-8 col-xl-6">
+                         <img src="{{chromosome_image}}"/>
+                    </div>
                 </div>
             </div>
 

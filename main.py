@@ -208,7 +208,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         error_summary_json = os.path.join(hic_img_dir, "error_summary.json")
 
         # report record error
-        hic_error_records.append(get_cfg.get_each_error(error_summary_json).insert(0, "epoch_" + str(adjust_epoch)))
+        hic_error_records.append(get_cfg.get_each_error(error_summary_json).insert(0, str(adjust_epoch) + ".hic"))
 
         error_count_dict[adjust_epoch] = {
             "error_sum": get_cfg.get_error_sum(error_summary_json),
@@ -283,6 +283,9 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
              fig_format="png")
     chr_hic_map = os.path.join(chr_adjust_path, cfg_data["SPECIES_NAME"]) + "_chr"
 
+    pair_file_path = error_count_dict[min_hic]["adjust_path"]
+    translocation_pairs, inversion_pairs, debris_pairs = get_cfg.geg_error_pairs(pair_file_path)
+
     gen_report_cfg(ctg_fa_path, chr_fa_path, quast_output, ctg_extra_info, autohic_extra_info, quast_thread,
                    ctg_hic_map,
                    chr_hic_map, inversion_pairs, translocation_pairs, debris_pairs, hic_error_records,
@@ -290,7 +293,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
 
 def main():
-    cfg_file = "/home/jzj/Jupyter-Docker/buffer/AutoHiC_ci/cft-autohic.txt"
+    cfg_file = "/home/jzj/Jupyter-Docker/buffer/AutoHiC_test/cft-autohic.txt"
     whole(cfg_file)
 
 

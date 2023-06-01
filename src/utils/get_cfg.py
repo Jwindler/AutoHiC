@@ -334,6 +334,47 @@ def get_error_len(errors_json_file):
     return error_full_len
 
 
+def geg_error_pairs(errors_json_path):
+    """
+        Get error pairs from error json file
+    Args:
+        errors_json_path: error json file path: chr_len_filtered_errors.json
+
+    Returns:
+        inversion_pairs, translocation_pairs, debris_pairs
+    """
+    inversion_pairs, translocation_pairs, debris_pairs = [], [], []
+
+    with open(os.path.join(errors_json_path, "chr_len_filtered_errors.json")) as f:
+        data = json.load(f)
+
+    tran_error_counter = 0
+    inv_error_counter = 0
+    deb_error_counter = 0
+    for error_type, errors in data.items():
+        for error in errors:
+            temp_error_dict = {
+                "image": error["image_id"],
+                "start": error["hic_loci"][0],
+                "end": error["hic_loci"][1]}
+            if error_type == "inversion":
+                if inv_error_counter > 4:
+                    break
+                inversion_pairs.append(temp_error_dict)
+                inv_error_counter += 1
+            elif error_type == "translocation":
+                if tran_error_counter > 4:
+                    break
+                translocation_pairs.append(temp_error_dict)
+                tran_error_counter += 1
+            elif error_type == "debris":
+                if deb_error_counter > 4:
+                    break
+                debris_pairs.append(temp_error_dict)
+                deb_error_counter += 1
+    return translocation_pairs, inversion_pairs, debris_pairs
+
+
 def main():
     hic_file = "/home/jzj/Downloads/br.4.hic"
     assembly_file = "/home/jzj/Downloads/br.4.assembly"
