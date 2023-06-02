@@ -12,7 +12,7 @@ import os
 
 import typer
 
-from common import mul_process
+from src.common.mul_gen_png import mul_process
 
 
 def hic_file_name():
