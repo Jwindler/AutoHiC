@@ -205,7 +205,7 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, color=
     im = ax.matshow(dense_matrix, cmap=red_map, vmin=0, vmax=maxcolor)
 
     # set genome title
-    # ax.set_title(genome_name, fontsize=25)
+    ax.set_title(genome_name, fontsize=25)
 
     # 将纵坐标刻度设置为空
     ax.set_yticks([])
@@ -213,7 +213,7 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, color=
 
     fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
 
-    plt.savefig(os.path.join(out_path, genome_name) + "_chr." + fig_format, bbox_inches='tight', pad_inches=0.1,
+    plt.savefig(os.path.join(out_path, "chromosome." + fig_format), bbox_inches='tight', pad_inches=0.1,
                 dpi=dpi,
                 format=fig_format)
     plt.show()  # not show figure

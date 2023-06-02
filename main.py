@@ -102,11 +102,13 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
             "adjust_path": adjust_path
         }
 
-        hic_error_records.append(get_cfg.get_each_error(error_summary_json).insert(0, "epoch_" + str(adjust_epoch)))
+        hic_error_records.append(get_cfg.get_each_error(error_summary_json))
+        hic_error_records[adjust_epoch].insert(0, str(adjust_epoch) + ".hic")
         adjust_epoch += 1
 
     # 选择处理的hic文件，进行处理
     min_hic = min(error_count_dict, key=lambda k: error_count_dict[k]["error_sum"])
+    final_adjust_path = error_count_dict[min_hic]["adjust_path"]
     # TODO: 两者错误数目一致
 
     merged_nodups_path = os.path.join(top_output_dir, "hic_results", "aligned", "merged_nodups.txt")
@@ -115,24 +117,23 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     error_sum = error_count_dict[min_hic]["error_sum"]
 
     # ctg report cfg
-    adjust_base_path = os.path.dirname(adjust_asy_file)
     ctg_extra_info = {'species': cfg_data["SPECIES_NAME"],
                       'inversion_len': get_cfg.get_error_len(
-                          os.path.join(adjust_base_path, "inversion_error.json")),
-                      'debris_len': get_cfg.get_error_len(os.path.join(adjust_base_path, "debris_error.json")),
+                          os.path.join(final_adjust_path, "inversion_error.json")),
+                      'debris_len': get_cfg.get_error_len(os.path.join(final_adjust_path, "debris_error.json")),
                       'translocation_len': get_cfg.get_error_len(
-                          os.path.join(adjust_base_path, "translocation_error.json"))}
+                          os.path.join(final_adjust_path, "translocation_error.json"))}
     # generate before adjust whole hic map png
 
-    plot_chr(adjust_hic_file, genome_name=cfg_data["SPECIES_NAME"], chr_len_file=None, out_path=adjust_base_path,
+    plot_chr(adjust_hic_file, genome_name="", chr_len_file=None, out_path=final_adjust_path,
              fig_format="png")
-    ctg_hic_map = os.path.join(adjust_base_path, cfg_data["SPECIES_NAME"]) + "_chr"
+    ctg_hic_map = os.path.join(final_adjust_path, "chromosome.png")
 
     first_flag = True
     while error_sum > 0:
         adjust_name = str(adjust_epoch)
-        adjust_path = os.path.join(autohic_results, adjust_name)
-        # os.mkdir(adjust_path)
+        final_adjust_path = os.path.join(autohic_results, adjust_name)
+        # os.mkdir(final_adjust_path)
 
         if first_flag:
             hic_file_path = error_count_dict[min_hic]["hic_file"]
@@ -143,7 +144,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
             hic_file_path = adjust_hic_file
             assembly_file_path = adjust_asy_file
             divided_error = os.path.dirname(adjust_asy_file)
-        modified_assembly_file = os.path.join(adjust_path, "test.assembly")
+        modified_assembly_file = os.path.join(final_adjust_path, "test.assembly")
 
         translocation_flag = cfg_data["TRANSLOCATION_ADJUST"]
         inversion_flag = cfg_data["INVERSION_ADJUST"]
@@ -153,7 +154,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
         # 运行 3d-dna 第二步
         # 1. cd folder
-        run_sh = "cd " + adjust_path
+        run_sh = "cd " + final_adjust_path
         # subprocess_popen(run_sh)
         print(run_sh)
 
@@ -164,16 +165,17 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         # subprocess_popen(run_sh)
         print(run_sh)
 
-        hic_img_dir = os.path.join(adjust_path, "png")
-        hic_file_path = os.path.join(adjust_path, adjust_name, cfg_data["GENOME_NAME"] + ".final.hic")
+        hic_img_dir = os.path.join(final_adjust_path, "png")
+        hic_file_path = os.path.join(final_adjust_path, adjust_name, cfg_data["GENOME_NAME"] + ".final.hic")
         assembly_file = hic_file_path.replace(".hic", ".assembly")
 
         # generate hic img
-        mul_process(hic_file_path, "png", adjust_path, "dia", int(cfg_data["N_CPU"]))
+        mul_process(hic_file_path, "png", final_adjust_path, "dia", int(cfg_data["N_CPU"]))
 
         # infer error
         hic_real_len = get_cfg.get_hic_real_len(hic_file_path, assembly_file)
-        infer_return = infer_error(model_cfg, pretrained_model, hic_img_dir, adjust_path, device=device, score=score,
+        infer_return = infer_error(model_cfg, pretrained_model, hic_img_dir, final_adjust_path, device=device,
+                                   score=score,
                                    error_min_len=error_min_len,
                                    error_max_len=error_max_len, iou_score=iou_score, chr_len=hic_real_len)
         if infer_return:  # no detect error
@@ -185,7 +187,8 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         error_summary_json = os.path.join(hic_img_dir, "error_summary.json")
 
         # report record error
-        hic_error_records.append(get_cfg.get_each_error(error_summary_json).insert(0, str(adjust_epoch) + ".hic"))
+        hic_error_records.append(get_cfg.get_each_error(error_summary_json))
+        hic_error_records[adjust_epoch].insert(0, str(adjust_epoch) + ".hic")
 
         error_count_dict[adjust_epoch] = {
             "error_sum": get_cfg.get_error_sum(error_summary_json),
@@ -240,17 +243,16 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     ctg_extra_info["num_chr"] = chr_number
 
     ctg_fa_path = cfg_data["REFERENCE_GENOME"]
-    anchor_ratio = get_cfg.cal_anchor_rate(ctg_fa_path, get_auto_hic_genome)
-    final_adjust_file = os.path.dirname(adjust_hic_file)
+    anchor_ratio = get_cfg.cal_anchor_rate(ctg_fa_path, auto_hic_genome_path)
     autohic_extra_info = {'species': cfg_data["SPECIES_NAME"],
                           'num_chr': chr_number,
                           'anchor_ratio': anchor_ratio,
                           'inversion_len': get_cfg.get_error_len(
-                              os.path.join(final_adjust_file, "inversion_error.json")),
+                              os.path.join(final_adjust_path, "inversion_error.json")),
                           'debris_len': get_cfg.get_error_len(
-                              os.path.join(final_adjust_file, "debris_error.json")),
+                              os.path.join(final_adjust_path, "debris_error.json")),
                           'translocation_len': get_cfg.get_error_len(
-                              os.path.join(final_adjust_file, "translocation_error.json"))}
+                              os.path.join(final_adjust_path, "translocation_error.json"))}
 
     # 跑quast的线程数
     quast_thread = int(cfg_data["N_CPU"])
@@ -259,12 +261,13 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     chr_hic_name = cfg_data["GENOME_NAME"] + ".final.hic"
     chr_hic_path = os.path.join(chr_adjust_path, chr_hic_name)
 
-    plot_chr(chr_hic_path, genome_name=cfg_data["SPECIES_NAME"], chr_len_file=None, out_path=chr_adjust_path,
+    final_chr_txt = os.path.join(chr_adjust_path, "chr.txt")
+    plot_chr(chr_hic_path, genome_name="", chr_len_file=final_chr_txt, out_path=chr_adjust_path,
              fig_format="png")
-    chr_hic_map = os.path.join(chr_adjust_path, cfg_data["SPECIES_NAME"]) + "_chr"
 
-    pair_file_path = error_count_dict[min_hic]["adjust_path"]
-    translocation_pairs, inversion_pairs, debris_pairs = get_cfg.geg_error_pairs(pair_file_path)
+    chr_hic_map = os.path.join(chr_adjust_path, "chromosome.png")
+
+    translocation_pairs, inversion_pairs, debris_pairs = get_cfg.geg_error_pairs(final_adjust_path)
 
     gen_report_cfg(ctg_fa_path, auto_hic_genome_path, quast_output, ctg_extra_info, autohic_extra_info, quast_thread,
                    ctg_hic_map,
