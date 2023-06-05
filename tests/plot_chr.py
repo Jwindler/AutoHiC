@@ -195,8 +195,8 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, color=
     # matrix flip
     dense_matrix = np.flipud(numpy_matrix_chr)
 
-    maxcolor = (np.percentile(dense_matrix, color_percent))
-    # maxcolor = 17
+    # maxcolor = (np.percentile(dense_matrix, color_percent))
+    maxcolor = 20
     # TODO: 加入到参数中，用于调整颜色深浅
 
     fig, ax = plt.subplots(figsize=figure_size)
@@ -221,12 +221,12 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, color=
 
 
 def main():
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/genomes/02_br/br.0.hic"
+    hic_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/br.final.hic"
     asy_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/br.final.assembly"
     # asy_file = None
     out_path = "/home/jzj/buffer"
     chr_len_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/chr.txt"
-    plot_chr(hic_file, genome_name="", chr_len_file=None, out_path=out_path, fig_format="png")
+    plot_chr(hic_file, genome_name="", chr_len_file=chr_len_file, out_path=out_path, fig_format="svg")
     # plot_chr_inter(hic_file, asy_file, out_path, fig_format="svg")
 
 

@@ -23,6 +23,7 @@ from src.utils.logger import LoggerHandler
 from tests.adjust_all_error import adjust_all_error
 from tests.get_chr_data import split_chr
 from tests.plot_chr import plot_chr_inter, plot_chr
+from src.utils.check_genome import split_genome, check_genome
 
 app = typer.Typer()
 
@@ -129,6 +130,14 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
              fig_format="png")
     ctg_hic_map = os.path.join(final_adjust_path, "chromosome.png")
 
+    # Check genome length whether > 80 base
+    original_genome = cfg_data["REFERENCE_GENOME"]
+    if check_genome(original_genome):
+        original_genome_base_path = os.path.dirname(original_genome)
+        split_genome_path = os.path.join(original_genome_base_path, cfg_data["GENOME_NAME"] + "_lines.fa")
+        split_genome(original_genome, split_genome_path)
+        original_genome = split_genome_path
+
     first_flag = True
     while error_sum > 0:
         adjust_name = str(adjust_epoch)
@@ -161,7 +170,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         # 2. run 3d-dna
         run_sh = "bash " + os.path.join(cfg_data["TD_DNA_DIR"],
                                         "run-asm-pipeline-post-review.sh") + " -r " + modified_assembly_file + " " + \
-                 cfg_data["REFERENCE_GENOME"] + " " + merged_nodups_path
+                 original_genome + " " + merged_nodups_path
         # subprocess_popen(run_sh)
         print(run_sh)
 
@@ -223,7 +232,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     # 2. run 3d-dna
     run_sh = "bash " + os.path.join(cfg_data["TD_DNA_DIR"],
                                     "run-asm-pipeline-post-review.sh") + " -r " + chr_asy_file + " " + \
-             cfg_data["REFERENCE_GENOME"] + " " + merged_nodups_path
+             original_genome + " " + merged_nodups_path
     # subprocess_popen(run_sh)
     print(run_sh)
 
@@ -242,7 +251,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
     ctg_extra_info["num_chr"] = chr_number
 
-    ctg_fa_path = cfg_data["REFERENCE_GENOME"]
+    ctg_fa_path = original_genome
     anchor_ratio = get_cfg.cal_anchor_rate(ctg_fa_path, auto_hic_genome_path)
     autohic_extra_info = {'species': cfg_data["SPECIES_NAME"],
                           'num_chr': chr_number,
