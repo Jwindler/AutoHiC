@@ -19,7 +19,8 @@ from src.utils.get_cfg import get_max_hic_len, get_hic_real_len
 from src.utils.logger import logger
 
 
-def plot_chr_inter(hic_file, asy_file=None, out_path=None, color_percent=95, figure_size=(10, 10), dpi=300,
+def plot_chr_inter(hic_file, asy_file=None, out_path=None, maxcolor=None, color_percent=95, figure_size=(10, 10),
+                   dpi=300,
                    fig_format="png"):
     # check input arguments
     if hic_file is None:
@@ -86,7 +87,8 @@ def plot_chr_inter(hic_file, asy_file=None, out_path=None, color_percent=95, fig
         # 去除全零列
         numpy_matrix_chr = not_row[:, [not np.all(not_row[:, i] == 0) for i in range(not_row.shape[1])]]
 
-    maxcolor = (np.percentile(numpy_matrix_chr, color_percent))
+    if maxcolor is None:
+        maxcolor = (np.percentile(numpy_matrix_chr, color_percent))
 
     fig, ax = plt.subplots(figsize=figure_size)
     red_map = LinearSegmentedColormap.from_list("bright_red", [(1, 1, 1), (1, 0, 0)])
@@ -105,7 +107,7 @@ def plot_chr_inter(hic_file, asy_file=None, out_path=None, color_percent=95, fig
 
 
 # plot whole genome chromosome interaction map in one figure
-def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, color=None, resolution=None,
+def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, maxcolor=None, color=None, resolution=None,
              out_path=None,
              nor_method="NONE", color_percent=95, figure_size=(10, 10), dpi=300, fig_format="png"):
     # check input arguments
@@ -122,10 +124,6 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, color=
         for chrom in hic.getChromosomes():
             hic_len = chrom.length
         logger.info("hic file full length is %s \n" % hic_len)
-
-    if genome_name is None:
-        logger.warning("Genome name is None, please check your genome input \n")
-        genome_name = os.path.basename(hic_file)
 
     if color is None:
         color = [(1, 1, 1), (1, 0, 0)]
@@ -195,9 +193,8 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, color=
     # matrix flip
     dense_matrix = np.flipud(numpy_matrix_chr)
 
-    # maxcolor = (np.percentile(dense_matrix, color_percent))
-    maxcolor = 20
-    # TODO: 加入到参数中，用于调整颜色深浅
+    if maxcolor is None:
+        maxcolor = (np.percentile(dense_matrix, color_percent))
 
     fig, ax = plt.subplots(figsize=figure_size)
     red_map = LinearSegmentedColormap.from_list("bright_red", color)

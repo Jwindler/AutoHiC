@@ -57,7 +57,8 @@ class LoggerHandler(logging.Logger):
 
 
 # initialing logger
-logger = LoggerHandler(file="/home/jzj/Jupyter-Docker/buffer/log.txt")
+# logger = LoggerHandler(file="/home/jzj/Jupyter-Docker/buffer/log.txt")
+logger = LoggerHandler()
 
 if __name__ == '__main__':
     logger = LoggerHandler(file="/home/jzj/buffer/test_insert_loci.log")

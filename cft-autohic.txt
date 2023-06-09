@@ -1,28 +1,29 @@
 # Paths and Settings
-JOB_NAME=AutoHiC
-AutoHiC_DIR=/home/jzj/buffer/AutoHiC
-RESULT_DIR=/home/jzj/buffer
-N_CPU=20
+JOB_NAME=AutoHiC_test
+AutoHiC_DIR=/home/ubuntu/AutoHiC
+RESULT_DIR=/home/ubuntu/2_juicer/16_Hypsibius_dujardini
+N_CPU=40
 
 # Data
-GENOME_NAME=Np
-REFERENCE_GENOME=/data/jzj/juicer/references/Np.fasta
+GENOME_NAME=hd
+SPECIES_NAME=hd
+REFERENCE_GENOME=/home/ubuntu/2_juicer/16_Hypsibius_dujardini/references/hd.fa
 
 # Juicer options
-JUICER_DIR=/home/jzj/buffer/juicer
-FASTQ_DIR=/data/jzj/juicer/HiCPro/rawdata  # Directory containing fastq files
+JUICER_DIR=/home/ubuntu/HiC/juicer-1.6
+FASTQ_DIR=/home/ubuntu/2_juicer/16_Hypsibius_dujardini/rawdata
 ENZYME=DpnII
 
 
 # 3D-DNA options
-TD_DNA_DIR=/home/jzj/buffer/3d-dna
+TD_DNA_DIR=/home/ubuntu/3d-dna
 NUMBER_OF_EDIT_ROUNDS=2
 
 # AutoHiC options
-MODEL_CFG=
-PRETRAINED_MODEL=
-CHR_MODEL_CFG=
-CHR_PRETRAINED_MODEL=
+MODEL_CFG=/home/ubuntu/AutoHiC/src/models/cfgs/error_model.py
+PRETRAINED_MODEL=/home/ubuntu/AutoHiC/src/models/cfgs/error_model.pth
+CHR_MODEL_CFG=/home/ubuntu/AutoHiC/src/models/cfgs/chr_model.py
+CHR_PRETRAINED_MODEL=/home/ubuntu/AutoHiC/src/models/cfgs/chr_model.pth
 ERROR_FILTER_SCORE=0.9
 ERROR_MIN_LEN=15000
 ERROR_MAX_LEN=20000000
@@ -30,6 +31,5 @@ ERROR_FILTER_IOU_SCORE=0.8
 TRANSLOCATION_ADJUST=True
 INVERSION_ADJUST=True
 DEBRIS_ADJUST=True
-SPLIT_CHROMOSOME=True
 
 # Do not edit below this line

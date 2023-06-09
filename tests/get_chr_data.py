@@ -13,7 +13,6 @@ import math
 import os
 from collections import OrderedDict
 
-import torch
 from PIL import Image
 from mmdet.apis import init_detector, inference_detector
 
@@ -279,10 +278,7 @@ def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
     logger.info("Get ctg_s information done \n")
 
 
-def split_chr(img_file, asy_file, hic_file, cfg_file):
-    # 检查是否有显卡
-    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-
+def split_chr(img_file, asy_file, hic_file, cfg_file, device='cuda:0'):
     # get cfg
     cfg_data = get_cfg(cfg_file)
 

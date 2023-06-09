@@ -216,16 +216,16 @@ def get_cfg(cfg_dir, key=None):
     config = {}
     with open(cfg_dir, 'r') as f:
         for line in f:
-            if line.startswith('#'):
+            if line.startswith('#') or line.startswith('\n'):
                 continue
             try:
                 key = line.strip().split('=')[0]
                 value = line.strip().split('=')[1]
+                if value == '':
+                    print("Please check you ", key, " parameter")
                 config[key] = value
             except IndexError:
-                key = line.strip().split('=')[0]
-                print("Please check you {} parameter".format(key))
-                # FIXME: 测试获取配置，报错提醒
+                print("Please check you config file")
                 continue
     if key:
         try:
@@ -265,8 +265,8 @@ def get_each_error(error_json) -> list:
     return each_error_num
 
 
-def subprocess_popen(statement):
-    p = subprocess.Popen(statement, shell=True, stdout=subprocess.PIPE)
+def subprocess_popen(statement, cwd=None):
+    p = subprocess.Popen(statement, shell=True, stdout=subprocess.PIPE, cwd=cwd)
     while p.poll() is None:
         if p.wait() != 0:
             print("命令执行失败，请检查设备连接状态")
@@ -334,7 +334,7 @@ def get_error_len(errors_json_file):
     return error_full_len
 
 
-def geg_error_pairs(errors_json_path):
+def get_error_pairs(errors_json_path):
     """
         Get error pairs from error json file
     Args:

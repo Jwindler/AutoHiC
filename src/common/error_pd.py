@@ -197,7 +197,7 @@ class ERRORS:
 
     def repeat_filter(self, errors_df, error_space, out_path="repeat_errors.xlsx"):
 
-        # TODO: select min length translocation
+        # select min length translocation > dict default
         # select translocation
         tran_pd = errors_df[errors_df["category"] == "translocation"]
         else__pd = errors_df[errors_df["category"] != "translocation"]

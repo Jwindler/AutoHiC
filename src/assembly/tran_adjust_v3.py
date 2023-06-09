@@ -12,7 +12,7 @@
 import json
 from collections import OrderedDict
 
-from common.search_right_site_v8 import search_right_site_v8
+from src.common.search_right_site_v8 import search_right_site_v8
 from src.assembly.asy_operate import AssemblyOperate
 from src.utils.get_cfg import get_ratio
 from src.utils.logger import logger
