@@ -1,3 +1,20 @@
+# [0.9.0](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.19...v0.9.0) (2023-06-09)
+
+
+### Bug Fixes
+
+* fix report hic error records ([18ebace](https://github.com/Jwindler/HiC-OpenCV/commit/18ebace308f0f9910448b300e08eab1d9c224094))
+
+
+### Features
+
+* add check genome len fun ([a935886](https://github.com/Jwindler/HiC-OpenCV/commit/a93588607667b37b8a29979975fbeb56676666d2))
+* complete report and update some fun ([f04a817](https://github.com/Jwindler/HiC-OpenCV/commit/f04a817b72340769af1a28b6fc621d1c086ceebc))
+* update autohic and add plot hic ([a5c7fbc](https://github.com/Jwindler/HiC-OpenCV/commit/a5c7fbccc62451bb8941df463d1a2d3b40a9631d))
+* update report fun ([621e1dd](https://github.com/Jwindler/HiC-OpenCV/commit/621e1dd0e6a7407a9f5a877f270279718c1db3b4))
+
+
+
 ## [0.8.19](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.18...v0.8.19) (2023-05-26)
 
 
