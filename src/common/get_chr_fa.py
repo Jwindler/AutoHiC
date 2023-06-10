@@ -25,13 +25,13 @@ def extract_sequences_from_genome(genome_file, id_list, output_file):
     """
     sequences = []
 
-    # 逐个读取基因组文件中的序列
+    # read sequences from genome file
     for record in SeqIO.parse(genome_file, "fasta"):
-        # 检查序列的ID是否在指定的ID列表中
+        # check if the sequence id is in the specified id list
         if record.id in id_list:
             sequences.append(record)
 
-    # 将提取的序列写入输出文件
+    # write sequences to output file
     SeqIO.write(sequences, output_file, "fasta")
 
 
@@ -46,7 +46,7 @@ def get_genome_ids(genome_file):
     """
     ids = []
 
-    # 逐个读取基因组文件中的序列
+    # read sequences from genome file
     for record in SeqIO.parse(genome_file, "fasta"):
         ids.append(record.id)
 
@@ -70,12 +70,7 @@ def get_auto_hic_genome(genome_file, chr_number, output_file):
 
 
 def main():
-    # 示例用法
-    genome_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/br_chr.fasta"
-    chr_number = 11
-    output_file = "/home/jzj/Jupyter-Docker/buffer/output.fasta"
-
-    get_auto_hic_genome(genome_file, chr_number, output_file)
+    pass
 
 
 if __name__ == '__main__':

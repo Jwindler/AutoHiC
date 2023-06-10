@@ -88,11 +88,11 @@ def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tup
         temp_error_matrix = None
         for j in range(len(error_iter_len) - 1):
             if length_site is None:
-                print(error_iter_len[j], error_iter_len[j + 1] - 1, iter_len[i], iter_len[i + 1] - 1)
+                logger.info(error_iter_len[j], error_iter_len[j + 1] - 1, iter_len[i], iter_len[i + 1] - 1)
                 matrix_data = matrix_zoom_data.getRecordsAsMatrix(error_iter_len[j], error_iter_len[j + 1] - 1,
                                                                   iter_len[i], iter_len[i + 1] - 1)
             else:
-                print(error_iter_len[j], error_iter_len[j + 1] - 1, length_site[0] + iter_len[i],
+                logger.info(error_iter_len[j], error_iter_len[j + 1] - 1, length_site[0] + iter_len[i],
                       length_site[0] + iter_len[i + 1])
                 matrix_data = matrix_zoom_data.getRecordsAsMatrix(error_iter_len[j], error_iter_len[j + 1] - 1,
                                                                   length_site[0] + iter_len[i],
@@ -271,7 +271,7 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
 
     second_cut_ctg = {contain_ctg_second: math.ceil(final_insert_region[1] * ratio)}
 
-    # 如果刚好边界等，不需要切割
+    # if boundary equal, no need to cut
     if contain_ctg[contain_ctg_second]["start"] != final_insert_region[1]:
         # cut a ctg to two ctg
         if "fragment" in contain_ctg_second or "debris" in contain_ctg_second:  # check whether the ctg is already cut
@@ -318,17 +318,7 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
 
 
 def main():
-    error_site = (175835000, 175980000)
-
-    # hic file path
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/curated/curated.2.hic"
-
-    # assembly file path
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/10_genomes/curated/curated.2.assembly"
-
-    ratio = 2.0000000008016556
-    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/test.assembly"
-    print(search_right_site_v8(hic_file, assembly_file, ratio, error_site, modified_assembly_file))
+    pass
 
 
 if __name__ == "__main__":

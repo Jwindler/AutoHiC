@@ -18,6 +18,7 @@ import hicstraw
 import numpy as np
 
 from src.assembly.asy_operate import AssemblyOperate
+from src.report.gen_report import image_to_base64
 from src.utils.logger import logger
 
 
@@ -212,7 +213,7 @@ def get_full_len_matrix(hic_file, resolution, assembly_file=None):
     return full_len_matrix
 
 
-def get_cfg(cfg_dir, key=None):
+def get_cfg(cfg_dir, cfg_key=None):
     config = {}
     with open(cfg_dir, 'r') as f:
         for line in f:
@@ -223,13 +224,14 @@ def get_cfg(cfg_dir, key=None):
                 value = line.strip().split('=')[1]
                 if value == '':
                     print("Please check you ", key, " parameter")
+                    return
                 config[key] = value
             except IndexError:
                 print("Please check you config file")
                 continue
-    if key:
+    if cfg_key is not None:
         try:
-            return config[key]
+            return config[cfg_key]
         except KeyError:
             raise KeyError("Please check you config file")
     else:
@@ -345,7 +347,7 @@ def get_error_pairs(errors_json_path):
     """
     inversion_pairs, translocation_pairs, debris_pairs = [], [], []
 
-    with open(os.path.join(errors_json_path, "chr_len_filtered_errors.json")) as f:
+    with open(os.path.join(errors_json_path, "infer_result/infer_result.json")) as f:
         data = json.load(f)
 
     tran_error_counter = 0
@@ -354,7 +356,7 @@ def get_error_pairs(errors_json_path):
     for error_type, errors in data.items():
         for error in errors:
             temp_error_dict = {
-                "image": error["image_id"],
+                "image": image_to_base64(error["infer_image"]),
                 "start": error["hic_loci"][0],
                 "end": error["hic_loci"][1]}
             if error_type == "inversion":

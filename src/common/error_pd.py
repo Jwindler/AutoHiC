@@ -19,8 +19,13 @@ import pandas as pd
 from PIL import Image
 from mmdet.apis import init_detector, inference_detector
 
+from src.utils.logger import logger
+
 
 class ERRORS:
+    """
+        Infer error class
+    """
     __slots__ = "filter_dict", "df", "info_file", "classes", "out_path", "img_size"
 
     def __init__(self, classes, info_file, out_path, img_size):
@@ -67,6 +72,15 @@ class ERRORS:
 
     # convert bbox coordinate to hic coordinate
     def bbox2hic(self, bbox, img_info):
+        """
+            bbox coordinate to hic coordinate
+        Args:
+            bbox: bbox coordinate
+            img_info: hic info
+
+        Returns:
+            hic coordinate
+        """
         img_size = self.img_size
         key = list(img_info.keys())[0]
         # Straw b chromosome
@@ -97,6 +111,15 @@ class ERRORS:
 
     @staticmethod
     def cal_iou(box1, box2):
+        """
+            calculate iou
+        Args:
+            box1: bbox1
+            box2: bbox2
+
+        Returns:
+            iou
+        """
         x1min, y1min, x1max, y1max = box1[0], box1[2], box1[1], box1[3]
         x2min, y2min, x2max, y2max = box2[0], box2[2], box2[1], box2[3]
 
@@ -123,9 +146,12 @@ class ERRORS:
     @staticmethod
     def transform_bbox(detection_bbox):
         """
-        transform bbox to [x1, y1, x2, y2]
-        :param detection_bbox: [x, y, w, h]
-        :return:
+            transform bbox to [x1, y1, x2, y2]
+        Args:
+            detection_bbox: bbox
+
+        Returns:
+            [x1, y1, x2, y2]
         """
         x1 = detection_bbox[0]
         y1 = detection_bbox[1]
@@ -135,6 +161,15 @@ class ERRORS:
 
     @staticmethod
     def if_include(bbox1, bbox2):
+        """
+            if bbox2 include bbox1
+        Args:
+            bbox1: bbox1
+            bbox2: bbox2
+
+        Returns:
+            True or False
+        """
         # default bbox1 is previous bbox
         if bbox2[1] <= bbox1[1] and bbox2[2] >= bbox1[2] and bbox2[3] <= bbox1[3]:
             return True
@@ -143,6 +178,16 @@ class ERRORS:
 
     # filter error according to score
     def filter_all_errors(self, score: float = 0.9, out_path="score_filtered_errors.xlsx", filter_cls=None):
+        """
+            filter error according to score
+        Args:
+            score: score threshold
+            out_path: output path
+            filter_cls: filter classes
+
+        Returns:
+            filtered errors
+        """
         score_filtered_errors_counter = dict()  # record the number of filtered errors
         all_errors_counter = dict()
         if filter_cls is None:
@@ -163,6 +208,19 @@ class ERRORS:
 
     def len_filter(self, errors_df, min_len: int = 50000, max_len: int = 10000000,
                    out_path="len_filtered_errors.xlsx", remove_error_path="len_remove_error.xlsx", filter_cls=None):
+        """
+            filter error according to length
+        Args:
+            errors_df: errors dataframe
+            min_len: error min length
+            max_len: error max length
+            out_path: output path
+            remove_error_path: remove error path
+            filter_cls: filter classes
+
+        Returns:
+            length filtered errors
+        """
         len_filtered_errors_counter = dict()
         len_removed_errors_counter = dict()
 
@@ -187,7 +245,7 @@ class ERRORS:
                 len_filtered_errors_counter[key] = filtered_errors[filtered_errors['category'] == key].shape[0]
                 len_removed_errors_counter[key] = len_removed_errors[len_removed_errors['category'] == key].shape[0]
             except KeyError:
-                print(f"KeyError: {key} not in errors_dict")
+                logger.info(f"KeyError: {key} not in errors_dict")
                 continue
 
         self.filter_dict["Length filtered error number"] = len_filtered_errors_counter
@@ -196,6 +254,16 @@ class ERRORS:
         return filtered_errors, len_filtered_errors_counter
 
     def repeat_filter(self, errors_df, error_space, out_path="repeat_errors.xlsx"):
+        """
+            filter repeat error
+        Args:
+            errors_df: errors dataframe
+            error_space: error space
+            out_path: output path
+
+        Returns:
+            repeat filtered errors
+        """
 
         # select min length translocation > dict default
         # select translocation
@@ -227,6 +295,15 @@ class ERRORS:
         return result_pd
 
     def pd2json(self, error_df, out_path="len_filtered_errors.json"):
+        """
+            convert dataframe to json
+        Args:
+            error_df: errors dataframe
+            out_path: output path
+
+        Returns:
+            json file
+        """
         len_filtered_errors = dict()
         df = error_df.sort_values("category", inplace=False)
 
@@ -254,6 +331,17 @@ class ERRORS:
     # filter error according to overlap and iou
     def de_diff_overlap(self, errors_dict: dict, iou_score: float = 0.8, out_path="overlap_filtered_errors.json",
                         remove_error_path="overlap_remove_error.txt"):
+        """
+            filter error according to overlap and iou
+        Args:
+            errors_dict: errors dict
+            iou_score: iou score
+            out_path: overlap filtered errors path
+            remove_error_path: overlap removed errors path
+
+        Returns:
+            overlap filtered errors
+        """
         remove_list = list()  # save the key of the errors_dict which has been removed
         ans = []  # store de_overlap errors
         ans_dict = defaultdict()  # store de_overlap errors
@@ -320,15 +408,27 @@ class ERRORS:
         self.filter_dict["Overlap filtered error number"] = overlap_filtered_errors_counter
 
         # logger.info("Filter all error category Done")
-        print("Filter all error category Done")
+        logger.info("Filter all error category Done")
 
         return ans_dict, overlap_filtered_errors_counter
 
     def chr_len_filter(self, errors_dict: dict, chr_len: int = None,
                        out_path="chr_len_filtered_errors.json",
                        remove_error_path="chr_len_remove_error.txt", filter_cls=None):
+        """
+            filter error according to chr_len
+        Args:
+            errors_dict: errors dict
+            chr_len: chromosome length
+            out_path: output path
+            remove_error_path: remove error path
+            filter_cls: filter class
+
+        Returns:
+            chromosome length filtered errors
+        """
         if chr_len is None:
-            print("chr_len is None, please input chr_len")
+            logger.info("chr_len is None, please input chr_len")
             return
 
         if filter_cls is None:
@@ -349,7 +449,7 @@ class ERRORS:
                     "abnormal": len(chr_len_removed_errors[key])
                 }
             except KeyError:
-                print(f"KeyError: {key} not in errors_dict")
+                logger.info(f"KeyError: {key} not in errors_dict")
                 chr_len_filtered_errors_counter[key] = {
                     "normal": 0,
                     "abnormal": 0
@@ -369,7 +469,18 @@ class ERRORS:
         return filtered_errors, chr_len_filtered_errors_counter
 
     def loci_zoom(self, errors_dict, threshold=3000, out_path="zoomed_errors.json", filter_cls=None):
-        print("zoom threshold: ", threshold)
+        """
+            zoom error loci
+        Args:
+            errors_dict: errors dict
+            threshold: zoom threshold
+            out_path: output path
+            filter_cls: filter class
+
+        Returns:
+            zoomed errors
+        """
+        logger.info("zoom threshold: ", threshold)
 
         if filter_cls is None:
             filter_cls = self.classes
@@ -383,7 +494,7 @@ class ERRORS:
                     error["hic_loci"][1] = error["hic_loci"][1] - threshold
                     zoomed_errors[key].append(error)
             except KeyError:
-                print(f"KeyError: {key} not in errors_dict")
+                logger.info(f"KeyError: {key} not in errors_dict")
                 continue
 
         with open(os.path.join(self.out_path, out_path), "w") as outfile:
@@ -392,6 +503,14 @@ class ERRORS:
         return zoomed_errors
 
     def divide_error(self, all_filtered_error: dict):
+        """
+            divide error according to class
+        Args:
+            all_filtered_error: all filtered error
+
+        Returns:
+            divided error
+        """
         for _class in self.classes:
             if _class in all_filtered_error.keys() and all_filtered_error[_class]:
                 divided_error = dict()
@@ -404,10 +523,21 @@ class ERRORS:
                     json.dump(divided_error, outfile)
             else:
                 continue
-        print("Divide all error category Done")
+        logger.info("Divide all error category Done")
 
 
 def draw_box_corner(draw_img, bbox, length, corner_color):
+    """
+        draw box corner
+    Args:
+        draw_img: image
+        bbox: bbox
+        length: length
+        corner_color: corner color
+
+    Returns:
+        None
+    """
     # Top Left
     cv2.line(draw_img, (bbox[0], bbox[1]), (bbox[0] + length, bbox[1]), corner_color, thickness=2)
     cv2.line(draw_img, (bbox[0], bbox[1]), (bbox[0], bbox[1] + length), corner_color, thickness=2)
@@ -423,6 +553,16 @@ def draw_box_corner(draw_img, bbox, length, corner_color):
 
 
 def draw_label_type(draw_img, bbox, label_color):
+    """
+        draw label type
+    Args:
+        draw_img: image
+        bbox: bbox
+        label_color: label color
+
+    Returns:
+        None
+    """
     label = str(bbox[-1])
     label_size = cv2.getTextSize(label + '0', cv2.FONT_HERSHEY_TRIPLEX, 0.7, 2)[0]
     if bbox[1] - label_size[1] - 3 < 0:
@@ -457,6 +597,20 @@ def draw_label_type(draw_img, bbox, label_color):
 
 def test_corner_box(img, bbox, corner_l=20, is_transparent=False, draw_type=False, draw_corner=False,
                     box_color=(255, 0, 255)):
+    """
+        test corner box
+    Args:
+        img: image
+        bbox: bbox
+        corner_l: corner length
+        is_transparent: transparent
+        draw_type: type
+        draw_corner: corner
+        box_color: box color
+
+    Returns:
+        None
+    """
     draw_img = img.copy()
     pt1 = (bbox[0], bbox[1])
     pt2 = (bbox[2], bbox[3])
@@ -478,6 +632,17 @@ def test_corner_box(img, bbox, corner_l=20, is_transparent=False, draw_type=Fals
 
 
 def bbox2jpg(img_path, bbox, label, out_path):
+    """
+        bbox to jpg
+    Args:
+        img_path: image path
+        bbox: bbox
+        label: label
+        out_path: out path
+
+    Returns:
+        None
+    """
     img = cv2.imread(img_path)
 
     bbox = [int(x) for x in bbox] + [label]
@@ -489,6 +654,15 @@ def bbox2jpg(img_path, bbox, label, out_path):
 
 
 def vis_error(error_xlsx, out_dir):
+    """
+        vis error
+    Args:
+        error_xlsx: error xlsx
+        out_dir: out dir
+
+    Returns:
+        None
+    """
     df = pd.read_excel(error_xlsx)
     if not os.path.exists(out_dir):  # check if folder is exists
         os.mkdir(out_dir)
@@ -502,9 +676,18 @@ def vis_error(error_xlsx, out_dir):
 
 
 def json_vis(error_json, out_dir):
+    """
+        json visulization
+    Args:
+        error_json: error json
+        out_dir: out dir
+
+    Returns:
+        None
+    """
     with open(error_json, 'r') as f:
         error_dict = json.load(f)
-    print("Done loading json file.")
+    logger.info("Done loading json file.")
     for key in error_dict.keys():
         for index, error in enumerate(error_dict[key]):
             basename = str(index + 1) + "_" + os.path.basename(error["image_id"])
@@ -514,7 +697,25 @@ def json_vis(error_json, out_dir):
 
 def infer_error(model_cfg, pretrained_model, img_path, out_path, device='cuda:0', score=0.9, error_min_len=15000,
                 error_max_len=20000000, iou_score=0.8, chr_len=1453515699):
-    # 初始化检测器
+    """
+        infer error
+    Args:
+        model_cfg: model config path
+        pretrained_model: pretrained model path
+        img_path: image path
+        out_path: out path
+        device: GPU device or CPU
+        score: infer score
+        error_min_len: error min length
+        error_max_len: error max length
+        iou_score: iou score
+        chr_len: chromosome length
+
+    Returns:
+        None
+    """
+
+    # Initializing model
     model = init_detector(model_cfg, pretrained_model, device=device)
 
     info_file = os.path.join(img_path, "info.txt")
@@ -538,7 +739,7 @@ def infer_error(model_cfg, pretrained_model, img_path, out_path, device='cuda:0'
         if os.path.isdir(item_path):
             random_file = random.choice(os.listdir(item_path))
             img_size = Image.open(os.path.join(item_path, random_file)).size
-            print(img_size)
+            logger.info(img_size)
             break
 
     error_class = ERRORS(classes, info_file, out_path, img_size=img_size)
@@ -552,11 +753,11 @@ def infer_error(model_cfg, pretrained_model, img_path, out_path, device='cuda:0'
     if len(error_class.df) == 0:  # no detect error
         return True
 
-    # 分数过滤
+    # score filter
     score_filtered_errors, score_filtered_errors_counter = error_class.filter_all_errors(score=score,
                                                                                          filter_cls=classes)
 
-    # 长度过滤
+    # length filter
     len_filtered_errors, len_filtered_errors_counter = error_class.len_filter(score_filtered_errors,
                                                                               min_len=error_min_len,
                                                                               max_len=error_max_len,
@@ -566,11 +767,11 @@ def infer_error(model_cfg, pretrained_model, img_path, out_path, device='cuda:0'
     # dataframe to json
     len_filtered_errors_json = error_class.pd2json(len_filtered_errors)
 
-    # 重叠过滤
+    # overlap filter
     overlap_filtered_errors, overlap_filtered_errors_counter = error_class.de_diff_overlap(len_filtered_errors_json,
                                                                                            iou_score=iou_score)
 
-    # 染色体长度过滤
+    # chromosome length filter
     chr_filtered_errors, chr_filtered_errors_counter = error_class.chr_len_filter(overlap_filtered_errors,
                                                                                   chr_len=chr_len)
 
@@ -579,10 +780,10 @@ def infer_error(model_cfg, pretrained_model, img_path, out_path, device='cuda:0'
     zoomed_error = error_class.loci_zoom(chr_filtered_errors, threshold=zoom_threshold, out_path="zoomed_errors.json",
                                          filter_cls=None)
 
-    # 划分到数据集
+    # divide error to each json
     error_class.divide_error(zoomed_error)
 
-    # 错误可视化
+    # error visulization
     # infer result out_dir
     infer_out_dir = os.path.join(out_path, "infer_result")
     if not os.path.exists(infer_out_dir):  # check if folder is exists

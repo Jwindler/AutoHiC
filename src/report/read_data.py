@@ -45,6 +45,8 @@ def run_quast(input_path, output_path, extra_info, quast_thread, ctg_flag=False)
     # 　计算CC_ratio
     num_contig = int(sum_data.loc['# contigs', :][0])  # 读取contig数目
     cc_ratio = '%.2f' % (num_contig / num_chr)
+    if cc_ratio == 1.00:
+        cc_ratio = 1
 
     # 计算Structural_errors_ratio
     total_length = int(sum_data.loc['Total length', :][0])

@@ -20,10 +20,10 @@ from src.common.mul_gen_png import mul_process
 from src.report.gen_report import gen_report_cfg
 from src.utils import get_cfg
 from src.utils.check_genome import split_genome, check_genome
+from src.utils.get_chr_data import split_chr
 from src.utils.logger import logger
+from src.utils.plot_chr import plot_chr_inter, plot_chr
 from tests.adjust_all_error import adjust_all_error
-from tests.get_chr_data import split_chr
-from tests.plot_chr import plot_chr_inter, plot_chr
 
 
 def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic config file path")):
@@ -233,6 +233,10 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     auto_hic_genome_path = os.path.join(chr_adjust_path, cfg_data["GENOME_NAME"] + "_autohic.fasta")
     get_auto_hic_genome(chr_fa_path, chr_number, auto_hic_genome_path)
 
+    # link genome
+    link_shell = "ln -s " + auto_hic_genome_path + " " + top_output_dir
+    get_cfg.subprocess_popen(link_shell)
+
     # run quast for chromosome-level genome
     quast_output = os.path.join(top_output_dir, "quast_output")
     os.mkdir(quast_output)
@@ -245,7 +249,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     anchor_ratio = get_cfg.cal_anchor_rate(ctg_fa_path, auto_hic_genome_path)
     autohic_extra_info = {'species': cfg_data["SPECIES_NAME"],
                           'num_chr': chr_number,
-                          'anchor_ratio': anchor_ratio,
+                          'anchor_ratio': anchor_ratio * 100,
                           'inversion_len': get_cfg.get_error_len(
                               os.path.join(final_adjust_path, "inversion_error.json")),
                           'debris_len': get_cfg.get_error_len(

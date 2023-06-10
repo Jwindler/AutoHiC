@@ -118,12 +118,16 @@ def json_vis(error_json, out_dir):
         for index, error in enumerate(error_dict[key]):
             basename = str(index + 1) + "_" + os.path.basename(error["image_id"])
             out_path = os.path.join(out_dir, basename)
+            error_dict[key][index]["infer_image"] = out_path
             bbox2jpg(error["image_id"], error["bbox"], error["category"], out_path)
+
+    with open(os.path.join(out_dir, "infer_result.json"), "w") as outfile:
+        json.dump(error_dict, outfile)
 
 
 def main():
-    error_json = "/home/jzj/Downloads/chr_len_filtered_errors.json"
-    out_dir = "/home/jzj/Downloads"
+    error_json = "/home/jzj/Jupyter-Docker/buffer/chr_len_filtered_errors.json"
+    out_dir = "/home/jzj/Jupyter-Docker/buffer/test_infer"
     json_vis(error_json, out_dir)
 
 

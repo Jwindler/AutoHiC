@@ -64,7 +64,8 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num, _resolution
     if _resolution is not None:
         resolutions = [_resolution]
 
-    for resolution in resolutions:
+    # for resolution in resolutions:
+    for resolution in resolutions[0:4]:  # FIXME: 后续删除用于生成图片
         logger.info("Processing resolution: %s\n" % resolution)
 
         # create resolution folder
@@ -117,8 +118,7 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num, _resolution
 
 
 def main():
-    hic_file = "/home/jzj/Data/Test/raw_data/Np/Np.0.hic"
-    mul_process(hic_file, "Np", "/home/jzj/Downloads", "diagonal", 10, False)
+    pass
 
 
 if __name__ == "__main__":

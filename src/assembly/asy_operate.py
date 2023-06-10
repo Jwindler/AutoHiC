@@ -16,6 +16,10 @@ from src.utils.logger import logger
 
 
 class AssemblyOperate(object):
+    """
+        Assembly file operate class
+    """
+
     def __init__(self, assembly_file_path, ratio):
         # Initiating assembly file path
         self.assembly_file_path = assembly_file_path
@@ -70,8 +74,8 @@ class AssemblyOperate(object):
 
         # No query field was passed in
         if ctg_name is None and ctg_order is None:
-            logger.error("o query field ctg name or ctg order \n")
-            raise ValueError("ctg name or ctg order must be specified")
+            logger.error("Query field ctg name or ctg order not find \n")
+            raise ValueError("Ctg name or ctg order must be specified")
 
         ctg_infos = {}  # ctg information
         ctg_orders = []  # ctg order
@@ -815,6 +819,15 @@ class AssemblyOperate(object):
 
     @staticmethod
     def remove_asy_blank(raw_asy, new_asy=None):
+        """
+            Remove the blank line in the assembly file
+        Args:
+            raw_asy: the path of the raw assembly file
+            new_asy: the path of the new assembly file
+
+        Returns:
+            None
+        """
         if new_asy is None:
             new_asy = raw_asy.split(".")[0] + "_corrected.assembly"
         open(new_asy, 'w').write(''.join(line for line in open(raw_asy) if line.strip()))

@@ -61,8 +61,8 @@ def get_error_matrix(
     if true_start_bin == true_end_bin:
         bin_index = true_start_bin
 
-    logger.info("获取互作矩阵的分辨率为： %s", resolution)
-    logger.info("易位错误的范围（hic）：{0} - {1} ".format(error_site[0], error_site[1]))
+    logger.info("Resolution of get interaction matrix： %s", resolution)
+    logger.info("Translocation site（hic）：{0} - {1} ".format(error_site[0], error_site[1]))
 
     # maybe error loci less than resolution
     if error_site[1] - error_site[0] < resolution:
@@ -80,9 +80,9 @@ def get_error_matrix(
     if flag_of_site:  # first search, search error site is whole length
         error_matrix_object = chr_matrix_object.getRecordsAsMatrix(
             search_site_a, search_site_b, search_site[0], assembly_len)
-        logger.debug("插入位点查询区间(hic)：{0} - {1}".format(search_site[0], assembly_len))
+        logger.debug("Insert search loci(hic) ：{0} - {1}".format(search_site[0], assembly_len))
     else:
-        logger.debug("插入位点查询区间(hic)：{0} - {1}".format(search_site[0], search_site[1]))
+        logger.debug("Insert search loci(hic) ：{0} - {1}".format(search_site[0], search_site[1]))
 
         error_matrix_object = chr_matrix_object.getRecordsAsMatrix(
             search_site_a, search_site_b, search_site[0], search_site[1])

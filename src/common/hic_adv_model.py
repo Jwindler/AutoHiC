@@ -22,6 +22,9 @@ from src.utils.logger import logger
 
 
 class GenBaseModel:
+    """
+        HiC Image Base Model
+    """
 
     def __init__(self, hic_file, genome_id, out_file):
         logger.info("Base Model Initiating\n")
@@ -38,10 +41,20 @@ class GenBaseModel:
         self.create_folder(self.genome_folder)
 
     def get_resolutions(self):
+        """
+            get hic file resolutions
+        Returns:
+            resolutions: hic file resolutions
+        """
         hic = hicstraw.HiCFile(self.hic_file)  # create hic object
         return hic.getResolutions()
 
     def get_chr_len(self):
+        """
+            get hic file length
+        Returns:
+            hic_len: hic file length
+        """
         hic_len = 0  # genome length
         hic = hicstraw.HiCFile(self.hic_file)  # create hic object
         for chrom in hic.getChromosomes():
@@ -160,6 +173,7 @@ class GenBaseModel:
 
         # get contact matrix
         numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(a_start, a_end, b_start, b_end)
+        numpy_matrix_chr = np.flipud(numpy_matrix_chr)  # FIXME： 后续删除，用于生成图片
 
         # plot hic contact map
         self.plot_hic_map(numpy_matrix_chr, img_path)

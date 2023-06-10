@@ -102,7 +102,7 @@ def gen_report_cfg(scf_path, chr_path, quast_output, ctg_extra_info, autohic_ext
                 "table_data": err_ratio,
             },
             {
-                "name": 'Number of error corrections',
+                "name": 'Number of errors',
                 "table_header": ['Error type', 'Translocation', 'Inversion', 'Debris', 'Total'],
                 "table_data": hic_records,
             },
