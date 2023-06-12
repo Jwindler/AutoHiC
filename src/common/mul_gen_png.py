@@ -64,8 +64,10 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num, _resolution
     if _resolution is not None:
         resolutions = [_resolution]
 
-    # for resolution in resolutions:
-    for resolution in resolutions[0:4]:  # FIXME: 后续删除用于生成图片
+    for resolution in resolutions:
+        if resolution < 500:  # resolution < 500 is not for inference
+            continue
+        # for resolution in resolutions[0:4]:  # FIXME: 后续删除用于生成图片
         logger.info("Processing resolution: %s\n" % resolution)
 
         # create resolution folder

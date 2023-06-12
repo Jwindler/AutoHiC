@@ -88,12 +88,13 @@ def get_full_len_matrix(hic_file, asy_file, fit_resolution: int, width_site: tup
         temp_error_matrix = None
         for j in range(len(error_iter_len) - 1):
             if length_site is None:
-                logger.info(error_iter_len[j], error_iter_len[j + 1] - 1, iter_len[i], iter_len[i + 1] - 1)
+                logger.info("%s %s %s %s", error_iter_len[j], error_iter_len[j + 1] - 1, iter_len[i],
+                            iter_len[i + 1] - 1)
                 matrix_data = matrix_zoom_data.getRecordsAsMatrix(error_iter_len[j], error_iter_len[j + 1] - 1,
                                                                   iter_len[i], iter_len[i + 1] - 1)
             else:
-                logger.info(error_iter_len[j], error_iter_len[j + 1] - 1, length_site[0] + iter_len[i],
-                      length_site[0] + iter_len[i + 1])
+                logger.info("%s %s %s %s", error_iter_len[j], error_iter_len[j + 1] - 1, length_site[0] + iter_len[i],
+                            length_site[0] + iter_len[i + 1])
                 matrix_data = matrix_zoom_data.getRecordsAsMatrix(error_iter_len[j], error_iter_len[j + 1] - 1,
                                                                   length_site[0] + iter_len[i],
                                                                   length_site[0] + iter_len[i + 1])
@@ -157,8 +158,8 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
         peaks_height = peak_property['peak_heights']  # get peaks height/value
 
         # 下面的内容太长，不打印到日志，或者打印到debug日志
-        logger.debug("The peak of the matrix {0} index：{1} \n".format(i + 1, peaks_index))
-        logger.debug("The peak of the matrix {0} value：{1} \n".format(i + 1, peaks_height))
+        logger.debug("The peak of the matrix %s index：%s \n", i + 1, peaks_index)
+        logger.debug("The peak of the matrix %s value：%s \n", i + 1, peaks_height)
 
         for peak_index, peak_height in zip(peaks_index, peaks_height):
             if peak_index not in peaks_dict:
@@ -184,7 +185,7 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
 
     # get max peak index
     many_key_name = max(final_peaks, key=final_peaks.get)
-    logger.info("The greatest interaction peak index %s \n", many_key_name)
+    logger.info("The greatest interaction peak index %s \n" % many_key_name)
 
     return many_key_name
 
@@ -220,13 +221,13 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
 
     full_len_matrix = get_full_len_matrix(hic_file, assembly_file, fit_resolution, error_site)
 
-    logger.info("Error full length matrix: %s", full_len_matrix.shape)
+    logger.info("Error full length matrix: %s" % full_len_matrix.shape)
 
     insert_peak_index = get_insert_peak(full_len_matrix, error_site, fit_resolution)
 
     # update Insert region
     update_search_site = (insert_peak_index * fit_resolution, (insert_peak_index + 1) * fit_resolution)
-    logger.info("New insert search region: %s", update_search_site)
+    logger.info("New insert search region: %s" % update_search_site)
 
     # get insert region max interaction ctg
     update_full_len_matrix = get_full_len_matrix(hic_file, assembly_file, min(resolutions), error_site,
@@ -238,7 +239,7 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
     final_insert_region = (update_search_site[0] + update_insert_peak_index * min(resolutions),
                            update_search_site[0] + (update_insert_peak_index + 1) * min(resolutions))
 
-    logger.info("Final insert region: %s", final_insert_region)
+    logger.info("Final insert region: %s" % final_insert_region)
 
     # search ctg in insert peak
     contain_ctg = asy_operate.find_site_ctg_s(assembly_file, final_insert_region[0], final_insert_region[0] + 1)
@@ -300,7 +301,7 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
 
         contain_ctg = temp_contain_ctg
 
-    logger.info("Insert ctg: ： %s", contain_ctg)
+    logger.info("Insert ctg: ： %s" % contain_ctg)
 
     # calculate insert direction
     only_ctg_name = list(contain_ctg.keys())[0]

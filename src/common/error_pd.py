@@ -245,7 +245,7 @@ class ERRORS:
                 len_filtered_errors_counter[key] = filtered_errors[filtered_errors['category'] == key].shape[0]
                 len_removed_errors_counter[key] = len_removed_errors[len_removed_errors['category'] == key].shape[0]
             except KeyError:
-                logger.info(f"KeyError: {key} not in errors_dict")
+                logger.info(f"KeyError: %s not in errors_dict" % key)
                 continue
 
         self.filter_dict["Length filtered error number"] = len_filtered_errors_counter
@@ -407,7 +407,6 @@ class ERRORS:
 
         self.filter_dict["Overlap filtered error number"] = overlap_filtered_errors_counter
 
-        # logger.info("Filter all error category Done")
         logger.info("Filter all error category Done")
 
         return ans_dict, overlap_filtered_errors_counter
@@ -449,7 +448,7 @@ class ERRORS:
                     "abnormal": len(chr_len_removed_errors[key])
                 }
             except KeyError:
-                logger.info(f"KeyError: {key} not in errors_dict")
+                logger.info(f"KeyError: %s not in errors_dict" % key)
                 chr_len_filtered_errors_counter[key] = {
                     "normal": 0,
                     "abnormal": 0
@@ -480,7 +479,7 @@ class ERRORS:
         Returns:
             zoomed errors
         """
-        logger.info("zoom threshold: ", threshold)
+        logger.info("zoom threshold: %s" % threshold)
 
         if filter_cls is None:
             filter_cls = self.classes
@@ -494,7 +493,7 @@ class ERRORS:
                     error["hic_loci"][1] = error["hic_loci"][1] - threshold
                     zoomed_errors[key].append(error)
             except KeyError:
-                logger.info(f"KeyError: {key} not in errors_dict")
+                logger.info(f"KeyError: %s not in errors_dict" % key)
                 continue
 
         with open(os.path.join(self.out_path, out_path), "w") as outfile:
@@ -692,7 +691,11 @@ def json_vis(error_json, out_dir):
         for index, error in enumerate(error_dict[key]):
             basename = str(index + 1) + "_" + os.path.basename(error["image_id"])
             out_path = os.path.join(out_dir, basename)
+            error_dict[key][index]["infer_image"] = out_path
             bbox2jpg(error["image_id"], error["bbox"], error["category"], out_path)
+
+    with open(os.path.join(out_dir, "infer_result.json"), "a") as outfile:
+        json.dump(error_dict, outfile)
 
 
 def infer_error(model_cfg, pretrained_model, img_path, out_path, device='cuda:0', score=0.9, error_min_len=15000,
@@ -739,7 +742,7 @@ def infer_error(model_cfg, pretrained_model, img_path, out_path, device='cuda:0'
         if os.path.isdir(item_path):
             random_file = random.choice(os.listdir(item_path))
             img_size = Image.open(os.path.join(item_path, random_file)).size
-            logger.info(img_size)
+            logger.info("img size: %s" % img_size)
             break
 
     error_class = ERRORS(classes, info_file, out_path, img_size=img_size)
