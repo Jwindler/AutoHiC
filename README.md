@@ -27,7 +27,7 @@
   - [License](#license)
 
 
-  
+
 
 
 
@@ -227,7 +227,7 @@ species_name/
 
 1. fasta file with a "`_autohic`" suffix containing the output scaffolds at the chromosome level.
 
-2. The `result.html` file, which provides detailed information before and after genome correction, where the error occurred, and a heat map of HiC interaction and chromosome length before and after. ([example](https://github.com/Jwindler/AutoHiC/tree/main/example/result_demo.html "Demo"))
+2. The `result.html` file, which provides detailed information before and after genome correction, where the error occurred, and a heat map of HiC interaction and chromosome length before and after. 
 
 3. Please see this [document](https://github.com/Jwindler/AutoHiC/tree/main/example/detail_result.md "Docs") for detailed results description.  
 
