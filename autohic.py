@@ -217,7 +217,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     chr_asy_file, chr_number = split_chr(img_path, adjust_asy_file, adjust_hic_file, cfg_dir, device=device)
 
     # run 3d-dna to split chromosome
-    chr_adjust_log = os.path.join(top_output_dir, "logs", "chr_epoch.log")
+    chr_adjust_log = os.path.join(top_output_dir, "logs", "chromosome_epoch.log")
     run_sh = "bash " + os.path.join(cfg_data["TD_DNA_DIR"],
                                     "run-asm-pipeline-post-review.sh") + " -r " + chr_asy_file + " " + \
              original_genome + " " + merged_nodups_path + " > " + chr_adjust_log + " 2>&1"

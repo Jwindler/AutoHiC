@@ -742,7 +742,7 @@ def infer_error(model_cfg, pretrained_model, img_path, out_path, device='cuda:0'
         if os.path.isdir(item_path):
             random_file = random.choice(os.listdir(item_path))
             img_size = Image.open(os.path.join(item_path, random_file)).size
-            logger.info("img size: %s" % img_size)
+            print("img size: ", img_size)
             break
 
     error_class = ERRORS(classes, info_file, out_path, img_size=img_size)
