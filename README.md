@@ -14,6 +14,7 @@
   - [Overview of AutoHiC](#overview-of-autohic)
   - [Citations](#citations)
   - [Installation](#installation)
+    - [conda](#conda)
     - [Pre-trained model download](#pre-trained-model-download)
   - [Usages](#usages)
     - [Data Preparation](#data-preparation)
@@ -24,6 +25,7 @@
   - [Contact](#contact)
   - [Split chromosome (optional)](#split-chromosome-optional)
   - [License](#license)
+
 
   
 
@@ -51,7 +53,7 @@
 
 ## Installation
 
-- conda
+### conda
 
 ```sh
 # clone AutoHiC
@@ -70,9 +72,9 @@ cd ./src/models/swin
 pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
 ```
 
-> Note: Either GPU or CPU can be installed according to the above steps, and the program will automatically identify the running configuration and environment.
+> Note: Either GPU or CPU can be installed according to the above steps, and the program will automatically identify the running configuration and environment.  
 
-  
+​    
 
 ### Pre-trained model download
 
