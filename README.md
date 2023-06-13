@@ -249,7 +249,7 @@ python visualizer.py -hic example.hic
 
   
 
-- result ([example](https://github.com/Jwindler/AutoHiC/tree/main/example/chromosome_demo.svg "Demo"))
+- result
 
 ![](https://s2.loli.net/2023/06/13/FKNaZkiCTh9rdfV.png)
 
