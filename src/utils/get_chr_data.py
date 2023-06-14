@@ -163,6 +163,17 @@ def split_list(lst, val):
 
 
 def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
+    """
+        divide chr
+    Args:
+        chr_len_txt: chromosome length txt
+        hic_file: hic file
+        assembly_file: assembly file
+        modified_assembly_file: modified assembly file
+
+    Returns:
+
+    """
     chr_len_list = []
     with open(chr_len_txt, 'r') as f:
         for line in f.readlines():
@@ -197,7 +208,7 @@ def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
 
         second_cut_ctg = {contain_ctg_second: math.ceil(chr_len * ratio) + 1}
 
-        # 如果刚好边界等，不需要切割
+        # if boundary equal, no need to cut
         if contain_ctg[contain_ctg_second]["start"] != chr_len:
             # check whether the ctg is already cut
             if "fragment" in contain_ctg_second or "debris" in contain_ctg_second:
@@ -240,24 +251,21 @@ def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
                 ctg_orders.append(temp_line)
     one_dim_ctg_orders = [item for sublist in ctg_orders for item in sublist]
 
-    # 切分成二维列表
+    # cut to two dimension list
     def split_chr_list(chars_list, split_chars_list):
-        # 定义一个变量来存储当前子列表的起始位置
+        # define a variable to store the start index of current sub list
         start_index = 0
 
-        # 定义一个空列表来存储切分后的二维列表
+        # define an empty list to store the two dimension list after split
         result_list = []
 
-        # 遍历 chars_list
+        # loop through chars_list
         for i in range(len(chars_list)):
-            # 如果当前字符是一个指定的切分字符
             if chars_list[i] in split_chars_list:
-                # 将 chars_list 从起始位置到当前位置+1切分为一个子列表，并将其添加到 result_list 中
                 result_list.append(chars_list[start_index:i])
-                # 更新起始位置为当前位置的下一个位置
                 start_index = i
 
-        # 如果还有剩余字符，将它们添加到最后一个子列表中
+        # if there are still some chars left, add them to the last sub list
         if start_index < len(chars_list):
             result_list.append(chars_list[start_index:])
 
@@ -278,12 +286,24 @@ def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
     logger.info("Get ctg_s information done \n")
 
 
-def split_chr(img_file, asy_file, hic_file, cfg_file, device='cuda:0'):
+def split_chr(img_file, asy_file, hic_file, cfg_file, device='CPU'):
+    """
+    Split chromosome from image
+    Args:
+        img_file: chromosome image file
+        asy_file: assembly file
+        hic_file: hic file
+        cfg_file: config file
+        device: device GPU or CPU
+
+    Returns:
+
+    """
     # get cfg
     cfg_data = get_cfg(cfg_file)
 
     # infer png
-    config_file = cfg_data["CHR_MODEL_CFG"]
+    config_file = os.path.join(cfg_data["AutoHiC_DIR"], "src/models/cfgs/chr_model.py")
     checkpoint_file = cfg_data["CHR_PRETRAINED_MODEL"]
     model = init_detector(config_file, checkpoint_file, device=device)
     result = inference_detector(model, img_file)
@@ -309,11 +329,7 @@ def split_chr(img_file, asy_file, hic_file, cfg_file, device='cuda:0'):
 
 
 def main():
-    chr_len_txt = "/home/jzj/Jupyter-Docker/buffer/br_4/chr/chr.txt"
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/br_4/br.4.hic"
-    assembly_file = "/home/jzj/Jupyter-Docker/buffer/br_4/br.4.assembly"
-    modified_assembly_file = "/home/jzj/Jupyter-Docker/buffer/br_4/chr/test_chr.assembly"
-    divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file)
+    pass
 
 
 if __name__ == "__main__":

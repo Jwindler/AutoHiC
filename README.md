@@ -45,7 +45,7 @@
 
 ## Citations
 
-**If you use this pipline, please cite the following paper:**  
+**If you use AutoHiC, please cite the following paper:**  
 
   
 
@@ -171,7 +171,8 @@ Copy and edit the configuration file `cft-autohic.txt` in your local folder.
 
 ```sh
 # cd AutoHiC directory
-cd /home/AutoHiC  # Please modify according to your installation directory
+# Please modify according to your installation directory
+cd /home/AutoHiC  
 
 # run 
 nohup python autohic.py -c cft-autohic.txt > log.txt 2>&1 &
@@ -267,7 +268,7 @@ python visualizer.py -hic example.hic
 
 If your genome is very complex, the model may not be very accurate in dividing the chromosomes. It is recommended that you import the last adjustment file into Juicxbox to manually split chromosomes.
 
-You can download the Juicebox user manual from this link: https://drive.google.com/drive/folders/1T9twnImt1CK_NrB9SBb-dg4dBENyhPTN?usp=sharing
+You can download the Juicebox user manual from this link: [juicebox_manual.pdf](https://drive.google.com/drive/folders/1T9twnImt1CK_NrB9SBb-dg4dBENyhPTN?usp=sharing)
 
 **The `.hic` and `.assembly` files you need to use can be obtained from the `chromosome` folder under the `autohic_results` directory.**  
 

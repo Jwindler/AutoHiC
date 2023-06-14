@@ -1,17 +1,17 @@
 # Paths and system Settings
 JOB_NAME=AutoHiC
 AutoHiC_DIR=/home/ubuntu/AutoHiC
-RESULT_DIR=/home/ubuntu/2_juicer/16_Hypsibius_dujardini
+RESULT_DIR=/home/ubuntu/result
 N_CPU=40
 
 # Data options
-GENOME_NAME=hd
-SPECIES_NAME=hd
-REFERENCE_GENOME=/home/ubuntu/2_juicer/16_Hypsibius_dujardini/references/hd.fa
+GENOME_NAME=at
+SPECIES_NAME=At
+REFERENCE_GENOME=/home/ubuntu/at/references/at.fa
 
 # Juicer options
 JUICER_DIR=/home/ubuntu/HiC/juicer-1.6
-FASTQ_DIR=/home/ubuntu/2_juicer/16_Hypsibius_dujardini/rawdata
+FASTQ_DIR=/home/ubuntu/at/rawdata
 ENZYME=DpnII
 
 
@@ -20,10 +20,8 @@ TD_DNA_DIR=/home/ubuntu/3d-dna
 NUMBER_OF_EDIT_ROUNDS=2
 
 # AutoHiC options
-MODEL_CFG=/home/ubuntu/AutoHiC/src/models/cfgs/error_model.py
-PRETRAINED_MODEL=/home/ubuntu/AutoHiC/src/models/cfgs/error_model.pth
-CHR_MODEL_CFG=/home/ubuntu/AutoHiC/src/models/cfgs/chr_model.py
-CHR_PRETRAINED_MODEL=/home/ubuntu/AutoHiC/src/models/cfgs/chr_model.pth
+PRETRAINED_MODEL=/home/ubuntu/downloads/error_model.pth
+CHR_PRETRAINED_MODEL=/home/ubuntu/downloads/chr_model.pth
 
 TRANSLOCATION_ADJUST=True
 INVERSION_ADJUST=True

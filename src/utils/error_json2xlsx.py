@@ -9,12 +9,20 @@
 @function: 
 """
 import json
-import os
 
 import pandas as pd
 
 
 def error2xlsx(error_file_path, output_path):
+    """
+    Convert error json file to xlsx file
+    Args:
+        error_file_path: error json file path
+        output_path: output xlsx file path
+
+    Returns:
+        None
+    """
     with open(error_file_path, "r") as outfile:
         errors_queue = json.loads(outfile.read())
 
@@ -45,6 +53,15 @@ def error2xlsx(error_file_path, output_path):
 
 
 def excel2json(excel_path, json_path):
+    """
+    Convert excel file to json file
+    Args:
+        excel_path: excel file path
+        json_path: json file path
+
+    Returns:
+        None
+    """
     dataframe1 = pd.read_excel(excel_path, header=0)
     id_list = dataframe1["ID"].values
     real_start = dataframe1["Real_Start"].values
@@ -61,17 +78,7 @@ def excel2json(excel_path, json_path):
 
 
 def main():
-    error_path = "/home/jzj/Jupyter-Docker/buffer/result"
-
-    error_file = os.path.join(error_path, "chr_len_filtered_errors.json")
-    output_path = os.path.join(error_path, "errors.xlsx")
-
-    error2xlsx(error_file, output_path)
-
-    # excel2json
-    # excel_path = "/home/jzj/buffer/Book1.xlsx"
-    # json_path = "/home/jzj/buffer/test.json"
-    # excel2json(excel_path, json_path)
+    pass
 
 
 if __name__ == "__main__":

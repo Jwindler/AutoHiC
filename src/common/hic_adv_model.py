@@ -173,7 +173,7 @@ class GenBaseModel:
 
         # get contact matrix
         numpy_matrix_chr = matrix_object_chr.getRecordsAsMatrix(a_start, a_end, b_start, b_end)
-        # numpy_matrix_chr = np.flipud(numpy_matrix_chr)  # FIXME： 后续删除，用于生成图片
+        # numpy_matrix_chr = np.flipud(numpy_matrix_chr)
 
         # plot hic contact map
         self.plot_hic_map(numpy_matrix_chr, img_path)

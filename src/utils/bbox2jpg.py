@@ -126,9 +126,7 @@ def json_vis(error_json, out_dir):
 
 
 def main():
-    error_json = "/home/jzj/Jupyter-Docker/buffer/chr_len_filtered_errors.json"
-    out_dir = "/home/jzj/Jupyter-Docker/buffer/test_infer"
-    json_vis(error_json, out_dir)
+    pass
 
 
 if __name__ == "__main__":

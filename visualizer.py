@@ -99,9 +99,7 @@ def plot_chr(hic_file: str = typer.Option(..., "--hic-file", "-hic", help="hic f
             else:
                 final_matrix = np.vstack((final_matrix, temp_matrix))
 
-        # 去除全零行
         not_row = final_matrix[[not np.all(final_matrix[i] == 0) for i in range(final_matrix.shape[0])], :]
-        # 去除全零列
         numpy_matrix_chr = not_row[:, [not np.all(not_row[:, i] == 0) for i in range(not_row.shape[1])]]
 
     # matrix flip
@@ -119,7 +117,6 @@ def plot_chr(hic_file: str = typer.Option(..., "--hic-file", "-hic", help="hic f
     # set genome title
     ax.set_title(genome_name, fontsize=25)
 
-    # 将纵坐标刻度设置为空
     ax.set_yticks([])
     ax.set_xticks([])  # need to adjust
 

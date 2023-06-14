@@ -82,9 +82,9 @@ def plot_chr_inter(hic_file, asy_file=None, out_path=None, maxcolor=None, color_
             else:
                 final_matrix = np.vstack((final_matrix, temp_matrix))
 
-        # 去除全零行
+        # remove all zero row
         not_row = final_matrix[[not np.all(final_matrix[i] == 0) for i in range(final_matrix.shape[0])], :]
-        # 去除全零列
+        # remove all zero column
         numpy_matrix_chr = not_row[:, [not np.all(not_row[:, i] == 0) for i in range(not_row.shape[1])]]
 
     if maxcolor is None:
@@ -96,7 +96,6 @@ def plot_chr_inter(hic_file, asy_file=None, out_path=None, maxcolor=None, color_
     ax.matshow(numpy_matrix_chr, cmap=red_map, vmin=0, vmax=maxcolor)
     plt.axis('off')  # remove axis
 
-    # 将纵坐标刻度设置为空
     ax.set_yticks([])
     ax.set_xticks([])
 
@@ -185,9 +184,9 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, maxcol
             else:
                 final_matrix = np.vstack((final_matrix, temp_matrix))
 
-        # 去除全零行
+        # remove all zero row
         not_row = final_matrix[[not np.all(final_matrix[i] == 0) for i in range(final_matrix.shape[0])], :]
-        # 去除全零列
+        # remove all zero column
         numpy_matrix_chr = not_row[:, [not np.all(not_row[:, i] == 0) for i in range(not_row.shape[1])]]
 
     # matrix flip
@@ -204,7 +203,7 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, maxcol
     # set genome title
     ax.set_title(genome_name, fontsize=25)
 
-    # 将纵坐标刻度设置为空
+    # set x and y axis
     ax.set_yticks([])
     ax.set_xticks([])  # need to adjust
 
@@ -218,13 +217,7 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, maxcol
 
 
 def main():
-    hic_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/br.final.hic"
-    asy_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/br.final.assembly"
-    # asy_file = None
-    out_path = "/home/jzj/buffer"
-    chr_len_file = "/home/jzj/Jupyter-Docker/buffer/genomes_test/02_br/br_4/chr/chr.txt"
-    plot_chr(hic_file, genome_name="", chr_len_file=chr_len_file, out_path=out_path, fig_format="svg")
-    # plot_chr_inter(hic_file, asy_file, out_path, fig_format="svg")
+    pass
 
 
 if __name__ == "__main__":

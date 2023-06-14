@@ -11,16 +11,6 @@
 
 import logging
 
-import colorlog
-
-log_colors_config = {
-    'DEBUG': 'black',  # cyan white
-    'INFO': 'green',
-    'WARNING': 'yellow',
-    'ERROR': 'red',
-    'CRITICAL': 'bold_red',
-}
-
 
 class LoggerHandler(logging.Logger):
 
@@ -35,10 +25,9 @@ class LoggerHandler(logging.Logger):
         self.setLevel(level)
 
         # format setting
-        console_formatter = colorlog.ColoredFormatter(
-            fmt='%(log_color)s[%(asctime)s.%(msecs)03d] %(filename)s -> %(funcName)s line:%(lineno)d [%(levelname)s] : %(message)s',
-            datefmt='%Y-%m-%d  %H:%M:%S',
-            log_colors=log_colors_config)
+        console_formatter = logging.Formatter(
+            fmt='[%(asctime)s] %(filename)s -> %(funcName)s line:%(lineno)d [%(levelname)s] : %(message)s',
+            datefmt='%Y-%m-%d  %H:%M:%S')
 
         # initialing Handler
         if file:

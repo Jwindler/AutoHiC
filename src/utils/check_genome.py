@@ -64,11 +64,7 @@ def check_genome(input_file, base_len=80):
 
 
 def main():
-    input_file = "/home/jzj/Downloads/Hv.fa"
-    output_file = "/home/jzj/Downloads/Hv_test.fa"
-
-    # check_genome(input_file, base_len=80)
-    split_genome(input_file, input_file)
+    pass
 
 
 if __name__ == "__main__":

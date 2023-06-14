@@ -46,7 +46,7 @@ def get_error_matrix(
         if chrom.name == "assembly":
             assembly_len = chrom.length
 
-    # 根据指定分辨率，获取矩阵对象
+    # according to resolution, get matrix object
     chr_matrix_object = hic_object.getMatrixZoomData(
         'assembly', 'assembly', "observed", "KR", "BP", resolution)
 
@@ -62,7 +62,7 @@ def get_error_matrix(
         bin_index = true_start_bin
 
     logger.info("Resolution of get interaction matrix： %s", resolution)
-    logger.info("Translocation site（hic）：{0} - {1} ".format(error_site[0], error_site[1]))
+    print("Translocation site（hic）：{0} - {1} ".format(error_site[0], error_site[1]))
 
     # maybe error loci less than resolution
     if error_site[1] - error_site[0] < resolution:
@@ -80,9 +80,9 @@ def get_error_matrix(
     if flag_of_site:  # first search, search error site is whole length
         error_matrix_object = chr_matrix_object.getRecordsAsMatrix(
             search_site_a, search_site_b, search_site[0], assembly_len)
-        logger.debug("Insert search loci(hic) ：{0} - {1}".format(search_site[0], assembly_len))
+        print("Insert search loci(hic) ：{0} - {1}".format(search_site[0], assembly_len))
     else:
-        logger.debug("Insert search loci(hic) ：{0} - {1}".format(search_site[0], search_site[1]))
+        print("Insert search loci(hic) ：{0} - {1}".format(search_site[0], search_site[1]))
 
         error_matrix_object = chr_matrix_object.getRecordsAsMatrix(
             search_site_a, search_site_b, search_site[0], search_site[1])
@@ -119,9 +119,9 @@ def find_error_peaks(numpy_matrix, distance=5):
         peaks_index = x[peak_id]  # get peaks index
         peaks_height = peak_property['peak_heights']  # get peaks height/value
 
-        logger.info("第{0}个矩阵的峰值点信息：".format(i + 1))
-        logger.info("index：{0}".format(peaks_index))
-        logger.debug("value：{0} \n".format(peaks_height))
+        print("The {0} matrix info：".format(i + 1))
+        print("index：{0}".format(peaks_index))
+        print("value：{0} \n".format(peaks_height))
 
         for peak_index, peak_height in zip(peaks_index, peaks_height):
             if peak_index not in peaks_dict:
@@ -171,21 +171,7 @@ def remove_peak(peaks_dict, know_peak):
 
 
 def main():
-    error_site = (556000000, 557500000)
-    hic_file = "/home/jzj/Jupyter-Docker/HiC-Straw/Np/0/Np.0.hic"
-    resolution = 500000
-
-    temp = get_error_matrix(hic_file, error_site, error_site, resolution)
-
-    error_matrix_object, bin_index = temp[0], temp[1]
-    temp_2 = find_error_peaks(error_matrix_object)
-    temp_3 = remove_peak(temp_2, bin_index)
-
-    # 获取交集最多的index
-    many_key_name = max(temp_3, key=temp_3.get)
-
-    logger.info("交集最多的index为：{0}".format(many_key_name))
-    logger.info("应该插入区间为：{0} - {1}".format(many_key_name * resolution, (many_key_name + 1) * resolution))
+    pass
 
 
 if __name__ == "__main__":

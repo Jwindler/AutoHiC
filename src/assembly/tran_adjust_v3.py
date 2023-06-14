@@ -76,7 +76,6 @@ def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_l
             temp_result, insert_left = search_right_site_v8(hic_file, modified_assembly_file, ratio, error_site,
                                                             modified_assembly_file)
         except Exception as e:
-            logger.info(e)
             logger.info("Error {0} insert location search failed, skip\n".format(error))
             continue
         new_error_contains_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, errors_queue[error]["start"],
@@ -93,7 +92,7 @@ def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_l
     logger.info("Translocation errors insert location search done\n")
 
     # write error information to blacklist
-    with open(black_list_output, "w") as outfile:
+    with open(black_list_output, "a") as outfile:
         for index in error_tran_info:
             outfile.write("\n".join(list(error_tran_info[index]['moves_ctg'].keys())) + "\n")
     return error_tran_info

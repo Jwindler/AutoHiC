@@ -17,13 +17,15 @@ from src.utils.get_cfg import get_ratio
 from src.utils.logger import logger
 
 
-def adjust_inversion(errors_queue, hic_file, modified_assembly_file):
+def adjust_inversion(errors_queue, hic_file, modified_assembly_file, black_list_output, black_list=None):
     """
     Inversion adjust
     Args:
         errors_queue:
         hic_file:
         modified_assembly_file:
+        black_list_output: black list output path
+        black_list: the black list of ctg name
 
     Returns:
         inversion error information queue
@@ -38,6 +40,13 @@ def adjust_inversion(errors_queue, hic_file, modified_assembly_file):
 
     error_inv_info = OrderedDict()  # inversion info
 
+    black_list_set = None
+    if black_list is not None:
+        with open(black_list, "r") as outfile:
+            black_list = outfile.readlines()
+            black_list = [sub.replace('\n', '') for sub in black_list]
+        black_list_set = set(black_list)
+
     # iterate error queue
     for error in errors_queue:
         logger.info("Re-search {0} inversion location ctg information:\n".format(error))
@@ -46,11 +55,24 @@ def adjust_inversion(errors_queue, hic_file, modified_assembly_file):
 
         new_error_contains_ctg = json.loads(new_error_contains_ctg)  # convert str to dict
 
+        if black_list is not None:
+            # error in black list
+            error_set = set(new_error_contains_ctg)
+            if error_set & black_list_set:
+                logger.info("Error {0} in black list, skip\n".format(error))
+                continue
+
         logger.info("Needs to be moved ctg: %s\n", new_error_contains_ctg)
 
         error_inv_info[error] = {
             "inv_ctg": list(new_error_contains_ctg.keys())
         }
+
+    # write error information to blacklist
+    with open(black_list_output, "a") as outfile:
+        for index in error_inv_info:
+            outfile.write("\n".join(list(error_inv_info[index]['moves_ctg'].keys())) + "\n")
+
     return error_inv_info
 
 

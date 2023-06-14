@@ -17,14 +17,13 @@ from src.utils.get_cfg import get_ratio
 from src.utils.logger import logger
 
 
-def adjust_debris(errors_queue, hic_file, modified_assembly_file, black_list=None):
+def adjust_debris(errors_queue, hic_file, modified_assembly_file):
     """
     Debris adjust
     Args:
         errors_queue:
         hic_file:
         modified_assembly_file:
-        black_list: black list
 
     Returns:
         debris error information queue
@@ -42,7 +41,7 @@ def adjust_debris(errors_queue, hic_file, modified_assembly_file, black_list=Non
 
     # iterate error queue
     for error in errors_queue:
-        logger.info("Re-search {0} debris location ctg information:\n".format(error))
+        logger.info("Re-search %s debris location ctg information:\n" % error)
         new_error_contain_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, errors_queue[error]["start"],
                                                             errors_queue[error]["end"])
 
@@ -52,14 +51,6 @@ def adjust_debris(errors_queue, hic_file, modified_assembly_file, black_list=Non
 
         error_deb_info[error] = {
             "deb_ctg": list(new_error_contain_ctg.keys())
-        }
-
-    if black_list is not None:
-        with open(black_list, "r") as outfile:
-            black_list = outfile.readlines()
-            black_list = [sub.replace('\n', '') for sub in black_list]
-        error_deb_info["black_list"] = {
-            "deb_ctg": black_list
         }
 
     return error_deb_info

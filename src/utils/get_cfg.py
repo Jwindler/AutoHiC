@@ -52,6 +52,14 @@ def get_ratio(hic, asy_file) -> int:
 
 
 def get_hic_len(hic_file) -> int:
+    """
+        get hic file length
+    Args:
+        hic_file: hic file path
+
+    Returns:
+        hic file length
+    """
     # get hic object
     hic_object = hicstraw.HiCFile(hic_file)
 
@@ -109,13 +117,9 @@ def increment(resolution):
     """
 
     dim_increase = {
-        "increase": resolution * 400,  # 生成图片的话，这个值要小一点 400
-        "range": resolution * 700  # 700是最小，否则出现颜色阈值不正常的情况
+        "increase": resolution * 400,
+        "range": resolution * 700
     }
-    # dim_increase = {  # FIXME: 生成完图片后删除
-    #     "increase": resolution * 500,  # 生成图片的话，这个值要小一点 400
-    #     "range": resolution * 800  # 700是最小，否则出现颜色阈值不正常的情况
-    # }
 
     return dim_increase
 
@@ -134,6 +138,15 @@ def get_max_hic_len(resolution):
 
 
 def get_max_color(hic_file, resolution):
+    """
+        get max color
+    Args:
+        hic_file: hic file path
+        resolution: hic resolution
+
+    Returns:
+        max color
+    """
     full_len_matrix = get_full_len_matrix(hic_file, resolution)
 
     if resolution <= 1000:
@@ -145,6 +158,15 @@ def get_max_color(hic_file, resolution):
 
 
 def get_max_color_v2(hic_file, resolution):
+    """
+        get max color
+    Args:
+        hic_file: hic file path
+        resolution: hic resolution
+
+    Returns:
+        max color
+    """
     if resolution <= 2000:
         return 1
     elif resolution <= 12500:
@@ -162,8 +184,16 @@ def get_max_color_v2(hic_file, resolution):
 
 
 def get_full_len_matrix(hic_file, resolution, assembly_file=None):
-    # FIXME: 有问题，需要修改(在小分辨率下，报错过，未修改）
+    """
+        get full length matrix
+    Args:
+        hic_file: hic file path
+        resolution: hic resolution
+        assembly_file: assembly file path
 
+    Returns:
+        full length matrix
+    """
     # get hic object
     hic_object = hicstraw.HiCFile(hic_file)
 
@@ -218,6 +248,15 @@ def get_full_len_matrix(hic_file, resolution, assembly_file=None):
 
 
 def get_cfg(cfg_dir, cfg_key=None):
+    """
+        get config
+    Args:
+        cfg_dir: config file path
+        cfg_key: config key
+
+    Returns:
+        config dict
+    """
     config = {}
     with open(cfg_dir, 'r') as f:
         for line in f:
@@ -243,6 +282,14 @@ def get_cfg(cfg_dir, cfg_key=None):
 
 
 def get_error_sum(error_json) -> int:
+    """
+        calculate translocation and inversion error number
+    Args:
+        error_json: error json file
+
+    Returns:
+        error number
+    """
     with open(error_json, "r") as f:
         error_count = json.loads(f.read())
 
@@ -272,15 +319,24 @@ def get_each_error(error_json) -> list:
 
 
 def subprocess_popen(statement, cwd=None):
+    """
+        subprocess popen
+    Args:
+        statement: command
+        cwd: current work dir
+
+    Returns:
+        command result
+    """
     p = subprocess.Popen(statement, shell=True, stdout=subprocess.PIPE, cwd=cwd)
     while p.poll() is None:
         if p.wait() != 0:
-            print("命令执行失败，请检查设备连接状态")
+            print("Command execution failed, please check the device connection status")
             return False
         else:
-            re = p.stdout.readlines()  # 获取原始执行结果
+            re = p.stdout.readlines()
             result = []
-            for i in range(len(re)):  # 由于原始结果需要转换编码，所以循环转为utf8编码并且去除\n换行
+            for i in range(len(re)):
                 res = re[i].decode('utf-8').strip('\r\n')
                 result.append(res)
             return result
@@ -382,9 +438,7 @@ def get_error_pairs(errors_json_path):
 
 
 def main():
-    hic_file = "/home/jzj/Downloads/br.4.hic"
-    assembly_file = "/home/jzj/Downloads/br.4.assembly"
-    print("hic_real_len: ", get_hic_real_len(hic_file, assembly_file))
+    pass
 
 
 if __name__ == "__main__":
