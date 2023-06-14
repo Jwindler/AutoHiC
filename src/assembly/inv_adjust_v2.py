@@ -32,6 +32,7 @@ def adjust_inversion(errors_queue, hic_file, modified_assembly_file, black_list_
     """
     logger.info("Start adjust inversion errors:\n")
 
+    black_num = 0
     # get ratio between chromosome length and hic file length
     ratio = get_ratio(hic_file, modified_assembly_file)
 
@@ -60,6 +61,7 @@ def adjust_inversion(errors_queue, hic_file, modified_assembly_file, black_list_
             error_set = set(new_error_contains_ctg)
             if error_set & black_list_set:
                 logger.info("Error {0} in black list, skip\n".format(error))
+                black_num += 1
                 continue
 
         logger.info("Needs to be moved ctg: %s\n", new_error_contains_ctg)
@@ -73,7 +75,7 @@ def adjust_inversion(errors_queue, hic_file, modified_assembly_file, black_list_
         for index in error_inv_info:
             outfile.write("\n".join(list(error_inv_info[index]['moves_ctg'].keys())) + "\n")
 
-    return error_inv_info
+    return black_num, error_inv_info
 
 
 def main():

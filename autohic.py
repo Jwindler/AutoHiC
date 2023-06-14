@@ -54,7 +54,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         logger.info("GPU is not available, AutoHiC will run on CPU\n")
 
     # Stage 1: run Juicer + 3d-dna
-    logger.info("Stage 1: Run Juicer and  3d-dna\n")
+    logger.info("Stage 1: Run Juicer and  3d-dna")
     run_sh_dir = os.path.join(cfg_data["AutoHiC_DIR"], "src/common/run.sh")
     run_sh = "bash " + run_sh_dir + " " + cfg_dir
     get_cfg.subprocess_popen(run_sh)
@@ -96,7 +96,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
                     error_min_len=error_min_len,
                     error_max_len=error_max_len, iou_score=iou_score, chr_len=hic_real_len)
         logger.info("Detect the %s file finished\n" % adjust_name)
-        
+
         # get error sum and error records dict
         error_summary_json = os.path.join(adjust_path, "error_summary.json")
         error_count_dict[adjust_name] = {
@@ -136,7 +136,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     ctg_hic_map = os.path.join(final_adjust_path, "chromosome.png")
 
     # Check genome length whether > 80 base
-    logger.info("Check genome length whether > 80 base\n")
+    logger.info("Check genome length whether > 80 base")
     original_genome = cfg_data["REFERENCE_GENOME"]
     if check_genome(original_genome):
         logger.info("Split genome len to 80 base\n")
@@ -145,6 +145,8 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         split_genome(original_genome, split_genome_path)
         original_genome = split_genome_path
         logger.info("Split genome len to 80 base finished\n")
+    else:
+        logger.info("Genome len < 80 base\n")
 
     logger.info("Start iterating to adjust errors\n")
     first_flag = True
@@ -169,15 +171,16 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
         black_list_path = os.path.join(autohic_results, str(int(adjust_epoch) - 1), "black_list.txt")
         if first_flag:
-            adjust_all_error(hic_file_path, asy_file_path, divided_error, mdy_asy_file, black_list=None,
-                             tran_flag=translocation_flag, inv_flag=inversion_flag, deb_flag=debris_flag)
+            black_num = adjust_all_error(hic_file_path, asy_file_path, divided_error, mdy_asy_file, black_list=None,
+                                         tran_flag=translocation_flag, inv_flag=inversion_flag, deb_flag=debris_flag)
             first_flag = False
         else:
-            adjust_all_error(hic_file_path, asy_file_path, divided_error, mdy_asy_file, black_list=black_list_path,
-                             tran_flag=translocation_flag, inv_flag=inversion_flag, deb_flag=debris_flag)
+            black_num = adjust_all_error(hic_file_path, asy_file_path, divided_error, mdy_asy_file,
+                                         black_list=black_list_path,
+                                         tran_flag=translocation_flag, inv_flag=inversion_flag, deb_flag=debris_flag)
 
         # run 3d-dna
-        adjust_log = os.path.join(top_output_dir, "logs", adjust_name + "_epoch.log")
+        adjust_log = os.path.join(top_output_dir, "logs", "epoch_" + adjust_name + ".log")
         run_sh = "bash " + os.path.join(cfg_data["TD_DNA_DIR"],
                                         "run-asm-pipeline-post-review.sh") + " -r " + mdy_asy_file + " " + \
                  original_genome + " " + merged_nodups_path + " > " + adjust_log + " 2>&1"
@@ -216,7 +219,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
             "assembly_file": asy_file,
             "adjust_path": hic_img_dir
         }
-        error_sum = error_count_dict[adjust_epoch]["error_sum"]
+        error_sum = error_count_dict[adjust_epoch]["error_sum"] - black_num
         adjust_hic_file = hic_file_path
         adjust_asy_file = asy_file
         adjust_epoch += 1

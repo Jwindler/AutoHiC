@@ -34,6 +34,8 @@ def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_l
 
     logger.info("Start adjust translocation errors:\n")
 
+    black_num = 0
+
     # get ratio of hic file and assembly file
     ratio = get_ratio(hic_file, modified_assembly_file)
 
@@ -63,6 +65,7 @@ def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_l
             error_set = set(new_error_contains_ctg)
             if error_set & black_list_set:
                 logger.info("Error {0} in black list, skip\n".format(error))
+                black_num += 1
                 continue
 
         logger.info("Needs to be moved ctg: %s\n", new_error_contains_ctg)
@@ -77,6 +80,14 @@ def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_l
                                                             modified_assembly_file)
         except Exception as e:
             logger.info("Error {0} insert location search failed, skip\n".format(error))
+            # find ctg in error location
+            error_contains_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, errors_queue[error]["start"],
+                                                             errors_queue[error]["end"])
+            error_contains_ctg = json.loads(error_contains_ctg)  # str to dict
+            # write error information to blacklist
+            with open(black_list_output, "a") as outfile:
+                outfile.write("\n".join(list(error_contains_ctg.keys())) + "\n")
+            black_num += 1
             continue
         new_error_contains_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, errors_queue[error]["start"],
                                                              errors_queue[error]["end"])
@@ -95,7 +106,7 @@ def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_l
     with open(black_list_output, "a") as outfile:
         for index in error_tran_info:
             outfile.write("\n".join(list(error_tran_info[index]['moves_ctg'].keys())) + "\n")
-    return error_tran_info
+    return black_num, error_tran_info
 
 
 def main():

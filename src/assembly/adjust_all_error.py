@@ -38,6 +38,9 @@ def adjust_all_error(hic_file_path, asy_file_path, divided_error, modified_asy_f
     Returns:
         None
     """
+    tran_black_num = 0
+    inv_black_num = 0
+
     # translocation rectify
     if os.path.exists(os.path.join(divided_error, "translocation_error.json")) and tran_flag:
         with open(os.path.join(divided_error, "translocation_error.json"), "r") as outfile:
@@ -81,12 +84,13 @@ def adjust_all_error(hic_file_path, asy_file_path, divided_error, modified_asy_f
 
     # move translocation ctg
     if os.path.exists(os.path.join(divided_error, "translocation_error.json")) and tran_flag:
-        error_tran_info = adjust_translocation(translocation_queue, hic_file_path, modified_asy_file,
-                                               black_list_output=black_list_output, black_list=black_list)
+        tran_black_num, error_tran_info = adjust_translocation(translocation_queue, hic_file_path, modified_asy_file,
+                                                               black_list_output=black_list_output,
+                                                               black_list=black_list)
     # move inversion ctg
     if os.path.exists(os.path.join(divided_error, "inversion_error.json")) and inv_flag:
-        error_inv_info = adjust_inversion(inversion_queue, hic_file_path, modified_asy_file,
-                                          black_list_output=black_list_output, black_list=black_list)
+        inv_black_num, error_inv_info = adjust_inversion(inversion_queue, hic_file_path, modified_asy_file,
+                                                         black_list_output=black_list_output, black_list=black_list)
 
     # move debris ctg
     if os.path.exists(os.path.join(divided_error, "debris_error.json")) and deb_flag:
@@ -112,6 +116,8 @@ def adjust_all_error(hic_file_path, asy_file_path, divided_error, modified_asy_f
         logger.info("Start moving debris ctg\n")
         asy_operate.move_deb_to_end(modified_asy_file, error_deb_info, modified_asy_file)
         logger.info("Moving debris ctg done\n")
+
+    return tran_black_num + inv_black_num
 
 
 def main():

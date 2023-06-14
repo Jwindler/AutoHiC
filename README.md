@@ -45,7 +45,7 @@
 
 ## Citations
 
-**If you use AutoHiC, please cite the following paper:  **  
+**If you use AutoHiC, please cite the following paper:**  
 
   
 
@@ -78,21 +78,21 @@ pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 ### Pre-trained model download
 
-**Please select your most convenient download link below  **
+**Please select your most convenient download link below**
 
-- Google Drive (recommend)  
-
-
-
-
-
-- Baidu Netdisk  
+- Google Drive (recommend)     
 
 
 
 
 
-- 夸克  
+- Baidu Netdisk     
+
+
+
+
+
+- 夸克    
 
 
 
@@ -123,9 +123,9 @@ species_name/
 > Notes:
 >
 > 1. **The directory structure must be consistent with the above image.**
-> 2. **Paired-end sequences must end with `X_R1.fastq.gz` and `X_R2.fastq.gz`  **  
+> 2. **Paired-end sequences must end with `X_R1.fastq.gz` and `X_R2.fastq.gz`**  
 
-  
+​              
 
 ### Configs
 
@@ -163,9 +163,11 @@ Copy and edit the configuration file `cft-autohic.txt` in your local folder.
 | ERROR_MIN_LEN          | Minimum error length  *Default: 15000*                       |
 | ERROR_MAX_LEN          | Maximum error length *Default: 20000000*                     |
 | ERROR_FILTER_IOU_SCORE | Overlapping error filtering threshold  *Default: 0.8* **Modification is not recommended.** |
-| ERROR_FILTER_SCORE     | Error filtering threshold  *Default: 0.9* **Modification is not recommended.  ** |
+| ERROR_FILTER_SCORE     | Error filtering threshold  *Default: 0.9* **Modification is not recommended.** |
 
   
+
+
 
 ### Run
 
@@ -185,9 +187,11 @@ nohup python autohic.py -c cft-autohic.txt > log.txt 2>&1 &
 > 1. **Please specify the absolute path of the `cft-autohic.txt`**
 >
 > 2. **It is recommended to specify a directory for the `log.txt`, It will record the running information of AutoHiC**
-> 3. **Delete the nohup command if you don't want the program to run in the background.  **  
+> 3. **Delete the nohup command if you don't want the program to run in the background.**  
 
   
+
+   
 
 ### Results
 
@@ -246,7 +250,9 @@ AutoHiC also provides a script to visualise the HiC interaction matrix separatel
 python visualizer.py -hic example.hic
 ```
 
-**For detailed commands, please refer to the help documentation (`--help`)  **  
+**For detailed commands, please refer to the help documentation (`--help`)**  
+
+   
 
   
 
@@ -260,9 +266,11 @@ python visualizer.py -hic example.hic
 
 ## Contact
 
-**Please free to open an issue, when you encounter any problems.  **  
+**Please free to open an issue, when you encounter any problems.**  
 
   
+
+​     
 
 ## Split chromosome (optional) 
 
@@ -270,9 +278,11 @@ If your genome is very complex, the model may not be very accurate in dividing t
 
 You can download the Juicebox user manual from this link: [juicebox_manual.pdf](https://drive.google.com/drive/folders/1T9twnImt1CK_NrB9SBb-dg4dBENyhPTN?usp=sharing)
 
-**The `.hic` and `.assembly` files you need to use can be obtained from the `chromosome` folder under the `autohic_results` directory.  **  
+**The `.hic` and `.assembly` files you need to use can be obtained from the `chromosome` folder under the `autohic_results` directory.**  
 
-  
+   
+
+​     
 
 ## License
 

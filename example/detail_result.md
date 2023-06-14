@@ -65,7 +65,7 @@ data/
     └── contig_DpnII.txt
 ```
 
-- `reference`: contig's bwa index result
+- `reference`: contig's bwa index results
 
 - `contig_DpnII.txt`: restriction enzyme site
 - `contig.chrom.sizes`: contig sequence length
@@ -91,8 +91,8 @@ hic_results/
 ```sh
 logs/
 ├── 3d-dna.log
-├── 3_epoch.log
-├── 4_epoch.log
+├── epoch_3.log
+├── epoch_4.log
 ├── bwa_index.log
 ├── chromosome_epoch.log
 └── juicer.log
@@ -101,7 +101,7 @@ logs/
 - `bwa_index.log`: bwa index log
 - `Juicer.log`: Juicer log
 - `3d-dna.log`: 3d-dna log
-- `x_epoch.log`: AutoHiC iterative adjustment log
+- `epoch_x.log`: AutoHiC iterative adjustment log
 - `chromosome_epoch.log`: AutoHiC divides chromosomes log
 
 
@@ -114,5 +114,5 @@ quast_output/
 └── contig
 ```
 
-- `contig`: Contig level genome QUAST result
-- `chromosome`: Chromosome level genome QUAST result
+- `contig`: Contig level genome QUAST results
+- `chromosome`: Chromosome level genome QUAST results
