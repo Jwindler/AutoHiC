@@ -1,3 +1,22 @@
+## [0.9.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.0...v0.9.1) (2023-06-14)
+
+
+### Bug Fixes
+
+* del html ([47deb3a](https://github.com/Jwindler/HiC-OpenCV/commit/47deb3a147823c3cf51fbd25f87e5637b177bdfe))
+* del html ([d027067](https://github.com/Jwindler/HiC-OpenCV/commit/d027067fe888223c4f3649cee85cab661d4e0f51))
+* fix logging bug ([a0e3568](https://github.com/Jwindler/HiC-OpenCV/commit/a0e35682a4ef515db528dd2fb87d99f44d9d6d6c))
+* update api ([85805b2](https://github.com/Jwindler/HiC-OpenCV/commit/85805b2b762a00a98bcdbbe678bcc0d9a4f2b2f4))
+* update doc ([d0c124a](https://github.com/Jwindler/HiC-OpenCV/commit/d0c124a2cbf9ceff92ffc2e1886d8fbe836d1eb2))
+
+
+### Features
+
+* add example and README ([04adcf1](https://github.com/Jwindler/HiC-OpenCV/commit/04adcf1ded4029c705edbddda30dd9e291553644))
+* update some fun, add logger and fix bugs ([a422735](https://github.com/Jwindler/HiC-OpenCV/commit/a422735d951a3df1496b7d35b949fd5288477a91))
+
+
+
 # [0.9.0](https://github.com/Jwindler/HiC-OpenCV/compare/v0.8.19...v0.9.0) (2023-06-09)
 
 
