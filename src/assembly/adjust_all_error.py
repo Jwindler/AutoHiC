@@ -117,7 +117,7 @@ def adjust_all_error(hic_file_path, asy_file_path, divided_error, modified_asy_f
         asy_operate.move_deb_to_end(modified_asy_file, error_deb_info, modified_asy_file)
         logger.info("Moving debris ctg done\n")
 
-    return tran_black_num + inv_black_num
+    return [tran_black_num, inv_black_num, tran_black_num + inv_black_num]
 
 
 def main():

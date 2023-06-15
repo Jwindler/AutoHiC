@@ -171,13 +171,16 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
         black_list_path = os.path.join(autohic_results, str(int(adjust_epoch) - 1), "black_list.txt")
         if first_flag:
-            black_num = adjust_all_error(hic_file_path, asy_file_path, divided_error, mdy_asy_file, black_list=None,
-                                         tran_flag=translocation_flag, inv_flag=inversion_flag, deb_flag=debris_flag)
+            black_num_list = adjust_all_error(hic_file_path, asy_file_path, divided_error, mdy_asy_file,
+                                              black_list=None,
+                                              tran_flag=translocation_flag, inv_flag=inversion_flag,
+                                              deb_flag=debris_flag)
             first_flag = False
         else:
-            black_num = adjust_all_error(hic_file_path, asy_file_path, divided_error, mdy_asy_file,
-                                         black_list=black_list_path,
-                                         tran_flag=translocation_flag, inv_flag=inversion_flag, deb_flag=debris_flag)
+            black_num_list = adjust_all_error(hic_file_path, asy_file_path, divided_error, mdy_asy_file,
+                                              black_list=black_list_path,
+                                              tran_flag=translocation_flag, inv_flag=inversion_flag,
+                                              deb_flag=debris_flag)
 
         # run 3d-dna
         adjust_log = os.path.join(top_output_dir, "logs", "epoch_" + adjust_name + ".log")
@@ -210,7 +213,10 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         error_summary_json = os.path.join(final_adjust_path, "error_summary.json")
 
         # hic error record for report
-        hic_error_records.append(get_cfg.get_each_error(error_summary_json))
+        each_error_record = get_cfg.get_each_error(error_summary_json)
+        adjust_error_record = [each_error_record[0] - black_num_list[0], each_error_record[1] - black_num_list[1],
+                               each_error_record[2], each_error_record[3] - black_num_list[2]]
+        hic_error_records.append(adjust_error_record)
         hic_error_records[adjust_epoch].insert(0, str(adjust_epoch) + ".hic")
 
         error_count_dict[adjust_epoch] = {
@@ -219,7 +225,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
             "assembly_file": asy_file,
             "adjust_path": hic_img_dir
         }
-        error_sum = error_count_dict[adjust_epoch]["error_sum"] - black_num
+        error_sum = error_count_dict[adjust_epoch]["error_sum"] - black_num_list[0] - black_num_list[1]
         adjust_hic_file = hic_file_path
         adjust_asy_file = asy_file
         adjust_epoch += 1
