@@ -1,3 +1,19 @@
+## [0.9.2](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.1...v0.9.2) (2023-06-15)
+
+
+### Bug Fixes
+
+* update fun and docs ([5c6f4c2](https://github.com/Jwindler/HiC-OpenCV/commit/5c6f4c29c908c49715cd6b9a7f545d3c514f657c))
+
+
+### Features
+
+* add one step autohic ([ca65daf](https://github.com/Jwindler/HiC-OpenCV/commit/ca65daf4f8405f172ad4caa37036748751cb566f))
+* fix error records ([d3c5e09](https://github.com/Jwindler/HiC-OpenCV/commit/d3c5e097049dfbf38b71f4ad584ef456dd9397ea))
+* update black list fun ([4234239](https://github.com/Jwindler/HiC-OpenCV/commit/4234239d1abefa0f1d9fd1f39a1b597067bc59eb))
+
+
+
 ## [0.9.1](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.0...v0.9.1) (2023-06-14)
 
 
