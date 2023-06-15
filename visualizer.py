@@ -11,9 +11,9 @@
 
 import os
 
-import typer
 import hicstraw
 import numpy as np
+import typer
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
