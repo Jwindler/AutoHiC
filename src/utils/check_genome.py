@@ -56,7 +56,7 @@ def check_genome(input_file, base_len=80):
                 continue
             else:
                 temp_line = line.strip()
-                print(len(temp_line))
+                print("Genome each line length: ", len(temp_line))
                 if len(temp_line) > base_len:
                     return True
                 else:

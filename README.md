@@ -35,13 +35,13 @@
 
   
 
-  
+​            
 
 ## Overview of AutoHiC
 
   
 
-  
+​       
 
 ## Citations
 
@@ -49,7 +49,7 @@
 
   
 
-  
+​    
 
 ## Installation
 
@@ -125,9 +125,7 @@ species_name/
 > 1. **The directory structure must be consistent with the above image.**
 > 2. **Paired-end sequences must end with `X_R1.fastq.gz` and `X_R2.fastq.gz`**  
 
-​          
-
-​      
+​             
 
 ### Configs
 
@@ -167,9 +165,9 @@ Copy and edit the configuration file `cft-autohic.txt` in your local folder.
 | ERROR_FILTER_IOU_SCORE | Overlapping error filtering threshold  *Default: 0.8* **Modification is not recommended.** |
 | ERROR_FILTER_SCORE     | Error filtering threshold  *Default: 0.9* **Modification is not recommended.**             |
 
-  
+​                  
 
-  
+​         
 
 ### Run
 
@@ -238,9 +236,9 @@ species_name/
 
 3. Please see this [document](https://github.com/Jwindler/AutoHiC/tree/main/example/detail_result.md "Docs") for detailed results description.    
 
-  
+​                
 
-  
+​                       
 
 ## Plot HiC interaction map
 
@@ -296,9 +294,7 @@ python onehic.py -hic test.hic -asy test.assembly -autohic /home/ubuntu/AutoHic 
 > 2. `-autohic` : the parameter represents the path of AutoHiC
 > 3. `-p`: the path to the **pretrained model (error model)** you downloaded before  
 
-​       
-
-​    
+​                     
 
 ## Split chromosome (optional) 
 

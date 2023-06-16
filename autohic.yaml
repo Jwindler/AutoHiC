@@ -1,6 +1,7 @@
 name: autohic
 channels:
   - pytorch
+  - bioconda
   - conda-forge
   - defaults
 dependencies:
@@ -10,9 +11,10 @@ dependencies:
   - blas=1.0=mkl
   - brotli=1.0.9=h5eee18b_7
   - brotli-bin=1.0.9=h5eee18b_7
+  - bwa=0.7.17=he4a0461_11
   - bzip2=1.0.8=h7b6447c_0
   - ca-certificates=2023.5.7=hbcca054_0
-  - certifi=2023.5.7=pyhd8ed1ab_0
+  - certifi=2023.5.7=py39h06a4308_0
   - contourpy=1.0.5=py39hdb19cb5_0
   - cudatoolkit=11.3.1=h9edb442_11
   - cycler=0.11.0=pyhd3eb1b0_0
@@ -21,6 +23,7 @@ dependencies:
   - ffmpeg=4.2.2=h20bf706_0
   - fonttools=4.25.0=pyhd3eb1b0_0
   - freetype=2.12.1=h4a9f257_0
+  - gdbm=1.18=hd4cb3f1_4
   - giflib=5.2.1=h5eee18b_3
   - gmp=6.2.1=h295c915_3
   - gnutls=3.6.15=he1e5248_0
@@ -71,6 +74,7 @@ dependencies:
   - openpyxl=3.0.10=py39h5eee18b_0
   - openssl=3.1.1=hd590300_1
   - packaging=23.0=py39h06a4308_0
+  - perl=5.34.0=h5eee18b_2
   - pillow=9.4.0=py39h6a678d5_0
   - pip=23.0.1=py39h06a4308_0
   - pycocotools=2.0.6=py39h2ae25f5_1
@@ -136,4 +140,3 @@ dependencies:
       - urllib3==2.0.2
       - yapf==0.33.0
       - -i https://pypi.tuna.tsinghua.edu.cn/simple
-prefix: /home/users/miniconda3/envs/autohic
