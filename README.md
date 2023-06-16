@@ -1,6 +1,6 @@
 # AutoHiC
 
-![](https://img.shields.io/badge/release-v0.9.2-blue)![a](https://img.shields.io/badge/license-MIT-brightgreen)
+![](https://img.shields.io/badge/release-v0.9.3-blue)![a](https://img.shields.io/badge/license-MIT-brightgreen)
 
 
 ![](https://swindler-typora.oss-cn-chengdu.aliyuncs.com/typora_imgs/image-20221027210512819.png)

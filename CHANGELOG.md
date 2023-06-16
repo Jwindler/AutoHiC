@@ -1,3 +1,12 @@
+## [0.9.3](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.2...v0.9.3) (2023-06-16)
+
+
+### Features
+
+* add swin ([27cc1f8](https://github.com/Jwindler/HiC-OpenCV/commit/27cc1f87565e1fc7a7b07fd7e6f43921bf7237c8))
+
+
+
 ## [0.9.2](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.1...v0.9.2) (2023-06-15)
 
 
