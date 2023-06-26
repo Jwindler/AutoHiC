@@ -59,6 +59,9 @@
 # clone AutoHiC
 git clone https://github.com/Jwindler/AutoHiC.git
 
+# cd AutoHiC
+cd AutoHiC
+
 # create AutoHiC env
 conda env create -f autohic.yaml
 
@@ -177,7 +180,7 @@ Copy and edit the configuration file `cft-autohic.txt` in your local folder.
 cd /home/AutoHiC  
 
 # run 
-nohup python autohic.py -c cft-autohic.txt > log.txt 2>&1 &
+nohup python autohic.py -c cfg-autohic.txt > log.txt 2>&1 &
 
 # nohup: Run the program ignoring pending signals
 ```
@@ -225,7 +228,7 @@ species_name/
 │   │   └── contig
 │   ├── chromosome_autohic.fasta 
 │   └── result.html
-├── cft-autohic.txt
+├── cfg-autohic.txt
 ```
 
 **The main output:**

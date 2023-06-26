@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load variables from config file
-# source /home/jzj/HiC-OpenCV/cft-autohic.txt
+# source /home/jzj/HiC-OpenCV/cfg-autohic.txt
 echo "Run AutoHiC"
 echo "--------------------------------"
 source $1

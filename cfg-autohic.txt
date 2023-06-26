@@ -20,7 +20,7 @@ TD_DNA_DIR=/home/ubuntu/3d-dna
 NUMBER_OF_EDIT_ROUNDS=2
 
 # AutoHiC options
-PRETRAINED_MODEL=/home/ubuntu/downloads/error_model.pth
+ERROR_PRETRAINED_MODEL=/home/ubuntu/downloads/error_model.pth
 CHR_PRETRAINED_MODEL=/home/ubuntu/downloads/chr_model.pth
 
 TRANSLOCATION_ADJUST=True

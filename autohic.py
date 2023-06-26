@@ -42,7 +42,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     top_output_dir = os.path.join(cfg_data["RESULT_DIR"], cfg_data["JOB_NAME"])
 
     model_cfg = os.path.join(cfg_data["AutoHiC_DIR"], "src/models/cfgs/error_model.py")
-    pretrained_model = cfg_data["PRETRAINED_MODEL"]
+    pretrained_model = cfg_data["ERROR_PRETRAINED_MODEL"]
 
     # hic error records for report
     hic_error_records = []
@@ -313,7 +313,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
 
 def main():
-    cfg_file = "/home/ubuntu/cft-autohic.txt"
+    cfg_file = "/home/ubuntu/cfg-autohic.txt"
     whole(cfg_file)
 
 
