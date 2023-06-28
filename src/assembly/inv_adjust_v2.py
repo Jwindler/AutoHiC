@@ -73,7 +73,7 @@ def adjust_inversion(errors_queue, hic_file, modified_assembly_file, black_list_
     # write error information to blacklist
     with open(black_list_output, "a") as outfile:
         for index in error_inv_info:
-            outfile.write("\n".join(list(error_inv_info[index]['moves_ctg'].keys())) + "\n")
+            outfile.write("\n".join(error_inv_info[index]['inv_ctg']) + "\n")
 
     return black_num, error_inv_info
 
