@@ -85,21 +85,21 @@ pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 - Google Drive (recommend)     
 
-  
+  [Pre-trained model](https://drive.google.com/drive/folders/1T9twnImt1CK_NrB9SBb-dg4dBENyhPTN?usp=sharing) (click to download)
 
-  
+  ​    
 
-- Baidu Netdisk     
+- 百度网盘 (Baidu Netdisk)
 
-  
+  [Pre-trained model](https://pan.baidu.com/s/1CturvBMowVMwpeKYKjsa9w?pwd=v4et) (click to download)
 
-  
+  ​    
 
-- 夸克    
+- 夸克 (Quark)
 
-  
+  [Pre-trained model](https://pan.quark.cn/s/709f9e5e005b) (click to download)
 
-  
+  ​    
 
 ## Usages
 
