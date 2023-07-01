@@ -229,6 +229,9 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         adjust_hic_file = hic_file_path
         adjust_asy_file = asy_file
         adjust_epoch += 1
+        if adjust_epoch > 5:  # adjust 5 times at most
+            logger.info("Adjust 5 times at most, stop adjusting\n")
+            break
     logger.info("Iterative tuning error completed\n")
 
     logger.info("Stage 3: Split chromosome\n")
@@ -257,6 +260,9 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     logger.info("Generate genome report\n")
     chr_fa_name = cfg_data["GENOME_NAME"] + ".FINAL.fasta"
     chr_fa_path = os.path.join(chr_adjust_path, chr_fa_name)
+    if os.path.exists(chr_fa_path) is False:
+        chr_fa_name_bak = cfg_data["GENOME_NAME"] + "_HiC.fasta"
+        chr_fa_path = os.path.join(chr_adjust_path, chr_fa_name_bak)
 
     # delete last debris seq
     auto_hic_genome_path = os.path.join(chr_adjust_path, cfg_data["GENOME_NAME"] + "_autohic.fasta")
