@@ -216,7 +216,13 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         each_error_record = get_cfg.get_each_error(error_summary_json)
         adjust_error_record = [each_error_record[0] - black_num_list[0], each_error_record[1] - black_num_list[1],
                                each_error_record[2], each_error_record[3] - black_num_list[2]]
+        # DEBUG error count < 0
+        for i in range(len(adjust_error_record)):
+            if adjust_error_record[i] < 0:
+                adjust_error_record[i] = 0
+        adjust_error_record[3] = adjust_error_record[0] + adjust_error_record[1] + adjust_error_record[2]
         hic_error_records.append(adjust_error_record)
+        
         hic_error_records[adjust_epoch].insert(0, str(adjust_epoch) + ".hic")
 
         error_count_dict[adjust_epoch] = {

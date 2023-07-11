@@ -194,6 +194,7 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, maxcol
 
     if maxcolor is None:
         maxcolor = (np.percentile(dense_matrix, color_percent))
+        logger.info("maxcolor is %s\n" % maxcolor)
 
     fig, ax = plt.subplots(figsize=figure_size)
     red_map = LinearSegmentedColormap.from_list("bright_red", color)
