@@ -1,3 +1,21 @@
+## [0.9.4](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.3...v0.9.4) (2023-07-27)
+
+
+### Bug Fixes
+
+* fix _HiC.fasta file bug ([1a62b0f](https://github.com/Jwindler/HiC-OpenCV/commit/1a62b0f20f62fc6c080d7dabbd195ab255753c12))
+* fix error number < 0 ([bd09207](https://github.com/Jwindler/HiC-OpenCV/commit/bd0920797827b95aaa5e5719f8cc9615a5930dd9))
+* fix inversion black list bug ([2a3a09a](https://github.com/Jwindler/HiC-OpenCV/commit/2a3a09ac434b8b279c7a20ff49e907c833181c0a))
+* fix some bugs ([40e6b3b](https://github.com/Jwindler/HiC-OpenCV/commit/40e6b3b765c18586088252381d4b298ff33e45dd))
+* update plot fun ([e053ecc](https://github.com/Jwindler/HiC-OpenCV/commit/e053eccf6a390bd926132d55eb7b05c799495f70))
+
+
+### Features
+
+* add model pth ([71e64e7](https://github.com/Jwindler/HiC-OpenCV/commit/71e64e739d6ab8e2423e554ac2080f19850adeff))
+
+
+
 ## [0.9.3](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.2...v0.9.3) (2023-06-16)
 
 
