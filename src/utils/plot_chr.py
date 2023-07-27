@@ -142,6 +142,7 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, maxcol
                     continue
                 chr_len_list.append(int(line_split[2]))
             hic_len = chr_len_list[-1]
+            logger.info("hic file full length is %s \n" % hic_len)
 
     # get interaction matrix object
     matrix_object_chr = hic.getMatrixZoomData('assembly', 'assembly', "observed", nor_method, "BP", resolution)
