@@ -1,3 +1,7 @@
+## [0.9.5](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.4...v0.9.5) (2023-08-17)
+
+
+
 ## [0.9.4](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.3...v0.9.4) (2023-07-27)
 
 
