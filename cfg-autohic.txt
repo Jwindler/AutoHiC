@@ -10,7 +10,7 @@ SPECIES_NAME=At
 REFERENCE_GENOME=/home/ubuntu/at/references/at.fa
 
 # Juicer options
-JUICER_DIR=/home/ubuntu/HiC/juicer-1.6
+JUICER_DIR=/home/ubuntu/HiC/juicer
 FASTQ_DIR=/home/ubuntu/at/rawdata
 ENZYME=DpnII
 
