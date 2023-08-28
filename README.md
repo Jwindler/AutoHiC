@@ -246,7 +246,12 @@ species_name/
 
 3. Please see this [document](https://github.com/Jwindler/AutoHiC/tree/main/example/detail_result.md "Docs") for detailed results description.    
 
-​                
+
+
+## Example data
+
+- Reference genome : It can be obtained from the `example_data` folder in the pre-trained model download link.
+- Hi-C Data: [click to download](https://trace.ncbi.nlm.nih.gov/Traces/?view=run_browser&acc=SRR1197492&display=data-access)
 
 ​                       
 
