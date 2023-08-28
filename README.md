@@ -81,7 +81,7 @@ pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 ### Pre-trained model download
 
-**Please select your most convenient download link below, You need to download `error_model.pth` and `chr_model.pth` for the configuration of subsequent configuration files **
+**Please select your most convenient download link below, You need to download `error_model.pth` and `chr_model.pth` for the configuration of subsequent configuration files**
 
 > Note: If you have not installed `Juicer` and `3d-dna` in advance, please download `juicer.zip` and `3d-dna.zip` for subsequent configuration.
 
@@ -286,13 +286,16 @@ python visualizer.py -hic example.hic
 
 ## One Setp AutoHiC (optional) 
 
-If you have already run `Juicer` and `3d-dna`, you can use the following extended script to use `AutoHiC` to help you detect HiC assembly errors and generate adjusted `assembly` files.
+**If you have already run `Juicer` and `3d-dna`, you can use the following extended script to use `AutoHiC` to help you detect HiC assembly errors and generate adjusted `assembly` files.**
 
 ![image-20230615161203933](https://s2.loli.net/2023/06/15/GYoRrOc2euIpvQm.png)
 
 
 
 ```sh
+# Enter the AutoHiC directory.
+cd /home/ubuntu/AutoHic  
+
 python onehic.py -hic test.hic -asy test.assembly -autohic /home/ubuntu/AutoHic -p pretrained.pth -out ./
 ```
 
