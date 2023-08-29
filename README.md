@@ -49,6 +49,14 @@
 
 **If you use AutoHiC or the resulting assemblies, please cite the following paper:**
 
+```sh
+AutoHiC: a deep-learning method for automatic and accurate chromosome-level genome assembly
+
+bioRxiv 2023.08.27.555031; doi: https://doi.org/10.1101/2023.08.27.555031
+```
+
+
+
 ​    
 
 ## Installation
