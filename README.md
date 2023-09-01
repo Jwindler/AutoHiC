@@ -8,26 +8,7 @@
 
 
 ## Content
-- [AutoHiC](#autohic)
-  - [Content](#content)
-  - [Introduction](#introduction)
-  - [Overview of AutoHiC](#overview-of-autohic)
-  - [Citations](#citations)
-  - [Installation](#installation)
-    - [conda](#conda)
-    - [Pre-trained model download](#pre-trained-model-download)
-  - [Usages](#usages)
-    - [Data Preparation](#data-preparation)
-    - [Configs](#configs)
-    - [Run](#run)
-    - [Results](#results)
-  - [Plot HiC interaction map](#plot-hic-interaction-map)
-  - [Contact](#contact)
-  - [One Setp AutoHiC (optional)](#one-setp-autohic-optional)
-  - [Split chromosome (optional)](#split-chromosome-optional)
-  - [License](#license)
-
-
+[toc]
 
   
 
@@ -89,9 +70,7 @@ pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 ### Pre-trained model download
 
-**Please select your most convenient download link below, You need to download `error_model.pth` and `chr_model.pth` for the configuration of subsequent configuration files**
-
-> Note: If you have not installed `Juicer` and `3d-dna` in advance, please download `juicer.zip` and `3d-dna.zip` for subsequent configuration.
+**Please select your most convenient download link below, You need to download `error_model.pth`,  `chr_model.pth` , `Juicer` and `3d-dna` for the configuration of subsequent configuration files**
 
 - Google Drive (recommend)     
 
@@ -195,7 +174,7 @@ Copy and edit the configuration file `cft-autohic.txt` in your local folder.
 cd /home/AutoHiC  
 
 # run 
-nohup python autohic.py -c cfg-autohic.txt > log.txt 2>&1 &
+nohup python3.9 autohic.py -c cfg-autohic.txt > log.txt 2>&1 &
 
 # nohup: Run the program ignoring pending signals
 ```
