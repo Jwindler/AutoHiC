@@ -202,9 +202,9 @@ nohup python3.9 autohic.py -c cfg-autohic.txt > log.txt 2>&1 &
 > Notes:  
 >
 > 1. **Please specify the absolute path of the `cft-autohic.txt`**
->
-> 2. **It is recommended to specify a directory for the `log.txt`, It will record the running information of AutoHiC**
+>2. **It is recommended to specify a directory for the `log.txt`, It will record the running information of AutoHiC**
 > 3. **Delete the nohup command if you don't want the program to run in the background.**  
+> 3. **If you modify the configuration file and re-run AutoHiC, you must manually delete the previously generated result file.**
 
   
 
