@@ -59,6 +59,14 @@ bioRxiv 2023.08.27.555031; doi: https://doi.org/10.1101/2023.08.27.555031
 
 
 
+​     
+
+## Contact
+
+**Please free to open an issue, when you encounter any problems.**  
+
+**If you have any questions, you can also email `jzjlab@163.com` to get help.**
+
 ​    
 
 ## Installation
@@ -289,13 +297,7 @@ python visualizer.py -hic example.hic
 
 
 
-​     
 
-## Contact
-
-**Please free to open an issue, when you encounter any problems.**  
-
-​    
 
 ## One Setp AutoHiC (optional) 
 
