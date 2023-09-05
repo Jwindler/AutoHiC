@@ -48,10 +48,11 @@
 
 ## Citations
 
-**If you use AutoHiC or the resulting assemblies, please cite the following paper:**
+**If you used AutoHiC in your research, please cite us:**
 
 ```sh
 AutoHiC: a deep-learning method for automatic and accurate chromosome-level genome assembly
+Zijie Jiang, Zhixiang Peng, Yongjiang Luo, Lingzi Bie, Yi Wang
 
 bioRxiv 2023.08.27.555031; doi: https://doi.org/10.1101/2023.08.27.555031
 ```
@@ -154,12 +155,12 @@ Copy and edit the configuration file `cft-autohic.txt` in your local folder.
 | RESULT_DIR             | Path to AutoHiC result                                       |
 | N_CPU                  | Number of CPU allows per job   *Default: 10*                 |
 |                        |                                                              |
-| GENOME_NAME            | Name of the genome (Need to be consistent with the prefix of `REFERENCE_GENOME`) |
+| GENOME_NAME            | Name of the genome (Need to be consistent with the prefix of REFERENCE_GENOME file). For example, if the name of REFERENCE_GENOME file is  **Arabidopsis_thaliana.fa**, Name of the genome must be **Arabidopsis_thaliana** |
 | SPECIES_NAME           | Name of the species                                          |
 | REFERENCE_GENOME       | Path to reference genome                                     |
 |                        |                                                              |
 | JUICER_DIR             | Path to Juicer                                               |
-| FASTQ_DIR              | Path to HiC reads (Just path to the `rawdata` directory)     |
+| FASTQ_DIR              | Path to HiC reads (Just path to the `rawdata` directory, not fastq folder) |
 | ENZYME                 | Restriction enzyme  *eg:  "HindIII" or "MboI"*               |
 |                        |                                                              |
 | TD_DNA_DIR             | Path to 3d-dna                                               |
