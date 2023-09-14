@@ -266,8 +266,8 @@ species_name/
 
 ## Example data
 
-- Reference genome : [click to download](https://dnazoo.s3.wasabisys.com/Schistocerca_americana/Schistocerca_americana.12c.filt.bp.p_ctg.fasta.gz)
-- Hi-C Data: [click to download](https://www.ebi.ac.uk/ena/browser/view/SRR16603599)
+- Reference genome : Sample genome files are available at the `example_genome` file in the pre-trained model download link
+- Hi-C Data: [click to download](https://www.ebi.ac.uk/ena/browser/view/SRR16086854)
 
 ​                       
 
