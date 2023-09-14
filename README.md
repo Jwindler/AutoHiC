@@ -97,6 +97,29 @@ pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 ​    
 
+### Docker
+
+```sh
+# pull images
+docker pull jwindler/autohic
+
+# start container
+docker run -it -v $(pwd):/home/autohic jwindler/autohic bash
+
+# You need to use mounts (-v) to exchange files between the host filesystem on which your user can write and the container filesystem. ( Default "./" )
+
+# clone AutoHiC
+git clone https://github.com/Jwindler/AutoHiC.git
+
+# cd AutoHiC
+cd AutoHiC
+
+# activate AutoHiC
+conda activate autohic
+```
+
+
+
 ### Pre-trained model download
 
 **Please select your most convenient download link below, You need to download `error_model.pth`,  `chr_model.pth` , `Juicer` and `3d-dna` for the configuration of subsequent configuration files**
