@@ -3,9 +3,6 @@
 ![](https://img.shields.io/badge/release-v0.9.5-blue)![a](https://img.shields.io/badge/license-MIT-brightgreen)
 
 
-![](https://swindler-typora.oss-cn-chengdu.aliyuncs.com/typora_imgs/image-20221027210512819.png)
-
-
 
 ## Content
 - [AutoHiC](#autohic)
@@ -101,7 +98,7 @@ pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 ```sh
 # pull images
-docker pull jwindler/autohic
+docker pull jwindler/autohic:main
 
 # start container
 docker run -it -v $(pwd):/home/autohic jwindler/autohic bash
