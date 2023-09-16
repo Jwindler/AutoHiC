@@ -11,7 +11,7 @@
 
 import json
 import os
-
+import shutil
 from src.assembly.asy_operate import AssemblyOperate
 from src.assembly.cut_errors_ctg import cut_errors_ctg
 from src.assembly.deb_adjust_v3 import adjust_debris
@@ -75,6 +75,10 @@ def adjust_all_error(hic_file_path, asy_file_path, divided_error, modified_asy_f
         logger.info("Debris rectify done")
     else:
         logger.info("No debris error")
+
+    # if not detect error, return old assembly file
+    if os.path.exists(modified_asy_file) is False:
+        shutil.copy(asy_file_path, modified_asy_file)
 
     # Define error info
     error_tran_info, error_inv_info, error_deb_info = None, None, None
