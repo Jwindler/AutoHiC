@@ -141,7 +141,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     if check_genome(original_genome):
         logger.info("Split genome len to 80 base\n")
         original_genome_base_path = os.path.dirname(original_genome)
-        split_genome_path = os.path.join(original_genome_base_path, cfg_data["GENOME_NAME"] + "_lines.fa")
+        split_genome_path = os.path.join(original_genome_base_path, cfg_data["GENOME_NAME"] + "_lines.fasta")
         split_genome(original_genome, split_genome_path)
         original_genome = split_genome_path
         logger.info("Split genome len to 80 base finished\n")
@@ -222,7 +222,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
                 adjust_error_record[i] = 0
         adjust_error_record[3] = adjust_error_record[0] + adjust_error_record[1] + adjust_error_record[2]
         hic_error_records.append(adjust_error_record)
-        
+
         hic_error_records[adjust_epoch].insert(0, str(adjust_epoch) + ".hic")
 
         error_count_dict[adjust_epoch] = {
@@ -269,6 +269,12 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     if os.path.exists(chr_fa_path) is False:
         chr_fa_name_bak = cfg_data["GENOME_NAME"] + "_HiC.fasta"
         chr_fa_path = os.path.join(chr_adjust_path, chr_fa_name_bak)
+    if os.path.exists(chr_fa_path) is False:
+        chr_fa_name = cfg_data["GENOME_NAME"] + "_lines.FINAL.fasta"
+        chr_fa_path = os.path.join(chr_adjust_path, chr_fa_name)
+    if os.path.exists(chr_fa_path) is False:
+        chr_fa_name = cfg_data["GENOME_NAME"] + "_lines_HiC.fasta"
+        chr_fa_path = os.path.join(chr_adjust_path, chr_fa_name)
 
     # delete last debris seq
     auto_hic_genome_path = os.path.join(chr_adjust_path, cfg_data["GENOME_NAME"] + "_autohic.fasta")
