@@ -98,10 +98,10 @@ pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 ```sh
 # pull images
-docker pull jwindler/autohic:main
+sudo docker pull jwindler/autohic:main
 
 # start container
-docker run -it -v $(pwd):/home/autohic jwindler/autohic bash
+sudo docker run -it -v $(pwd):/home/autohic jwindler/autohic bash
 
 # You need to use mounts (-v) to exchange files between the host filesystem on which your user can write and the container filesystem. ( Default "./" )
 
