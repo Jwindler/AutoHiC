@@ -10,8 +10,10 @@
   - [Introduction](#introduction)
   - [Overview of AutoHiC](#overview-of-autohic)
   - [Citations](#citations)
+  - [Contact](#contact)
   - [Installation](#installation)
     - [conda](#conda)
+    - [Docker](#docker)
     - [Pre-trained model download](#pre-trained-model-download)
   - [Usages](#usages)
     - [Data Preparation](#data-preparation)
@@ -20,10 +22,10 @@
     - [Results](#results)
   - [Example data](#example-data)
   - [Plot HiC interaction map](#plot-hic-interaction-map)
-  - [Contact](#contact)
   - [One Setp AutoHiC (optional)](#one-setp-autohic-optional)
   - [Split chromosome (optional)](#split-chromosome-optional)
   - [License](#license)
+
 
 
 
@@ -101,7 +103,7 @@ pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
 sudo docker pull jwindler/autohic:main
 
 # start container
-sudo docker run -it -v $(pwd):/home/autohic jwindler/autohic bash
+sudo docker run -it -v $(pwd):/home/autohic jwindler/autohic:main bash
 
 # You need to use mounts (-v) to exchange files between the host filesystem on which your user can write and the container filesystem. ( Default "./" )
 
@@ -176,35 +178,35 @@ Copy and edit the configuration file `cft-autohic.txt` in your local folder.
 
 - Setting the configuration file
 
-| options                | value                                                        |
-| :--------------------- | ------------------------------------------------------------ |
-| JOB_NAME               | Name of the job                                              |
-| AutoHiC_DIR            | Path to AutoHiC  *eg:  /path_to/AutoHiC*                     |
-| RESULT_DIR             | Path to AutoHiC result                                       |
-| N_CPU                  | Number of CPU allows per job   *Default: 10*                 |
-|                        |                                                              |
+| options                | value                                                                                                                                                                                                                       |
+| :--------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| JOB_NAME               | Name of the job                                                                                                                                                                                                             |
+| AutoHiC_DIR            | Path to AutoHiC  *eg:  /path_to/AutoHiC*                                                                                                                                                                                    |
+| RESULT_DIR             | Path to AutoHiC result                                                                                                                                                                                                      |
+| N_CPU                  | Number of CPU allows per job   *Default: 10*                                                                                                                                                                                |
+|                        |                                                                                                                                                                                                                             |
 | GENOME_NAME            | Name of the genome (Need to be consistent with the prefix of REFERENCE_GENOME file). For example, if the name of REFERENCE_GENOME file is  **Arabidopsis_thaliana.fa**, Name of the genome must be **Arabidopsis_thaliana** |
-| SPECIES_NAME           | Name of the species                                          |
-| REFERENCE_GENOME       | Path to reference genome                                     |
-|                        |                                                              |
-| JUICER_DIR             | Path to Juicer                                               |
-| FASTQ_DIR              | Path to HiC reads (Just path to the `rawdata` directory, not fastq folder) |
-| ENZYME                 | Restriction enzyme  *eg:  "HindIII" or "MboI"*               |
-|                        |                                                              |
-| TD_DNA_DIR             | Path to 3d-dna                                               |
-| NUMBER_OF_EDIT_ROUNDS  | Specifies number of iterative rounds for misjoin correction   *Default: 2* **Modification is not recommended.** |
-|                        |                                                              |
-|                        |                                                              |
-| ERROR_PRETRAINED_MODEL | Path to error pretrained model  *eg: /path/AutoHiC/src/models/cfgs/error_model.pth* |
-| CHR_PRETRAINED_MODEL   | Path to chromosome pretrained model  *eg: /path/AutoHiC/src/models/cfgs/chr_model.pth* |
-|                        |                                                              |
-| TRANSLOCATION_ADJUST   | Whether to adjust for translocation errors  *Default: True*  |
-| INVERSION_ADJUST       | Whether to adjust for inversion errors  *Default: True*      |
-| DEBRIS_ADJUST          | Whether to adjust for debris errors  *Default: True*         |
-| ERROR_MIN_LEN          | Minimum error length  *Default: 15000*                       |
-| ERROR_MAX_LEN          | Maximum error length *Default: 20000000*                     |
-| ERROR_FILTER_IOU_SCORE | Overlapping error filtering threshold  *Default: 0.8* **Modification is not recommended.** |
-| ERROR_FILTER_SCORE     | Error filtering threshold  *Default: 0.9* **Modification is not recommended.** |
+| SPECIES_NAME           | Name of the species                                                                                                                                                                                                         |
+| REFERENCE_GENOME       | Path to reference genome                                                                                                                                                                                                    |
+|                        |                                                                                                                                                                                                                             |
+| JUICER_DIR             | Path to Juicer                                                                                                                                                                                                              |
+| FASTQ_DIR              | Path to HiC reads (Just path to the `rawdata` directory, not fastq folder)                                                                                                                                                  |
+| ENZYME                 | Restriction enzyme  *eg:  "HindIII" or "MboI"*                                                                                                                                                                              |
+|                        |                                                                                                                                                                                                                             |
+| TD_DNA_DIR             | Path to 3d-dna                                                                                                                                                                                                              |
+| NUMBER_OF_EDIT_ROUNDS  | Specifies number of iterative rounds for misjoin correction   *Default: 2* **Modification is not recommended.**                                                                                                             |
+|                        |                                                                                                                                                                                                                             |
+|                        |                                                                                                                                                                                                                             |
+| ERROR_PRETRAINED_MODEL | Path to error pretrained model  *eg: /path/AutoHiC/src/models/cfgs/error_model.pth*                                                                                                                                         |
+| CHR_PRETRAINED_MODEL   | Path to chromosome pretrained model  *eg: /path/AutoHiC/src/models/cfgs/chr_model.pth*                                                                                                                                      |
+|                        |                                                                                                                                                                                                                             |
+| TRANSLOCATION_ADJUST   | Whether to adjust for translocation errors  *Default: True*                                                                                                                                                                 |
+| INVERSION_ADJUST       | Whether to adjust for inversion errors  *Default: True*                                                                                                                                                                     |
+| DEBRIS_ADJUST          | Whether to adjust for debris errors  *Default: True*                                                                                                                                                                        |
+| ERROR_MIN_LEN          | Minimum error length  *Default: 15000*                                                                                                                                                                                      |
+| ERROR_MAX_LEN          | Maximum error length *Default: 20000000*                                                                                                                                                                                    |
+| ERROR_FILTER_IOU_SCORE | Overlapping error filtering threshold  *Default: 0.8* **Modification is not recommended.**                                                                                                                                  |
+| ERROR_FILTER_SCORE     | Error filtering threshold  *Default: 0.9* **Modification is not recommended.**                                                                                                                                              |
 
 
 
