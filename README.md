@@ -7,10 +7,10 @@
 ## Content
 - [AutoHiC](#autohic)
   - [Content](#content)
+  - [Notes](#notes)
   - [Introduction](#introduction)
   - [Overview of AutoHiC](#overview-of-autohic)
   - [Citations](#citations)
-  - [Contact](#contact)
   - [Installation](#installation)
     - [conda](#conda)
     - [Docker](#docker)
@@ -29,7 +29,16 @@
 
 
 
-  
+​     
+
+## Notes
+
+- **Currently, AutoHiC updates very fast. If you have already cloned `AutoHiC`, please delete the `AutoHiC` folder and clone it again.**
+- **lease feel free to [open an issue](https://github.com/Jwindler/AutoHiC/issues) if you encounter any problems. This is very important to help us improve AutoHiC.**
+- **If you have any questions, you can also email `jzjlab@163.com` to get help.**
+
+​    
+
 
 ## Introduction
 
@@ -58,15 +67,7 @@ bioRxiv 2023.08.27.555031; doi: https://doi.org/10.1101/2023.08.27.555031
 
 
 
-​     
 
-## Contact
-
-**Please free to open an issue, when you encounter any problems.**  
-
-**If you have any questions, you can also email `jzjlab@163.com` to get help.**
-
-​    
 
 ## Installation
 
