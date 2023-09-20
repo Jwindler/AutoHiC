@@ -23,7 +23,7 @@ from src.utils import get_cfg
 def onehic(hic_file: str = typer.Option(..., "--hic-file", "-hic", help="hic file path"),
            asy_file: str = typer.Option(..., "--asy-file", "-asy", help="assembly file path"),
            autohic: str = typer.Option(..., "--autohic-file", "-autohic", help="autohic path"),
-           pretrained_model: str = typer.Option(..., "--pretrain-model", "-p", help="pretrained model path"),
+           pretrained_model: str = typer.Option(..., "--pretrain-model", "-p", help="error pretrained model path"),
            out_path: str = typer.Option("./", "--out-path", "-out", help="result output path"),
            threads: int = typer.Option(10, "--threads", "-t", help="threads number"),
            translocation: bool = typer.Option(True, "--translocation", "-tran", help="whether to adjust translocation"),
@@ -39,6 +39,8 @@ def onehic(hic_file: str = typer.Option(..., "--hic-file", "-hic", help="hic fil
     device = ('cuda:0' if torch.cuda.is_available() else 'cpu')
     if device == 'cpu':
         print("GPU is not available, AutoHiC will run on CPU\n")
+    else:
+        print("GPU is available, AutoHiC will run on GPU\n")
 
     mdy_asy_file = os.path.join(out_path, "adjusted.assembly")
 

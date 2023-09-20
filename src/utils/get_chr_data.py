@@ -124,6 +124,8 @@ def hic_loci2txt(chr_dict, txt_path, hic_len=None, redundant_len=200000):
         chr_len_list_sorted[chr_index + 1][0] = chr_len_list_sorted[chr_index][1] + 1
 
     #
+    if len(chr_len_list_sorted) == 0:
+        chr_len_list_sorted.append([0, hic_len])
     chr_len_list_sorted[0][0] = 0
     if hic_len is not None:
         chr_len_list_sorted[-1][1] = hic_len
@@ -198,7 +200,7 @@ def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
             assembly_file = modified_assembly_file
 
         # find ctg
-        error_contains_ctg = asy_operate.find_site_ctg_s(assembly_file, chr_len, chr_len + 1)
+        error_contains_ctg = asy_operate.find_site_ctg_s(assembly_file, chr_len, chr_len + 2)
 
         # json format
         contain_ctg = json.loads(error_contains_ctg)
@@ -286,7 +288,7 @@ def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
     logger.info("Get ctg_s information done \n")
 
 
-def split_chr(img_file, asy_file, hic_file, cfg_file, device='CPU'):
+def split_chr(img_file, asy_file, hic_file, cfg_file, device='cpu'):
     """
     Split chromosome from image
     Args:
@@ -307,15 +309,16 @@ def split_chr(img_file, asy_file, hic_file, cfg_file, device='CPU'):
     checkpoint_file = cfg_data["CHR_PRETRAINED_MODEL"]
     model = init_detector(config_file, checkpoint_file, device=device)
     result = inference_detector(model, img_file)
-    #
+
     hic_len = get_hic_real_len(hic_file, asy_file)
+
     img_size = Image.open(img_file).size
 
     chr_data = create_structure(result[0][0], hic_len, img_size)
     score_filtered_chr = score_filter(chr_data, 0.6)
 
     chr_output = os.path.join(os.path.dirname(img_file), "chr.txt")
-    hic_loci2txt(score_filtered_chr, chr_output, redundant_len=200000)
+    hic_loci2txt(score_filtered_chr, chr_output, hic_len, redundant_len=200000)
 
     # split chr
     modified_assembly_file = os.path.join(os.path.dirname(img_file), "chr.assembly")

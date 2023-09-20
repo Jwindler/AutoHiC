@@ -14,6 +14,11 @@ mkdir -p $RESULT_DIR/$JOB_NAME/hic_results/juicer
 mkdir -p $RESULT_DIR/$JOB_NAME/hic_results/3d-dna
 mkdir -p $RESULT_DIR/$JOB_NAME/autohic_results $RESULT_DIR/$JOB_NAME/logs
 
+# get genome name from reference genome
+filename_with_extension=$(basename $REFERENCE_GENOME)
+
+# remove extension
+GENOME_NAME=$(echo "$filename_with_extension" | cut -d'.' -f1)
 
 # link data
 ln -s $REFERENCE_GENOME $RESULT_DIR/$JOB_NAME/data/reference

@@ -20,11 +20,15 @@
     - [Configs](#configs)
     - [Run](#run)
     - [Results](#results)
-  - [Example data](#example-data)
+  - [Example](#example)
+    - [data](#data)
+    - [run](#run-1)
+    - [result](#result)
   - [Plot HiC interaction map](#plot-hic-interaction-map)
   - [One Setp AutoHiC (optional)](#one-setp-autohic-optional)
   - [Split chromosome (optional)](#split-chromosome-optional)
   - [License](#license)
+
 
 
 
@@ -34,7 +38,7 @@
 ## Notes
 
 - **Currently, AutoHiC updates very fast. If you have already cloned `AutoHiC`, please delete the `AutoHiC` folder and clone it again.**
-- **lease feel free to [open an issue](https://github.com/Jwindler/AutoHiC/issues) if you encounter any problems. This is very important to help us improve AutoHiC.**
+- **Please feel free to [open an issue](https://github.com/Jwindler/AutoHiC/issues) if you encounter any problems. This is very important to help us improve AutoHiC.**
 - **If you have any questions, you can also email `jzjlab@163.com` to get help.**
 
 ​    
@@ -70,6 +74,8 @@ bioRxiv 2023.08.27.555031; doi: https://doi.org/10.1101/2023.08.27.555031
 
 
 ## Installation
+
+
 
 ### conda
 
@@ -140,6 +146,8 @@ conda activate autohic
 
   [Pre-trained model](https://pan.quark.cn/s/709f9e5e005b) 
 
+  
+  
   ​    
 
 ## Usages
@@ -160,14 +168,12 @@ species_name/
     └── contig.fasta
 ```
 
-> Example: Arabidopsis thaliana 
-
 ![](https://s2.loli.net/2023/06/12/aZ6ulMrwqcjkXE8.png)
 
 > Notes:
 >
 > 1. **The directory structure must be consistent with the above image.**
-> 2. **Paired-end sequences must end with `X_R1.fastq.gz` and `X_R2.fastq.gz`**  
+> 2. **Paired-end sequences must end with `X_R1.fastq.gz` and `X_R2.fastq.gz`**  ( also supports uncompressed formats such as : `X_R1.fastq` and `X_R2.fastq` )  
 
 ​             
 
@@ -179,35 +185,35 @@ Copy and edit the configuration file `cft-autohic.txt` in your local folder.
 
 - Setting the configuration file
 
-| options                | value                                                                                                                                                                                                                       |
-| :--------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| JOB_NAME               | Name of the job                                                                                                                                                                                                             |
-| AutoHiC_DIR            | Path to AutoHiC  *eg:  /path_to/AutoHiC*                                                                                                                                                                                    |
-| RESULT_DIR             | Path to AutoHiC result                                                                                                                                                                                                      |
-| N_CPU                  | Number of CPU allows per job   *Default: 10*                                                                                                                                                                                |
-|                        |                                                                                                                                                                                                                             |
-| GENOME_NAME            | Name of the genome (Need to be consistent with the prefix of REFERENCE_GENOME file). For example, if the name of REFERENCE_GENOME file is  **Arabidopsis_thaliana.fa**, Name of the genome must be **Arabidopsis_thaliana** |
-| SPECIES_NAME           | Name of the species                                                                                                                                                                                                         |
-| REFERENCE_GENOME       | Path to reference genome                                                                                                                                                                                                    |
-|                        |                                                                                                                                                                                                                             |
-| JUICER_DIR             | Path to Juicer                                                                                                                                                                                                              |
-| FASTQ_DIR              | Path to HiC reads (Just path to the `rawdata` directory, not fastq folder)                                                                                                                                                  |
-| ENZYME                 | Restriction enzyme  *eg:  "HindIII" or "MboI"*                                                                                                                                                                              |
-|                        |                                                                                                                                                                                                                             |
-| TD_DNA_DIR             | Path to 3d-dna                                                                                                                                                                                                              |
-| NUMBER_OF_EDIT_ROUNDS  | Specifies number of iterative rounds for misjoin correction   *Default: 2* **Modification is not recommended.**                                                                                                             |
-|                        |                                                                                                                                                                                                                             |
-|                        |                                                                                                                                                                                                                             |
-| ERROR_PRETRAINED_MODEL | Path to error pretrained model  *eg: /path/AutoHiC/src/models/cfgs/error_model.pth*                                                                                                                                         |
-| CHR_PRETRAINED_MODEL   | Path to chromosome pretrained model  *eg: /path/AutoHiC/src/models/cfgs/chr_model.pth*                                                                                                                                      |
-|                        |                                                                                                                                                                                                                             |
-| TRANSLOCATION_ADJUST   | Whether to adjust for translocation errors  *Default: True*                                                                                                                                                                 |
-| INVERSION_ADJUST       | Whether to adjust for inversion errors  *Default: True*                                                                                                                                                                     |
-| DEBRIS_ADJUST          | Whether to adjust for debris errors  *Default: True*                                                                                                                                                                        |
-| ERROR_MIN_LEN          | Minimum error length  *Default: 15000*                                                                                                                                                                                      |
-| ERROR_MAX_LEN          | Maximum error length *Default: 20000000*                                                                                                                                                                                    |
-| ERROR_FILTER_IOU_SCORE | Overlapping error filtering threshold  *Default: 0.8* **Modification is not recommended.**                                                                                                                                  |
-| ERROR_FILTER_SCORE     | Error filtering threshold  *Default: 0.9* **Modification is not recommended.**                                                                                                                                              |
+| options                | value                                                                                                           |
+| :--------------------- | --------------------------------------------------------------------------------------------------------------- |
+| JOB_NAME               | Name of the job                                                                                                 |
+| AutoHiC_DIR            | Path to AutoHiC  *eg:  /path_to/AutoHiC*                                                                        |
+| RESULT_DIR             | Path to AutoHiC result                                                                                          |
+| N_CPU                  | Number of CPU allows per job   *Default: 10*                                                                    |
+|                        |                                                                                                                 |
+|                        |                                                                                                                 |
+| SPECIES_NAME           | Name of the species                                                                                             |
+| REFERENCE_GENOME       | Path to reference genome                                                                                        |
+|                        |                                                                                                                 |
+| JUICER_DIR             | Path to Juicer                                                                                                  |
+| FASTQ_DIR              | Path to HiC reads (Just path to the `rawdata` directory, not fastq folder)                                      |
+| ENZYME                 | Restriction enzyme  *eg:  "HindIII" or "MboI"*                                                                  |
+|                        |                                                                                                                 |
+| TD_DNA_DIR             | Path to 3d-dna                                                                                                  |
+| NUMBER_OF_EDIT_ROUNDS  | Specifies number of iterative rounds for misjoin correction   *Default: 2* **Modification is not recommended.** |
+|                        |                                                                                                                 |
+|                        |                                                                                                                 |
+| ERROR_PRETRAINED_MODEL | Path to error pretrained model  *eg: /path/AutoHiC/src/models/cfgs/error_model.pth*                             |
+| CHR_PRETRAINED_MODEL   | Path to chromosome pretrained model  *eg: /path/AutoHiC/src/models/cfgs/chr_model.pth*                          |
+|                        |                                                                                                                 |
+| TRANSLOCATION_ADJUST   | Whether to adjust for translocation errors  *Default: True*                                                     |
+| INVERSION_ADJUST       | Whether to adjust for inversion errors  *Default: True*                                                         |
+| DEBRIS_ADJUST          | Whether to adjust for debris errors  *Default: True*                                                            |
+| ERROR_MIN_LEN          | Minimum error length  *Default: 15000*                                                                          |
+| ERROR_MAX_LEN          | Maximum error length *Default: 20000000*                                                                        |
+| ERROR_FILTER_IOU_SCORE | Overlapping error filtering threshold  *Default: 0.8* **Modification is not recommended.**                      |
+| ERROR_FILTER_SCORE     | Error filtering threshold  *Default: 0.9* **Modification is not recommended.**                                  |
 
 
 
@@ -285,14 +291,50 @@ species_name/
 
 3. Please see this [document](https://github.com/Jwindler/AutoHiC/tree/main/example/detail_result.md "Docs") for detailed results description.    
 
+   
+
+  
+
+## Example 
+
+**If you want to run AutoHiC with sample data, you can choose from the following data.**
 
 
-## Example data
 
-- Reference genome : Sample genome files are available at the `example_genome` file in the pre-trained model download link
-- Hi-C Data: [click to download](https://www.ebi.ac.uk/ena/browser/view/SRR16086854)
+### data
+
+Please follow the link provided for the selected species to download the appropriate data and organize it into the required format, can refer to : [Data Preparation](#data-preparation).
+
+| Species                   | Reference genome                                             | Hi-C Data                                                    |
+| ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| *Schistosoma haematobium* | [sh.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR16086854](https://www.ebi.ac.uk/ena/browser/view/SRR16086854) |
+| *Arachis hypogaea*        | [peanut.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR6796709](https://www.ebi.ac.uk/ena/browser/view/SRR6796709); [SRR6832914](https://www.ebi.ac.uk/ena/browser/view/SRR6832914) |
+|                           |                                                              |                                                              |
+
+- Reference genome : Sample genome files are available at the `example_genome` file in the pre-trained model download link : [Pre-trained model download](#pre-trained-model-download)
+
+
+
+### run
+
+```sh
+cd AutoHiC
+
+nohup python3.9 autohic.py -c cfg-autohic.txt > log.txt 2>&1 &
+
+```
+
+- Please modify the `cfg-autohic.txt` file according to the actual situation, can refer to : [Configs](#configs).
+
+
+
+### result
+
+**The main results of AutoHiC are genome and assembly reports at the chromosome level. For a detailed description of the results, please refer to [Results](#results). At the same time, we also upload the assembly report to [Google Drive](https://drive.google.com/drive/folders/1G69pMYtFEmYTUZ6l1q6RgbaJYgj59Mxe) for users to retrieve and view.**
 
 ​                       
+
+
 
 ## Plot HiC interaction map
 
@@ -303,7 +345,7 @@ AutoHiC also provides a script to visualise the HiC interaction matrix separatel
   
 
 ```sh
-python visualizer.py -hic example.hic
+python3.9 visualizer.py -hic example.hic
 ```
 
 **For detailed commands, please refer to the help documentation (`--help`)**  
@@ -326,7 +368,7 @@ python visualizer.py -hic example.hic
 
 **If you have already run `Juicer` and `3d-dna`, you can use the following extended script to use `AutoHiC` to help you detect HiC assembly errors and generate adjusted `assembly` files.**
 
-![image-20230615161203933](https://s2.loli.net/2023/06/15/GYoRrOc2euIpvQm.png)
+![](https://s2.loli.net/2023/09/20/dgI9O68HeSLXBkN.png)
 
 
 
@@ -334,14 +376,22 @@ python visualizer.py -hic example.hic
 # Enter the AutoHiC directory.
 cd /home/ubuntu/AutoHic  
 
-python onehic.py -hic test.hic -asy test.assembly -autohic /home/ubuntu/AutoHic -p pretrained.pth -out ./
+# run onehic
+python3.9 onehic.py -hic test.hic -asy test.assembly -autohic /home/ubuntu/AutoHic -p pretrained.pth -out ./
+
+# run 3d-dna to get fasta
+bash run-asm-pipeline-post-review.sh -r adjusted.assembly genome.fasta merged_nodups.txt 
+
+# Please specify the absolute path of each file
+# adjusted.assembly is output from onehic.py
+# merged_nodups.txt is output from Juicer
 ```
 
 > Notes:
 >
 > 1. `.hic` and `.assembly` : can be obtained from 3d-dna results
 > 2. `-autohic` : the parameter represents the path of AutoHiC
-> 3. `-p`: the path to the **pretrained model (error model)** you downloaded before  
+> 3. `-p`: the path to the **error pretrained model** you downloaded before  
 
 ​                     
 
@@ -359,7 +409,7 @@ If your genome is very complex, the model may not be very accurate in dividing t
 
 **AutoHiC Copyright (c) 2022 Wang lab. All rights reserved.**
 
-This software is distributed under The `MIT License` (MIT).  
+This software is distributed under the `MIT License` (MIT).  
 
   
 

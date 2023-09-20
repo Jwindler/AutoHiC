@@ -69,7 +69,7 @@ def run_quast(input_path, output_path, extra_info, quast_thread, ctg_flag=False)
                         ['Scaffold N90 (bp)', int(sum_data.loc['N90', :][0])],
                         ['CC ratio (%)', cc_ratio],
                         ['Structural errors ratio (%)', structural_err_ratio],
-                        ['Number of chromosomes', num_chr],
+                        # ['Number of chromosomes', num_chr],
                         ['Number of scaffolds', int(sum_data.loc['# contigs', :][0])],
                         ['Longest scaffold (bp)', int(sum_data.loc['Largest contig', :][0])],
                         ['Scaffold L50', int(sum_data.loc['L50', :][0])],

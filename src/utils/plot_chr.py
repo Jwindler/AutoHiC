@@ -101,8 +101,8 @@ def plot_chr_inter(hic_file, asy_file=None, out_path=None, maxcolor=None, color_
 
     plt.savefig(os.path.join(out_path, "chromosome." + fig_format), bbox_inches='tight', pad_inches=0, dpi=dpi,
                 format=fig_format)
-    plt.show()  # not show figure
-    plt.close()
+    # plt.show()  # not show figure
+    # plt.close()
 
 
 # plot whole genome chromosome interaction map in one figure
@@ -214,8 +214,8 @@ def plot_chr(hic_file, genome_name=None, chr_len_file=None, hic_len=None, maxcol
     plt.savefig(os.path.join(out_path, "chromosome." + fig_format), bbox_inches='tight', pad_inches=0.1,
                 dpi=dpi,
                 format=fig_format)
-    plt.show()  # not show figure
-    plt.close()
+    # plt.show()  # not show figure
+    # plt.close()
 
 
 def main():

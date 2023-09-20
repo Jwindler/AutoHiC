@@ -5,7 +5,6 @@ RESULT_DIR=/home/ubuntu/result
 N_CPU=40
 
 # Data options
-GENOME_NAME=at
 SPECIES_NAME=At
 REFERENCE_GENOME=/home/ubuntu/at/references/at.fa
 

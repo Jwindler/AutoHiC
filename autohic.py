@@ -10,6 +10,8 @@
 """
 
 import os
+import re
+import sys
 
 import torch
 import typer
@@ -38,6 +40,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     error_min_len = int(cfg_data["ERROR_MIN_LEN"])
     error_max_len = int(cfg_data["ERROR_MAX_LEN"])
     iou_score = float(cfg_data["ERROR_FILTER_IOU_SCORE"])
+    genome_name_without_extension, _ = os.path.splitext(os.path.basename(cfg_data["REFERENCE_GENOME"]))
 
     top_output_dir = os.path.join(cfg_data["RESULT_DIR"], cfg_data["JOB_NAME"])
 
@@ -52,13 +55,56 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     device = ('cuda:0' if torch.cuda.is_available() else 'cpu')
     if device == 'cpu':
         logger.info("GPU is not available, AutoHiC will run on CPU\n")
+    else:
+        logger.info("GPU is available, AutoHiC will run on GPU\n")
+
+    # Check to see if the fastq file is correct
+    fastq_folder_path = os.path.join(cfg_data["FASTQ_DIR"], "fastq")
+
+    # count the number of fastq files
+    fastq_file_count = len(os.listdir(fastq_folder_path))
+
+    if fastq_file_count % 2 == 0:
+        logger.info(f"Fastq file number is correct.\n")
+    else:
+        logger.error(f"Please check the number of fastq files.")
+        sys.exit()
+
+    # define the regular expression pattern to match the file name
+    pattern = r'_R[12]\.fastq(\.gz)?$'
+
+    # iterate all files in the folder
+    for filename in os.listdir(fastq_folder_path):
+        if re.search(pattern, filename):
+            continue
+        else:
+            logger.error(f"Please check if the %s filename is configured correctly." % filename)
+            sys.exit()
+
+    # Check genome length whether > 80 base
+    logger.info("Check genome length whether > 80 base")
+    original_genome = cfg_data["REFERENCE_GENOME"]
+    if check_genome(original_genome):
+        logger.info("Split genome len to 80 base")
+        original_genome_base_path = os.path.dirname(original_genome)
+        split_genome_path = os.path.join(original_genome_base_path, genome_name_without_extension + "_old.fasta")
+        split_genome(original_genome, split_genome_path)
+
+        # exchange file name
+        temp_name = os.path.join(original_genome_base_path, genome_name_without_extension + "_temp.fasta")
+        os.rename(original_genome, temp_name)
+        os.rename(split_genome_path, original_genome)
+        os.rename(temp_name, split_genome_path)
+
+        logger.info("Split genome len to 80 base finished\n")
+    else:
+        logger.info("Genome len < 80 base\n")
 
     # Stage 1: run Juicer + 3d-dna
     logger.info("Stage 1: Run Juicer and  3d-dna")
     run_sh_dir = os.path.join(cfg_data["AutoHiC_DIR"], "src/common/run.sh")
     run_sh = "bash " + run_sh_dir + " " + cfg_dir
     get_cfg.subprocess_popen(run_sh)
-    # print(run_sh)
     logger.info("Run Juicer and  3d-dna finished\n")
 
     # Stage 2: select the min error num hic file
@@ -68,7 +114,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     hic_file_dir = os.path.join(top_output_dir, "hic_results", "3d-dna")
     hic_files = []
     for epoch in range(int(cfg_data["NUMBER_OF_EDIT_ROUNDS"]) + 1):
-        filename = cfg_data["GENOME_NAME"] + "." + str(epoch) + ".hic"
+        filename = genome_name_without_extension + "." + str(epoch) + ".hic"
         hic_files.append(filename)
 
     # run autohic
@@ -115,7 +161,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     min_hic = min(error_count_dict, key=lambda k: error_count_dict[k]["error_sum"])
     final_adjust_path = error_count_dict[min_hic]["adjust_path"]
 
-    merged_nodups_path = os.path.join(top_output_dir, "hic_results", "juicer", cfg_data["GENOME_NAME"], "aligned",
+    merged_nodups_path = os.path.join(top_output_dir, "hic_results", "juicer", genome_name_without_extension, "aligned",
                                       "merged_nodups.txt")
     adjust_hic_file = error_count_dict[min_hic]["hic_file"]
     adjust_asy_file = error_count_dict[min_hic]["assembly_file"]
@@ -134,19 +180,6 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     plot_chr(adjust_hic_file, genome_name="", chr_len_file=None, out_path=final_adjust_path,
              fig_format="png")
     ctg_hic_map = os.path.join(final_adjust_path, "chromosome.png")
-
-    # Check genome length whether > 80 base
-    logger.info("Check genome length whether > 80 base")
-    original_genome = cfg_data["REFERENCE_GENOME"]
-    if check_genome(original_genome):
-        logger.info("Split genome len to 80 base\n")
-        original_genome_base_path = os.path.dirname(original_genome)
-        split_genome_path = os.path.join(original_genome_base_path, cfg_data["GENOME_NAME"] + "_lines.fasta")
-        split_genome(original_genome, split_genome_path)
-        original_genome = split_genome_path
-        logger.info("Split genome len to 80 base finished\n")
-    else:
-        logger.info("Genome len < 80 base\n")
 
     logger.info("Start iterating to adjust errors\n")
     first_flag = True
@@ -192,7 +225,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
         # generate hic img
         hic_img_dir = os.path.join(final_adjust_path, "png")
-        hic_file_path = os.path.join(final_adjust_path, cfg_data["GENOME_NAME"] + ".final.hic")
+        hic_file_path = os.path.join(final_adjust_path, genome_name_without_extension + ".final.hic")
         asy_file = hic_file_path.replace(".hic", ".assembly")
         mul_process(hic_file_path, "png", final_adjust_path, "dia", int(cfg_data["N_CPU"]))
 
@@ -259,25 +292,18 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
                                     "run-asm-pipeline-post-review.sh") + " -r " + chr_asy_file + " " + \
              original_genome + " " + merged_nodups_path + " > " + chr_adjust_log + " 2>&1"
     get_cfg.subprocess_popen(run_sh, cwd=chr_adjust_path)
-    # print(run_sh)
     logger.info("Chromosome split completed\n")
 
     # Generate report
     logger.info("Generate genome report\n")
-    chr_fa_name = cfg_data["GENOME_NAME"] + ".FINAL.fasta"
+    chr_fa_name = genome_name_without_extension + ".FINAL.fasta"
     chr_fa_path = os.path.join(chr_adjust_path, chr_fa_name)
     if os.path.exists(chr_fa_path) is False:
-        chr_fa_name_bak = cfg_data["GENOME_NAME"] + "_HiC.fasta"
+        chr_fa_name_bak = genome_name_without_extension + "_HiC.fasta"
         chr_fa_path = os.path.join(chr_adjust_path, chr_fa_name_bak)
-    if os.path.exists(chr_fa_path) is False:
-        chr_fa_name = cfg_data["GENOME_NAME"] + "_lines.FINAL.fasta"
-        chr_fa_path = os.path.join(chr_adjust_path, chr_fa_name)
-    if os.path.exists(chr_fa_path) is False:
-        chr_fa_name = cfg_data["GENOME_NAME"] + "_lines_HiC.fasta"
-        chr_fa_path = os.path.join(chr_adjust_path, chr_fa_name)
 
     # delete last debris seq
-    auto_hic_genome_path = os.path.join(chr_adjust_path, cfg_data["GENOME_NAME"] + "_autohic.fasta")
+    auto_hic_genome_path = os.path.join(chr_adjust_path, genome_name_without_extension + "_autohic.fasta")
     get_auto_hic_genome(chr_fa_path, chr_number, auto_hic_genome_path)
 
     # link genome
@@ -308,7 +334,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     quast_thread = int(cfg_data["N_CPU"])
 
     # generate after adjust whole hic map png
-    chr_hic_name = cfg_data["GENOME_NAME"] + ".final.hic"
+    chr_hic_name = genome_name_without_extension + ".final.hic"
     chr_hic_path = os.path.join(chr_adjust_path, chr_hic_name)
 
     final_chr_txt = os.path.join(chr_adjust_path, "chr.txt")
@@ -331,8 +357,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
 
 def main():
-    cfg_file = "/home/ubuntu/cfg-autohic.txt"
-    whole(cfg_file)
+    pass
 
 
 if __name__ == "__main__":
