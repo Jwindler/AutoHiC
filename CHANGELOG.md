@@ -1,3 +1,23 @@
+## [0.9.6](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.5...v0.9.6) (2023-09-20)
+
+
+### Bug Fixes
+
+* fix docker main ([04b306f](https://github.com/Jwindler/HiC-OpenCV/commit/04b306f6d6787e1e169f64593260368452c4bc27))
+* fix genome lines bug ([40321a6](https://github.com/Jwindler/HiC-OpenCV/commit/40321a69500740cb080c05e93bd450bc5b61df2d))
+* fix onehic bug for no error ([7a9cf0f](https://github.com/Jwindler/HiC-OpenCV/commit/7a9cf0f8da0c6feef6732c34b6a52d73475f564f))
+* fix some bugs ([3732299](https://github.com/Jwindler/HiC-OpenCV/commit/3732299053c1f08863de3fb248942358738c7444))
+* update docker command ([75c4073](https://github.com/Jwindler/HiC-OpenCV/commit/75c4073cf199cdd9880c6a924ee6b09aecbc2150))
+* update src ([52a16c5](https://github.com/Jwindler/HiC-OpenCV/commit/52a16c5604665b79975e182ea5d1ef140ea99e4e))
+
+
+### Features
+
+* add Docker ([5669bdb](https://github.com/Jwindler/HiC-OpenCV/commit/5669bdbd16927e6c23690b7ca68cb6e216de15f6))
+* update result html ([a4d9f96](https://github.com/Jwindler/HiC-OpenCV/commit/a4d9f96189fadd2c6bec1eb6bb9c18b15e3d3c64))
+
+
+
 ## [0.9.5](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.4...v0.9.5) (2023-08-17)
 
 
