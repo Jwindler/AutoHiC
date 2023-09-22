@@ -138,13 +138,21 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         # detect hic img
         hic_img_dir = os.path.join(adjust_path, "png")
         logger.info("Detect the %s file" % adjust_name)
-        infer_error(model_cfg, pretrained_model, hic_img_dir, adjust_path, device=device, score=score,
-                    error_min_len=error_min_len,
-                    error_max_len=error_max_len, iou_score=iou_score, chr_len=hic_real_len)
+        infer_error_result = infer_error(model_cfg, pretrained_model, hic_img_dir, adjust_path, device=device,
+                                         score=score,
+                                         error_min_len=error_min_len,
+                                         error_max_len=error_max_len, iou_score=iou_score, chr_len=hic_real_len)
         logger.info("Detect the %s file finished\n" % adjust_name)
 
         # get error sum and error records dict
         error_summary_json = os.path.join(adjust_path, "error_summary.json")
+
+        if infer_error_result:  # no detect error
+            get_cfg.write_no_error_json(error_summary_json)
+            os.mkdir(os.path.join(adjust_path, "infer_result"))
+            get_cfg.write_no_error_infer_json(os.path.join(adjust_path, "infer_result", "infer_result.json"))
+            logger.info("No error detected")
+
         error_count_dict[adjust_name] = {
             "error_sum": get_cfg.get_error_sum(error_summary_json),
             "hic_file": hic_file_path,

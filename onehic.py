@@ -50,9 +50,13 @@ def onehic(hic_file: str = typer.Option(..., "--hic-file", "-hic", help="hic fil
     # detect hic img
     hic_img_dir = os.path.join(out_path, "png")
     model_cfg = os.path.join(autohic, "src/models/cfgs/error_model.py")
-    infer_error(model_cfg, pretrained_model, hic_img_dir, out_path, device=device, score=score,
-                error_min_len=error_min_len,
-                error_max_len=error_max_len, iou_score=iou_score, chr_len=hic_real_len)
+    infer_error_result = infer_error(model_cfg, pretrained_model, hic_img_dir, out_path, device=device, score=score,
+                                     error_min_len=error_min_len,
+                                     error_max_len=error_max_len, iou_score=iou_score, chr_len=hic_real_len)
+
+    if infer_error_result:  # no detect error
+        get_cfg.write_no_error_json(os.path.join(out_path, "error_summary.json"))
+        print("No error detected")
 
     adjust_all_error(hic_file, asy_file, out_path, mdy_asy_file, black_list=black_list, tran_flag=translocation,
                      inv_flag=inversion, deb_flag=debris)

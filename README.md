@@ -381,7 +381,16 @@ bash run-asm-pipeline-post-review.sh -r adjusted.assembly genome.fasta merged_no
 
 
 
- 
+### example
+
+**If you want to run `onehic.py` with example data, please get the corresponding data from the previously linked [Pre-trained model download](#pre-trained-model-download) `example_onehic` file.**
+
+| Species                 | Hi-C File                                                    | Assembly File                                                |
+| ----------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| *Mastacembelus armatus* | [Mastacembelus.hic](https://drive.google.com/drive/folders/1y-xbFTYy5gUTCiJKrEvhNEf8oMpRRtDk) | [Mastacembelus.assembly](https://drive.google.com/drive/folders/1y-xbFTYy5gUTCiJKrEvhNEf8oMpRRtDk) |
+| *Arachis hypogaea*      | [peanut.hic](https://drive.google.com/drive/folders/1y-xbFTYy5gUTCiJKrEvhNEf8oMpRRtDk) | [peanut.assembly](https://drive.google.com/drive/folders/1y-xbFTYy5gUTCiJKrEvhNEf8oMpRRtDk) |
+
+
 
 ​                     
 

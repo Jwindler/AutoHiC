@@ -281,6 +281,75 @@ def get_cfg(cfg_dir, cfg_key=None):
         return config
 
 
+def write_no_error_infer_json(error_json):
+    """
+
+    Args:
+        error_json:
+
+    Returns:
+
+    """
+
+    with open(error_json, "w") as f:
+        temp_json = {}
+        json.dump(temp_json, f)
+
+
+def write_no_error_json(error_json):
+    """
+        write no error json
+    Args:
+        error_json: error json file
+
+    Returns:
+        None
+    """
+    with open(error_json, "w") as f:
+        temp_json = {
+            "Raw error number": {
+                "translocation": 0,
+                "inversion": 0,
+                "debris": 0
+            },
+            "Score filtered error number": {
+                "translocation": 0,
+                "inversion": 0,
+                "debris": 0
+            },
+            "Length filtered error number": {
+                "translocation": 0,
+                "inversion": 0,
+                "debris": 0
+            },
+            "Length removed error number": {
+                "translocation": 0,
+                "inversion": 0,
+                "debris": 0
+            },
+            "Overlap filtered error number": {
+                "debris": 0,
+                "inversion": 0,
+                "translocation": 0
+            },
+            "Chromosome real length filtered error number": {
+                "translocation": {
+                    "normal": 0,
+                    "abnormal": 0
+                },
+                "inversion": {
+                    "normal": 0,
+                    "abnormal": 0
+                },
+                "debris": {
+                    "normal": 0,
+                    "abnormal": 0
+                }
+            }
+        }
+        json.dump(temp_json, f)
+
+
 def get_error_sum(error_json) -> int:
     """
         calculate translocation and inversion error number
