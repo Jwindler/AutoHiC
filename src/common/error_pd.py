@@ -797,12 +797,7 @@ def infer_error(model_cfg, pretrained_model, img_path, out_path, device='cuda:0'
 
 
 def main():
-    model_cfg = "/home/jzj/HiC-OpenCV/src/models/cfgs/error_model.py"
-    pretrained_model = "/home/jzj/Jupyter-Docker/weights/detection/9_latest.pth"
-    img_path = "/home/jzj/Jupyter-Docker/buffer/AutoHiC/autohic_results/0/png"
-    out_path = "/home/jzj/Jupyter-Docker/buffer/AutoHiC/autohic_results/0"
-    infer_error(model_cfg, pretrained_model, img_path, out_path, device='cpu', score=0.9, error_min_len=15000,
-                error_max_len=20000000, iou_score=0.8, chr_len=100521399)
+    pass
 
 
 if __name__ == "__main__":

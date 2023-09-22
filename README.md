@@ -130,25 +130,11 @@ conda activate autohic
 
 **Please select your most convenient download link below, You need to download `error_model.pth`,  `chr_model.pth` , `Juicer` and `3d-dna` for the configuration of subsequent configuration files**
 
-- Google Drive (recommend)     
+| Google Drive (recommend)                                     | 百度网盘 (Baidu Netdisk)                                     | 夸克 (Quark)                                             |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | -------------------------------------------------------- |
+| [Pre-trained model](https://drive.google.com/drive/folders/1T9twnImt1CK_NrB9SBb-dg4dBENyhPTN?usp=sharing) | [Pre-trained model](https://pan.baidu.com/s/1CturvBMowVMwpeKYKjsa9w?pwd=v4et) | [Pre-trained model](https://pan.quark.cn/s/709f9e5e005b) |
 
-  [Pre-trained model](https://drive.google.com/drive/folders/1T9twnImt1CK_NrB9SBb-dg4dBENyhPTN?usp=sharing)
-
-  ​    
-
-- 百度网盘 (Baidu Netdisk)
-
-  [Pre-trained model](https://pan.baidu.com/s/1CturvBMowVMwpeKYKjsa9w?pwd=v4et) 
-
-  ​    
-
-- 夸克 (Quark)
-
-  [Pre-trained model](https://pan.quark.cn/s/709f9e5e005b) 
-
-  
-  
-  ​    
+​    
 
 ## Usages
 
@@ -309,7 +295,7 @@ Please follow the link provided for the selected species to download the appropr
 | ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | *Schistosoma haematobium* | [sh.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR16086854](https://www.ebi.ac.uk/ena/browser/view/SRR16086854) |
 | *Arachis hypogaea*        | [peanut.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR6796709](https://www.ebi.ac.uk/ena/browser/view/SRR6796709); [SRR6832914](https://www.ebi.ac.uk/ena/browser/view/SRR6832914) |
-|                           |                                                              |                                                              |
+| *Lasioglossum vierecki*   | [lv.fasta](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR14251355](https://www.ebi.ac.uk/ena/browser/view/SRR14251355) |
 
 - Reference genome : Sample genome files are available at the `example_genome` file in the pre-trained model download link : [Pre-trained model download](#pre-trained-model-download)
 
@@ -392,6 +378,10 @@ bash run-asm-pipeline-post-review.sh -r adjusted.assembly genome.fasta merged_no
 > 1. `.hic` and `.assembly` : can be obtained from 3d-dna results
 > 2. `-autohic` : the parameter represents the path of AutoHiC
 > 3. `-p`: the path to the **error pretrained model** you downloaded before  
+
+
+
+ 
 
 ​                     
 
