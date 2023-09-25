@@ -298,6 +298,7 @@ Please follow the link provided for the selected species to download the appropr
 | *Lasioglossum vierecki*   | [lv.fasta](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR14251355](https://www.ebi.ac.uk/ena/browser/view/SRR14251355) |
 
 - Reference genome : Sample genome files are available at the `example_genome` file in the pre-trained model download link : [Pre-trained model download](#pre-trained-model-download)
+- The default enzyme used for example data is `DpnII`
 
 
 
