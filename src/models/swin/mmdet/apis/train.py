@@ -17,7 +17,7 @@ from mmcv_custom.runner import EpochBasedRunnerAmp
 try:
     import apex
 except:
-    print('apex is not installed')
+    print('')
 
 
 def set_random_seed(seed, deterministic=False):

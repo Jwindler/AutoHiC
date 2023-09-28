@@ -100,8 +100,12 @@ pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
 ```
 
 > Note: Either GPU or CPU can be installed according to the above steps, and the program will automatically identify the running configuration and environment.  
+>
+> If you want to use GPU, please install [CUDA-11.3](https://developer.nvidia.com/cuda-11.3.0-download-archive) and [cuDNN-8.2](https://developer.nvidia.com/rdp/cudnn-archive) before.
 
 ​    
+
+
 
 ### Docker
 

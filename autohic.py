@@ -49,6 +49,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
     # hic error records for report
     hic_error_records = []
+    hic_error_records_epoch = 0
 
     logger.info("Check if the GPU is available")
     # check gpu whether available
@@ -160,14 +161,16 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
             "adjust_path": adjust_path
         }
 
-        hic_error_records.append(get_cfg.get_each_error(error_summary_json))
-        hic_error_records[adjust_epoch].insert(0, str(adjust_epoch) + ".hic")
         logger.info("The %s file done\n" % adjust_name)
         adjust_epoch += 1
 
     # select the min error num of hic file( default: according to the dict key)
     min_hic = min(error_count_dict, key=lambda k: error_count_dict[k]["error_sum"])
     final_adjust_path = error_count_dict[min_hic]["adjust_path"]
+
+    hic_error_records.append(get_cfg.get_each_error(os.path.join(final_adjust_path, "error_summary.json")))
+    hic_error_records[adjust_epoch].insert(0, str(hic_error_records_epoch) + ".hic")
+    hic_error_records_epoch += 1
 
     merged_nodups_path = os.path.join(top_output_dir, "hic_results", "juicer", genome_name_without_extension, "aligned",
                                       "merged_nodups.txt")
@@ -264,7 +267,8 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         adjust_error_record[3] = adjust_error_record[0] + adjust_error_record[1] + adjust_error_record[2]
         hic_error_records.append(adjust_error_record)
 
-        hic_error_records[adjust_epoch].insert(0, str(adjust_epoch) + ".hic")
+        hic_error_records[adjust_epoch].insert(0, str(hic_error_records_epoch) + ".hic")
+        hic_error_records_epoch += 1
 
         error_count_dict[adjust_epoch] = {
             "error_sum": get_cfg.get_error_sum(error_summary_json),
