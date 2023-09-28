@@ -1,3 +1,18 @@
+## [0.9.7](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.6...v0.9.7) (2023-09-28)
+
+
+### Bug Fixes
+
+* add new example and fix some code ([df3a72c](https://github.com/Jwindler/HiC-OpenCV/commit/df3a72c0d9d0392596e16b934ab7b440e29b77ab))
+* fix detect no error ([ee24737](https://github.com/Jwindler/HiC-OpenCV/commit/ee2473761820f1ebd3d19bf56914ec06c880f469))
+
+
+### Features
+
+* update some fun ([8e54581](https://github.com/Jwindler/HiC-OpenCV/commit/8e54581b33631d32e5738e683cd52d7a7a67f204))
+
+
+
 ## [0.9.6](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.5...v0.9.6) (2023-09-20)
 
 
