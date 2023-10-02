@@ -1,3 +1,12 @@
+## [0.9.8](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.7...v0.9.8) (2023-10-02)
+
+
+### Bug Fixes
+
+* fix bug ([d037d12](https://github.com/Jwindler/HiC-OpenCV/commit/d037d12b8132c6d3f6ee689b4dc76f0e9906a951))
+
+
+
 ## [0.9.7](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.6...v0.9.7) (2023-09-28)
 
 
