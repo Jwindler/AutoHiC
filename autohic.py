@@ -267,7 +267,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         adjust_error_record[3] = adjust_error_record[0] + adjust_error_record[1] + adjust_error_record[2]
         hic_error_records.append(adjust_error_record)
 
-        hic_error_records[adjust_epoch].insert(0, str(hic_error_records_epoch) + ".hic")
+        hic_error_records[hic_error_records_epoch].insert(0, str(hic_error_records_epoch) + ".hic")
         hic_error_records_epoch += 1
 
         error_count_dict[adjust_epoch] = {
