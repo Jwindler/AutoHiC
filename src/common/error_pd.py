@@ -70,6 +70,30 @@ class ERRORS:
 
         return self.df
 
+    def zoom_error2excel(self, zoom_error_json_file, output_excel_file="error_summary.xlsx"):
+        with open(zoom_error_json_file) as f:
+            json_data = json.load(f)
+
+        error_dict = {
+            "type": [],
+            "start": [],
+            "end": [],
+            "path": []
+        }
+
+        for error_type in json_data:
+            if len(json_data[error_type]) == 0:
+                continue
+            for error in json_data[error_type]:
+                error_dict["type"].append(error["category"])
+                error_dict["start"].append(error["hic_loci"][0])
+                error_dict["end"].append(error["hic_loci"][1])
+                error_dict["path"].append(error["image_id"])
+
+        df = pd.DataFrame(error_dict)
+
+        df.to_excel(output_excel_file, index=False, engine='openpyxl')
+
     # convert bbox coordinate to hic coordinate
     def bbox2hic(self, bbox, img_info):
         """
@@ -498,6 +522,8 @@ class ERRORS:
 
         with open(os.path.join(self.out_path, out_path), "w") as outfile:
             json.dump(zoomed_errors, outfile)
+
+        self.zoom_error2excel(os.path.join(self.out_path, out_path), os.path.join(self.out_path, "error_summary.xlsx"))
 
         return zoomed_errors
 

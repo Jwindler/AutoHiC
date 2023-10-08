@@ -169,7 +169,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     final_adjust_path = error_count_dict[min_hic]["adjust_path"]
 
     hic_error_records.append(get_cfg.get_each_error(os.path.join(final_adjust_path, "error_summary.json")))
-    hic_error_records[hic_error_records_epoch].insert(0, str(hic_error_records_epoch) + ".hic")
+    hic_error_records[hic_error_records_epoch].insert(0, os.path.join(final_adjust_path, "error_summary.xlsx"))
     hic_error_records_epoch += 1
 
     merged_nodups_path = os.path.join(top_output_dir, "hic_results", "juicer", genome_name_without_extension, "aligned",
@@ -267,7 +267,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         adjust_error_record[3] = adjust_error_record[0] + adjust_error_record[1] + adjust_error_record[2]
         hic_error_records.append(adjust_error_record)
 
-        hic_error_records[hic_error_records_epoch].insert(0, str(hic_error_records_epoch) + ".hic")
+        hic_error_records[hic_error_records_epoch].insert(0, os.path.join(final_adjust_path, "error_summary.xlsx"))
         hic_error_records_epoch += 1
 
         error_count_dict[adjust_epoch] = {
