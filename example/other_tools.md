@@ -1,6 +1,6 @@
 # Extending AutoHiC to other assembly software
 
-Currently, the official version of `AutoHiC` only supports `3d-dna` genome assembly. However, it can be extended to any other assembly software by following the steps below. However, the process is currently **under test** and there may be some problems. **I hope if you have any problems during the process, you can open a [issue](https://github.com/Jwindler/AutoHiC/issues/new) or contact me: jzjlab@163.com**
+Currently `AutoHiC` has `3d-dna` built into the process. If you are using `YaHS`, `SALSA`, `Pin_hic` etc, you can extend it by following the steps below. However, the process is currently being tested and there may be some problems. **I hope if you have any problems during the process, you can open a [issue](https://github.com/Jwindler/AutoHiC/issues/new) or contact me: jzjlab@163.com**
 
 
 

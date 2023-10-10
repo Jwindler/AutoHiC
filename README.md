@@ -38,10 +38,9 @@
 
 ## Notes
 
-- **We currently provide the process for using AutoHiC with other assembly software, but it is still being optimized. Please refer to this document:[Other tools](https://github.com/Jwindler/AutoHiC/tree/main/example/other_tools.md)**
+- **Currently AutoHiC has integrated `3d-dna` into the complete process. If you are using `YaHS`, `SALSA`, `Pin_hic` etc, please read this document: [Other tools](https://github.com/Jwindler/AutoHiC/tree/main/example/other_tools.md)**
 - **Currently, AutoHiC updates very fast. If you have already cloned `AutoHiC`, please delete the `AutoHiC` folder and clone it again.**
-- **Please feel free to [open an issue](https://github.com/Jwindler/AutoHiC/issues) if you encounter any problems. This is very important to help us improve AutoHiC.**
-- **If you have any questions, you can also email `jzjlab@163.com` to get help.**
+- **Please feel free to [open an issue](https://github.com/Jwindler/AutoHiC/issues) if you encounter any problems. This is very important to help us improve AutoHiC. If you have any questions, you can also email `jzjlab@163.com` to get help.**
 
 ​    
 
