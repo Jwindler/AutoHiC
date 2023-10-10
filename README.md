@@ -127,6 +127,12 @@ cd AutoHiC
 
 # activate AutoHiC
 conda activate autohic
+
+# configuration environment
+cd ./src/models/swin
+
+# install dependencies
+pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
 ```
 
 
