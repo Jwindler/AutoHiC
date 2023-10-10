@@ -1,3 +1,12 @@
+## [0.9.11](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.10...v0.9.11) (2023-10-10)
+
+
+### Features
+
+* add other tools support and update some usages ([a413301](https://github.com/Jwindler/HiC-OpenCV/commit/a4133017b7912a15103b7c5a3f75ce3051935d57))
+
+
+
 ## [0.9.8](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.7...v0.9.8) (2023-10-02)
 
 
