@@ -1,6 +1,6 @@
 # AutoHiC
 
-![GitHub release (with filter)](https://img.shields.io/github/v/release/Jwindler/AutoHiC)![a](https://img.shields.io/badge/license-MIT-brightgreen)![Docker Pulls](https://img.shields.io/docker/pulls/jwindler/autohic)[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://hub.docker.com/r/jwindler/autohic)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/Jwindler/AutoHiC)![a](https://img.shields.io/badge/license-MIT-brightgreen)![Docker Pulls](https://img.shields.io/docker/pulls/jwindler/autohic)[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://hub.docker.com/r/jwindler/autohic)[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://github.com/Jwindler/AutoHiC/tree/main/example/singularity_autohic.md)
 
 
 
