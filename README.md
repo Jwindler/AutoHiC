@@ -1,10 +1,13 @@
 # AutoHiC
 
-![](https://img.shields.io/badge/release-v0.9.10-blue)![a](https://img.shields.io/badge/license-MIT-brightgreen)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/Jwindler/AutoHiC)![a](https://img.shields.io/badge/license-MIT-brightgreen)![Docker Pulls](https://img.shields.io/docker/pulls/jwindler/autohic)[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://hub.docker.com/r/jwindler/autohic)
+
+
 
 
 
 ## Content
+
 - [AutoHiC](#autohic)
   - [Content](#content)
   - [Notes](#notes)
@@ -31,12 +34,11 @@
 
 
 
-
-
 ​     
 
 ## Notes
 
+- **We currently provide the process for using AutoHiC with other assembly software, but it is still being optimized. Please refer to this document:[Other tools](https://github.com/Jwindler/AutoHiC/tree/main/example/other_tools.md)**
 - **Currently, AutoHiC updates very fast. If you have already cloned `AutoHiC`, please delete the `AutoHiC` folder and clone it again.**
 - **Please feel free to [open an issue](https://github.com/Jwindler/AutoHiC/issues) if you encounter any problems. This is very important to help us improve AutoHiC.**
 - **If you have any questions, you can also email `jzjlab@163.com` to get help.**
@@ -134,7 +136,7 @@ conda activate autohic
 
 **Please select your most convenient download link below, You need to download `error_model.pth`,  `chr_model.pth` , `Juicer` and `3d-dna` for the configuration of subsequent configuration files**
 
-| Google Drive (recommend)                                     | 百度网盘 (Baidu Netdisk)                                     | 夸克 (Quark)                                             |
+| Google Drive (recommend)                                     | Baidu Netdisk (百度网盘)                                     | Quark (夸克)                                             |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | -------------------------------------------------------- |
 | [Pre-trained model](https://drive.google.com/drive/folders/1T9twnImt1CK_NrB9SBb-dg4dBENyhPTN?usp=sharing) | [Pre-trained model](https://pan.baidu.com/s/1CturvBMowVMwpeKYKjsa9w?pwd=v4et) | [Pre-trained model](https://pan.quark.cn/s/709f9e5e005b) |
 
