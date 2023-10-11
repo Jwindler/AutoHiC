@@ -29,7 +29,7 @@ You can also retrieve `AutoHiC.sif` files directly from the `other_tools` folder
 
 ```sh
 # built container
-singularity build your_container.sif your_image.sif
+singularity build your_container.sif AutoHiC.sif
 
 # run container
 singularity exec your_container.sif bash
