@@ -99,7 +99,7 @@ def bbox2jpg(img_path, bbox, label, out_path):
 
 def vis_error(error_xlsx, out_dir):
     df = pd.read_excel(error_xlsx)
-    if not os.path.exists(out_dir):  # check if folder is exists
+    if not os.path.exists(out_dir):  # check if folder is existing
         os.mkdir(out_dir)
     for index, row in df.iterrows():
         img_path = row['image_id']

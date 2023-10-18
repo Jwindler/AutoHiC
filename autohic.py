@@ -79,7 +79,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         if re.search(pattern, filename):
             continue
         else:
-            logger.error(f"Please check if the %s filename is configured correctly." % filename)
+            logger.error(f"Please check if the {filename} filename is configured correctly.")
             sys.exit()
 
     # Check genome length whether > 80 base
@@ -124,7 +124,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     error_count_dict = {}
     for hic_file in hic_files:
         adjust_name = hic_file.split(".")[1]
-        logger.info("Check the %s file" % adjust_name)
+        logger.info(f"Check the {adjust_name} file")
         adjust_path = os.path.join(autohic_results, adjust_name)
         os.mkdir(adjust_path)
 
@@ -138,12 +138,12 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
         # detect hic img
         hic_img_dir = os.path.join(adjust_path, "png")
-        logger.info("Detect the %s file" % adjust_name)
+        logger.info(f"Detect the {adjust_name} file")
         infer_error_result = infer_error(model_cfg, pretrained_model, hic_img_dir, adjust_path, device=device,
                                          score=score,
                                          error_min_len=error_min_len,
                                          error_max_len=error_max_len, iou_score=iou_score, chr_len=hic_real_len)
-        logger.info("Detect the %s file finished\n" % adjust_name)
+        logger.info(f"Detect the {adjust_name} file finished\n")
 
         # get error sum and error records dict
         error_summary_json = os.path.join(adjust_path, "error_summary.json")
@@ -161,7 +161,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
             "adjust_path": adjust_path
         }
 
-        logger.info("The %s file done\n" % adjust_name)
+        logger.info(f"The {adjust_name} file done\n")
         adjust_epoch += 1
 
     # select the min error num of hic file( default: according to the dict key)
@@ -242,7 +242,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
 
         # infer error
         hic_real_len = get_cfg.get_hic_real_len(hic_file_path, asy_file)
-        logger.info("Detect the %s file" % adjust_name)
+        logger.info(f"Detect the {adjust_name} file")
         infer_return = infer_error(model_cfg, pretrained_model, hic_img_dir, final_adjust_path, device=device,
                                    score=score,
                                    error_min_len=error_min_len,
@@ -251,7 +251,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
             adjust_hic_file = hic_file_path
             adjust_asy_file = asy_file
             break
-        logger.info("Detect the %s file finished\n" % adjust_name)
+        logger.info(f"Detect the {adjust_name} file finished\n")
 
         # get error sum
         error_summary_json = os.path.join(final_adjust_path, "error_summary.json")

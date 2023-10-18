@@ -129,13 +129,12 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
     Returns:
         insert peak index
     """
-    logger.debug("Test")
 
     # calculate self index
     bin_index = [i for i in
                  range(int(error_site[0] / fit_resolution) - 2,
                        math.ceil(error_site[1] / fit_resolution) + 2)]
-    logger.info("Self error peaks index : %s", bin_index)
+    logger.info(f"Self error peaks index : {bin_index}")
 
     distance_threshold = len(bin_index)
 
@@ -185,7 +184,7 @@ def get_insert_peak(peak_matrix, error_site: tuple, fit_resolution: int, remove_
 
     # get max peak index
     many_key_name = max(final_peaks, key=final_peaks.get)
-    logger.info("The greatest interaction peak index %s \n" % many_key_name)
+    logger.info(f"The greatest interaction peak index {many_key_name} \n")
 
     return many_key_name
 
@@ -221,13 +220,13 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
 
     full_len_matrix = get_full_len_matrix(hic_file, assembly_file, fit_resolution, error_site)
 
-    logger.info("Error full length matrix: %s" % full_len_matrix.shape)
+    logger.info(f"Error full length matrix: {full_len_matrix.shape}")
 
     insert_peak_index = get_insert_peak(full_len_matrix, error_site, fit_resolution)
 
     # update Insert region
     update_search_site = (insert_peak_index * fit_resolution, (insert_peak_index + 1) * fit_resolution)
-    logger.info("New insert search region: %s" % update_search_site)
+    logger.info(f"New insert search region: {update_search_site}")
 
     # get insert region max interaction ctg
     update_full_len_matrix = get_full_len_matrix(hic_file, assembly_file, min(resolutions), error_site,
@@ -239,7 +238,7 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
     final_insert_region = (update_search_site[0] + update_insert_peak_index * min(resolutions),
                            update_search_site[0] + (update_insert_peak_index + 1) * min(resolutions))
 
-    logger.info("Final insert region: %s" % final_insert_region)
+    logger.info(f"Final insert region: {final_insert_region}")
 
     # search ctg in insert peak
     contain_ctg = asy_operate.find_site_ctg_s(assembly_file, final_insert_region[0], final_insert_region[0] + 1)
@@ -301,7 +300,7 @@ def search_right_site_v8(hic_file, assembly_file, ratio, error_site: tuple, modi
 
         contain_ctg = temp_contain_ctg
 
-    logger.info("Insert ctg: ： %s" % contain_ctg)
+    logger.info(f"Insert ctg: ： {contain_ctg}")
 
     # calculate insert direction
     only_ctg_name = list(contain_ctg.keys())[0]

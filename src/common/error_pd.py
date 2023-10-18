@@ -81,14 +81,16 @@ class ERRORS:
             "path": []
         }
 
+        directory = os.path.dirname(zoom_error_json_file)
         for error_type in json_data:
             if len(json_data[error_type]) == 0:
                 continue
             for error in json_data[error_type]:
+                img_basename = file_name = os.path.basename(error["image_id"])
                 error_dict["type"].append(error["category"])
                 error_dict["start"].append(error["hic_loci"][0])
                 error_dict["end"].append(error["hic_loci"][1])
-                error_dict["path"].append(error["image_id"])
+                error_dict["path"].append(os.path.join(directory, "infer_result", img_basename))
 
         df = pd.DataFrame(error_dict)
 
@@ -269,7 +271,7 @@ class ERRORS:
                 len_filtered_errors_counter[key] = filtered_errors[filtered_errors['category'] == key].shape[0]
                 len_removed_errors_counter[key] = len_removed_errors[len_removed_errors['category'] == key].shape[0]
             except KeyError:
-                logger.info(f"KeyError: %s not in errors_dict" % key)
+                logger.info(f"KeyError: {key} not in errors_dict")
                 continue
 
         self.filter_dict["Length filtered error number"] = len_filtered_errors_counter
@@ -433,6 +435,8 @@ class ERRORS:
 
         logger.info("Filter all error category Done")
 
+        self.zoom_error2excel(os.path.join(self.out_path, out_path), os.path.join(self.out_path, "overlap_filtered_errors.xlsx"))
+
         return ans_dict, overlap_filtered_errors_counter
 
     def chr_len_filter(self, errors_dict: dict, chr_len: int = None,
@@ -472,7 +476,7 @@ class ERRORS:
                     "abnormal": len(chr_len_removed_errors[key])
                 }
             except KeyError:
-                logger.info(f"KeyError: %s not in errors_dict" % key)
+                logger.info(f"KeyError: {key} not in errors_dict")
                 chr_len_filtered_errors_counter[key] = {
                     "normal": 0,
                     "abnormal": 0
@@ -489,6 +493,9 @@ class ERRORS:
         with open(os.path.join(self.out_path, "error_summary.json"), "a") as outfile:
             json.dump(self.filter_dict, outfile)
 
+        self.zoom_error2excel(os.path.join(self.out_path, out_path),
+                              os.path.join(self.out_path, "chr_len_filtered_errors.xlsx"))
+
         return filtered_errors, chr_len_filtered_errors_counter
 
     def loci_zoom(self, errors_dict, threshold=3000, out_path="zoomed_errors.json", filter_cls=None):
@@ -503,7 +510,7 @@ class ERRORS:
         Returns:
             zoomed errors
         """
-        logger.info("zoom threshold: %s" % threshold)
+        logger.info(f"zoom threshold: {threshold}")
 
         if filter_cls is None:
             filter_cls = self.classes
@@ -517,7 +524,7 @@ class ERRORS:
                     error["hic_loci"][1] = error["hic_loci"][1] - threshold
                     zoomed_errors[key].append(error)
             except KeyError:
-                logger.info(f"KeyError: %s not in errors_dict" % key)
+                logger.info(f"KeyError: {key} not in errors_dict")
                 continue
 
         with open(os.path.join(self.out_path, out_path), "w") as outfile:
@@ -689,7 +696,7 @@ def vis_error(error_xlsx, out_dir):
         None
     """
     df = pd.read_excel(error_xlsx)
-    if not os.path.exists(out_dir):  # check if folder is exists
+    if not os.path.exists(out_dir):  # check if folder is existing
         os.mkdir(out_dir)
     for index, row in df.iterrows():
         img_path = row['image_id']
@@ -756,7 +763,7 @@ def infer_error(model_cfg, pretrained_model, img_path, out_path, device='cuda:0'
 
     classes = ("translocation", "inversion", "debris")
 
-    if not os.path.exists(out_path):  # check if folder is exists
+    if not os.path.exists(out_path):  # check if folder is existing
         os.mkdir(out_path)
 
     # get img size
@@ -815,7 +822,7 @@ def infer_error(model_cfg, pretrained_model, img_path, out_path, device='cuda:0'
     # error visulization
     # infer result out_dir
     infer_out_dir = os.path.join(out_path, "infer_result")
-    if not os.path.exists(infer_out_dir):  # check if folder is exists
+    if not os.path.exists(infer_out_dir):  # check if folder is existing
         os.mkdir(infer_out_dir)
 
     error_json = os.path.join(out_path, "chr_len_filtered_errors.json")

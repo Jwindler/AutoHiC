@@ -2,7 +2,7 @@ from mmcv.runner import OptimizerHook, HOOKS
 try:
     import apex
 except:
-    print('')
+    pass
 
 
 @HOOKS.register_module()

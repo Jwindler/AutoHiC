@@ -13,7 +13,7 @@ from mmcv.runner.checkpoint import weights_to_cpu, get_state_dict
 try:
     import apex
 except:
-    print('')
+    pass
 
 
 def save_checkpoint(model, filename, optimizer=None, meta=None):

@@ -41,13 +41,13 @@ def adjust_debris(errors_queue, hic_file, modified_assembly_file):
 
     # iterate error queue
     for error in errors_queue:
-        logger.info("Re-search %s debris location ctg information:\n" % error)
+        logger.info(f"Re-search {error} debris location ctg information:\n")
         new_error_contain_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, errors_queue[error]["start"],
                                                             errors_queue[error]["end"])
 
         new_error_contain_ctg = json.loads(new_error_contain_ctg)  # convert str to dict
 
-        logger.info("Needs to be moved ctg: %s\n", new_error_contain_ctg)
+        logger.info(f"Needs to be moved ctg: {new_error_contain_ctg}\n")
 
         error_deb_info[error] = {
             "deb_ctg": list(new_error_contain_ctg.keys())

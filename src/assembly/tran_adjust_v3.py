@@ -68,7 +68,7 @@ def adjust_translocation(errors_queue, hic_file, modified_assembly_file, black_l
                 black_num += 1
                 continue
 
-        logger.info("Needs to be moved ctg: %s\n", new_error_contains_ctg)
+        logger.info(f"Needs to be moved ctg: {new_error_contains_ctg}\n")
 
         logger.info("Search {0} translocation error insert location：".format(error))
 
