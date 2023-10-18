@@ -1,3 +1,18 @@
+# [1.0.0](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.11...v1.0.0) (2023-10-18)
+
+
+### Bug Fixes
+
+* fix search insert loci bugs ([c6c7dfc](https://github.com/Jwindler/HiC-OpenCV/commit/c6c7dfc7cf25e2e7c7723ebec17478969d097521))
+* update test py ([e5cd20d](https://github.com/Jwindler/HiC-OpenCV/commit/e5cd20d1048370dbb1a405714afb94f9633cd58f))
+
+
+### Features
+
+* add singularity ([79dfa37](https://github.com/Jwindler/HiC-OpenCV/commit/79dfa37aa3550ea9d67165932c4c821fc376aa04))
+
+
+
 ## [0.9.11](https://github.com/Jwindler/HiC-OpenCV/compare/v0.9.10...v0.9.11) (2023-10-10)
 
 
