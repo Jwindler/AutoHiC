@@ -302,11 +302,12 @@ species_name/
 
 Please follow the link provided for the selected species to download the appropriate data and organize it into the required format, can refer to : [Data Preparation](#data-preparation).
 
-| Species                   | Reference genome                                             | Hi-C Data                                                    |
-| ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| *Schistosoma haematobium* | [sh.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR16086854](https://www.ebi.ac.uk/ena/browser/view/SRR16086854) |
-| *Arachis hypogaea*        | [peanut.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR6796709](https://www.ebi.ac.uk/ena/browser/view/SRR6796709); [SRR6832914](https://www.ebi.ac.uk/ena/browser/view/SRR6832914) |
-| *Lasioglossum vierecki*   | [lv.fasta](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR14251355](https://www.ebi.ac.uk/ena/browser/view/SRR14251355) |
+| Species                    | Reference genome                                             | Hi-C Data                                                    |
+| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| *Halictus ligatus*         | [hl.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR14251351](https://www.ebi.ac.uk/ena/browser/view/SRR14251351) |
+| *Lasioglossum leucozonium* | [ll.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR14251345](https://www.ebi.ac.uk/ena/browser/view/SRR14251345) |
+| *Schistosoma haematobium*  | [sh.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR16086854](https://www.ebi.ac.uk/ena/browser/view/SRR16086854) |
+| *Arachis hypogaea*         | [peanut.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR6796709](https://www.ebi.ac.uk/ena/browser/view/SRR6796709); [SRR6832914](https://www.ebi.ac.uk/ena/browser/view/SRR6832914) |
 
 - Reference genome : Sample genome files are available at the `example_genome` file in the pre-trained model download link : [Pre-trained model download](#pre-trained-model-download)
 - The default enzyme used for example data is `DpnII`
