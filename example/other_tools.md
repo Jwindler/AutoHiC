@@ -115,6 +115,14 @@ samtools sort -@ 40 -n out.bam -o out.sorted.bam
 
 
 
+>   If you encounter the following error, it means that your bam file does not match the newly assembled genome. You need to re-align to new genome and use the updated bam file.
+>
+>   `temp.scaffolds_FINAL.asm_mnd.txt does not exist or does not contain any reads.`
+
+ 
+
+
+
 ### onehic
 
 Since the current environment used by AutoHiC is incompatible, you have to create a new environment according to the AutoHiC documentation.
