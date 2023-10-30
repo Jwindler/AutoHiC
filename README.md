@@ -17,6 +17,7 @@
   - [Installation](#installation)
     - [conda](#conda)
     - [Docker](#docker)
+    - [Singularity](#singularity)
     - [Pre-trained model download](#pre-trained-model-download)
   - [Usages](#usages)
     - [Data Preparation](#data-preparation)
@@ -29,12 +30,14 @@
     - [result](#result)
   - [Plot HiC interaction map](#plot-hic-interaction-map)
   - [One Setp AutoHiC (optional)](#one-setp-autohic-optional)
+    - [example](#example-1)
   - [Split chromosome (optional)](#split-chromosome-optional)
   - [License](#license)
 
 
 
-​     
+
+
 
 ## Notes
 
@@ -137,12 +140,18 @@ pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 
 
+### Singularity
+
+Considering that many users run AutoHiC on HPC, the build dependency environment may not be very free, and Docker has root restrictions, we provide a singularity version.  Detailed documentation: [doc](https://github.com/Jwindler/AutoHiC/blob/main/example/singularity_autohic.md#autohic-singularity-version)
+
+  
+
 ### Pre-trained model download
 
 **Please select your most convenient download link below, You need to download `error_model.pth`,  `chr_model.pth` , `Juicer` and `3d-dna` for the configuration of subsequent configuration files**
 
-| Google Drive (recommend)                                     | Baidu Netdisk (百度网盘)                                     | Quark (夸克)                                             |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | -------------------------------------------------------- |
+| Google Drive (recommend)                                                                                  | Baidu Netdisk (百度网盘)                                                      | Quark (夸克)                                             |
+| --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------- |
 | [Pre-trained model](https://drive.google.com/drive/folders/1T9twnImt1CK_NrB9SBb-dg4dBENyhPTN?usp=sharing) | [Pre-trained model](https://pan.baidu.com/s/1CturvBMowVMwpeKYKjsa9w?pwd=v4et) | [Pre-trained model](https://pan.quark.cn/s/709f9e5e005b) |
 
 ​    
@@ -302,11 +311,11 @@ species_name/
 
 Please follow the link provided for the selected species to download the appropriate data and organize it into the required format, can refer to : [Data Preparation](#data-preparation).
 
-| Species                    | Reference genome                                             | Hi-C Data                                                    |
-| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| *Halictus ligatus*         | [hl.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR14251351](https://www.ebi.ac.uk/ena/browser/view/SRR14251351) |
-| *Lasioglossum leucozonium* | [ll.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR14251345](https://www.ebi.ac.uk/ena/browser/view/SRR14251345) |
-| *Schistosoma haematobium*  | [sh.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR16086854](https://www.ebi.ac.uk/ena/browser/view/SRR16086854) |
+| Species                    | Reference genome                                                                      | Hi-C Data                                                                                                                        |
+| -------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| *Halictus ligatus*         | [hl.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg)     | [SRR14251351](https://www.ebi.ac.uk/ena/browser/view/SRR14251351)                                                                |
+| *Lasioglossum leucozonium* | [ll.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg)     | [SRR14251345](https://www.ebi.ac.uk/ena/browser/view/SRR14251345)                                                                |
+| *Schistosoma haematobium*  | [sh.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg)     | [SRR16086854](https://www.ebi.ac.uk/ena/browser/view/SRR16086854)                                                                |
 | *Arachis hypogaea*         | [peanut.fa](https://drive.google.com/drive/folders/1KDp1FPzC2cxOSirfJpX7yu0oPklexawg) | [SRR6796709](https://www.ebi.ac.uk/ena/browser/view/SRR6796709); [SRR6832914](https://www.ebi.ac.uk/ena/browser/view/SRR6832914) |
 
 - Reference genome : Sample genome files are available at the `example_genome` file in the pre-trained model download link : [Pre-trained model download](#pre-trained-model-download)
@@ -398,10 +407,10 @@ bash run-asm-pipeline-post-review.sh -r adjusted.assembly genome.fasta merged_no
 
 **If you want to run `onehic.py` with example data, please get the corresponding data from the previously linked [Pre-trained model download](#pre-trained-model-download) `example_onehic` file.**
 
-| Species                 | Hi-C File                                                    | Assembly File                                                |
-| ----------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Species                 | Hi-C File                                                                                     | Assembly File                                                                                      |
+| ----------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | *Mastacembelus armatus* | [Mastacembelus.hic](https://drive.google.com/drive/folders/1y-xbFTYy5gUTCiJKrEvhNEf8oMpRRtDk) | [Mastacembelus.assembly](https://drive.google.com/drive/folders/1y-xbFTYy5gUTCiJKrEvhNEf8oMpRRtDk) |
-| *Arachis hypogaea*      | [peanut.hic](https://drive.google.com/drive/folders/1y-xbFTYy5gUTCiJKrEvhNEf8oMpRRtDk) | [peanut.assembly](https://drive.google.com/drive/folders/1y-xbFTYy5gUTCiJKrEvhNEf8oMpRRtDk) |
+| *Arachis hypogaea*      | [peanut.hic](https://drive.google.com/drive/folders/1y-xbFTYy5gUTCiJKrEvhNEf8oMpRRtDk)        | [peanut.assembly](https://drive.google.com/drive/folders/1y-xbFTYy5gUTCiJKrEvhNEf8oMpRRtDk)        |
 
 
 
