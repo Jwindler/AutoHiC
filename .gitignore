@@ -15,7 +15,7 @@ temp/
 iterated/
 tools/*
 .DS_Store
-
+tests/
 
 # Build and Release Folders
 bin-debug/
