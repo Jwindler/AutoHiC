@@ -246,13 +246,16 @@ nohup python3.9 autohic.py -c cfg-autohic.txt > log.txt 2>&1 &
 > Notes:  
 >
 > 1. **Please specify the absolute path of the `cft-autohic.txt`**
->2. **It is recommended to specify a directory for the `log.txt`, It will record the running information of AutoHiC**
+> 2. **It is recommended to specify a directory for the `log.txt`, It will record the running information of AutoHiC**
 > 3. **Delete the nohup command if you don't want the program to run in the background.**  
 > 3. **If you modify the configuration file and re-run AutoHiC, you must manually delete the previously generated result file.**
+> 3. If a **warning** (like the image below) appears in the log while you are using it, this is normal and the program is running normally. You just have to wait for the results.
 
-  
+  ![](https://s2.loli.net/2023/11/01/ytS26NTRe1l9JdL.png)
 
-​     
+​      
+
+ 
 
 ### Results
 
