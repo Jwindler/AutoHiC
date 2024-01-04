@@ -191,35 +191,35 @@ Copy and edit the configuration file `cft-autohic.txt` in your local folder.
 
 - Setting the configuration file
 
-| options                | value                                                                                                           |
-| :--------------------- | --------------------------------------------------------------------------------------------------------------- |
-| JOB_NAME               | Name of the job                                                                                                 |
-| AutoHiC_DIR            | Path to AutoHiC  *eg:  /path_to/AutoHiC*                                                                        |
-| RESULT_DIR             | Path to AutoHiC result                                                                                          |
-| N_CPU                  | Number of CPU allows per job   *Default: 10*                                                                    |
-|                        |                                                                                                                 |
-|                        |                                                                                                                 |
-| SPECIES_NAME           | Name of the species                                                                                             |
-| REFERENCE_GENOME       | Path to reference genome                                                                                        |
-|                        |                                                                                                                 |
-| JUICER_DIR             | Path to Juicer                                                                                                  |
-| FASTQ_DIR              | Path to HiC reads (Just path to the `rawdata` directory, not fastq folder)                                      |
-| ENZYME                 | Restriction enzyme  *eg:  "HindIII" or "MboI"*                                                                  |
-|                        |                                                                                                                 |
-| TD_DNA_DIR             | Path to 3d-dna                                                                                                  |
+| options                | value                                                        |
+| :--------------------- | ------------------------------------------------------------ |
+| JOB_NAME               | Name of the job                                              |
+| AutoHiC_DIR            | Path to AutoHiC  *eg:  /path_to/AutoHiC*                     |
+| RESULT_DIR             | Path to AutoHiC result                                       |
+| N_CPU                  | Number of CPU allows per job   *Default: 10*                 |
+|                        |                                                              |
+|                        |                                                              |
+| SPECIES_NAME           | Name of the species                                          |
+| REFERENCE_GENOME       | Path to reference genome                                     |
+|                        |                                                              |
+| JUICER_DIR             | Path to Juicer                                               |
+| FASTQ_DIR              | Path to HiC reads (Just path to the `rawdata` directory, not fastq folder) |
+| ENZYME                 | Restriction enzyme  *eg:  "HindIII" or "MboI"*               |
+|                        |                                                              |
+| TD_DNA_DIR             | Path to 3d-dna                                               |
 | NUMBER_OF_EDIT_ROUNDS  | Specifies number of iterative rounds for misjoin correction   *Default: 2* **Modification is not recommended.** |
-|                        |                                                                                                                 |
-|                        |                                                                                                                 |
-| ERROR_PRETRAINED_MODEL | Path to error pretrained model  *eg: /path/AutoHiC/src/models/cfgs/error_model.pth*                             |
-| CHR_PRETRAINED_MODEL   | Path to chromosome pretrained model  *eg: /path/AutoHiC/src/models/cfgs/chr_model.pth*                          |
-|                        |                                                                                                                 |
-| TRANSLOCATION_ADJUST   | Whether to adjust for translocation errors  *Default: True*                                                     |
-| INVERSION_ADJUST       | Whether to adjust for inversion errors  *Default: True*                                                         |
-| DEBRIS_ADJUST          | Whether to adjust for debris errors  *Default: True*                                                            |
-| ERROR_MIN_LEN          | Minimum error length  *Default: 15000*                                                                          |
-| ERROR_MAX_LEN          | Maximum error length *Default: 20000000*                                                                        |
-| ERROR_FILTER_IOU_SCORE | Overlapping error filtering threshold  *Default: 0.8* **Modification is not recommended.**                      |
-| ERROR_FILTER_SCORE     | Error filtering threshold  *Default: 0.9* **Modification is not recommended.**                                  |
+|                        |                                                              |
+|                        |                                                              |
+| ERROR_PRETRAINED_MODEL | Path to error pretrained model  *eg: /path/AutoHiC/src/models/cfgs/error_model.pth* |
+| CHR_PRETRAINED_MODEL   | Path to chromosome pretrained model  *eg: /path/AutoHiC/src/models/cfgs/chr_model.pth* |
+|                        |                                                              |
+| TRANSLOCATION_ADJUST   | Whether to adjust for translocation errors  *Default: True*  |
+| INVERSION_ADJUST       | Whether to adjust for inversion errors  *Default: True*      |
+| DEBRIS_ADJUST          | Whether to adjust for debris *Default: False*                |
+| ERROR_MIN_LEN          | Minimum error length  *Default: 15000*                       |
+| ERROR_MAX_LEN          | Maximum error length *Default: 20000000*                     |
+| ERROR_FILTER_IOU_SCORE | Overlapping error filtering threshold  *Default: 0.8* **Modification is not recommended.** |
+| ERROR_FILTER_SCORE     | Error filtering threshold  *Default: 0.9* **Modification is not recommended.** |
 
 
 

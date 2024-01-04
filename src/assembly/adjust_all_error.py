@@ -21,8 +21,8 @@ from src.utils.get_cfg import get_ratio
 from src.utils.logger import logger
 
 
-def adjust_all_error(hic_file_path, asy_file_path, divided_error, modified_asy_file, black_list=None,
-                     tran_flag=True, inv_flag=True, deb_flag=True):
+def adjust_all_error(hic_file_path, asy_file_path, divided_error, modified_asy_file,
+                     tran_flag, inv_flag, deb_flag, black_list=None):
     """
         adjust all error
     Args:
