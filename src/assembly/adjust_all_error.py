@@ -22,7 +22,7 @@ from src.utils.logger import logger
 
 
 def adjust_all_error(hic_file_path, asy_file_path, divided_error, modified_asy_file,
-                     tran_flag, inv_flag, deb_flag, black_list=None):
+                     tran_flag, inv_flag, deb_flag=False, black_list=None):
     """
         adjust all error
     Args:
@@ -51,7 +51,7 @@ def adjust_all_error(hic_file_path, asy_file_path, divided_error, modified_asy_f
         asy_file_path = modified_asy_file
         logger.info("Translocation rectify done\n")
     else:
-        logger.info("No translocation error\n")
+        logger.info("Do not rectify translocation error\n")
 
     # inversion rectify
     if os.path.exists(os.path.join(divided_error, "inversion_error.json")) and inv_flag:
@@ -61,9 +61,9 @@ def adjust_all_error(hic_file_path, asy_file_path, divided_error, modified_asy_f
 
         cut_errors_ctg(inversion_queue, hic_file_path, asy_file_path, modified_asy_file)
         asy_file_path = modified_asy_file
-        logger.info("Inversion rectify done")
+        logger.info("Inversion rectify done\n")
     else:
-        logger.info("No inversion error")
+        logger.info("Do not rectify inversion error\n")
 
     # debris rectify
     if os.path.exists(os.path.join(divided_error, "debris_error.json")) and deb_flag:
@@ -72,9 +72,9 @@ def adjust_all_error(hic_file_path, asy_file_path, divided_error, modified_asy_f
             debris_queue = json.loads(debris_queue)
 
         cut_errors_ctg(debris_queue, hic_file_path, asy_file_path, modified_asy_file)
-        logger.info("Debris rectify done")
+        logger.info("Debris rectify done\n")
     else:
-        logger.info("No debris error")
+        logger.info("Do not rectify debris error\n")
 
     # if not detect error, return old assembly file
     if os.path.exists(modified_asy_file) is False:
