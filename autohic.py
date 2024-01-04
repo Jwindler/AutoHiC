@@ -209,9 +209,14 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
             divided_error = os.path.dirname(adjust_asy_file)
         mdy_asy_file = os.path.join(final_adjust_path, "test.assembly")
 
-        translocation_flag = cfg_data["TRANSLOCATION_ADJUST"]
-        inversion_flag = cfg_data["INVERSION_ADJUST"]
-        debris_flag = cfg_data["DEBRIS_ADJUST"]
+        def get_true_false(flag):
+            if flag == "True":
+                return True
+            else:
+                return False
+        translocation_flag = get_true_false(cfg_data["TRANSLOCATION_ADJUST"])
+        inversion_flag = get_true_false(cfg_data["INVERSION_ADJUST"])
+        debris_flag = get_true_false(cfg_data["DEBRIS_ADJUST"])
 
         black_list_path = os.path.join(autohic_results, str(int(adjust_epoch) - 1), "black_list.txt")
         if first_flag:
