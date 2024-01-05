@@ -40,6 +40,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     error_min_len = int(cfg_data["ERROR_MIN_LEN"])
     error_max_len = int(cfg_data["ERROR_MAX_LEN"])
     iou_score = float(cfg_data["ERROR_FILTER_IOU_SCORE"])
+    error_max_epoch = int(cfg_data["ERROR_MAX_EPOCH"])
     genome_name_without_extension, _ = os.path.splitext(os.path.basename(cfg_data["REFERENCE_GENOME"]))
 
     top_output_dir = os.path.join(cfg_data["RESULT_DIR"], cfg_data["JOB_NAME"])
@@ -285,8 +286,8 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         adjust_hic_file = hic_file_path
         adjust_asy_file = asy_file
         adjust_epoch += 1
-        if adjust_epoch > 5:  # adjust 5 times at most
-            logger.info("Adjust 5 times at most, stop adjusting\n")
+        if adjust_epoch > error_max_epoch:  # adjust 5 times at most
+            logger.info(f"Adjust {error_max_epoch} times at most, stop adjusting\n")
             break
     logger.info("Iterative tuning error completed\n")
 
