@@ -164,7 +164,7 @@ def split_list(lst, val):
     return [lst[:lst.index(val)], lst[lst.index(val) + 1:]] if val in lst else [lst]
 
 
-def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
+def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file, hic_len):
     """
         divide chr
     Args:
@@ -172,6 +172,7 @@ def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
         hic_file: hic file
         assembly_file: assembly file
         modified_assembly_file: modified assembly file
+        hic_len: hic length
 
     Returns:
 
@@ -200,7 +201,10 @@ def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file):
             assembly_file = modified_assembly_file
 
         # find ctg
-        error_contains_ctg = asy_operate.find_site_ctg_s(assembly_file, chr_len, chr_len + 2)
+        if chr_len + 2 >= hic_len:
+            error_contains_ctg = asy_operate.find_site_ctg_s(assembly_file, chr_len - 2, chr_len)
+        else:
+            error_contains_ctg = asy_operate.find_site_ctg_s(assembly_file, chr_len, chr_len + 2)
 
         # json format
         contain_ctg = json.loads(error_contains_ctg)
@@ -322,7 +326,7 @@ def split_chr(img_file, asy_file, hic_file, cfg_file, device='cpu'):
 
     # split chr
     modified_assembly_file = os.path.join(os.path.dirname(img_file), "chr.assembly")
-    divide_chr(chr_output, hic_file, asy_file, modified_assembly_file)
+    divide_chr(chr_output, hic_file, asy_file, modified_assembly_file, hic_len)
 
     # get chr number
     with open(chr_output, 'r') as file:

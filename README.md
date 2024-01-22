@@ -103,9 +103,13 @@ cd ./src/models/swin
 pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
 ```
 
-> Note: Either GPU or CPU can be installed according to the above steps, and the program will automatically identify the running configuration and environment.  
+> Note: 
 >
-> If you want to use GPU, please install [CUDA-11.3](https://developer.nvidia.com/cuda-11.3.0-download-archive) and [cuDNN-8.2](https://developer.nvidia.com/rdp/cudnn-archive) before.
+> 1.   If `src/straw.cpp:34:10: fatal error: curl/curl.h: No such file or directory` is encountered during installation, enter the following command `sudo apt-get install libcurl-dev libcurl4-openssl-dev libssl-dev` in the terminal or refer: `https://stackoverflow.com/questions/11471690/curl-h-no-such-file-or-directory`.
+>
+> 2.   Either GPU or CPU can be installed according to the above steps, and the program will automatically identify the running configuration and environment.  
+>
+> 3.   If you want to use GPU, please install [CUDA-11.3](https://developer.nvidia.com/cuda-11.3.0-download-archive) and [cuDNN-8.2](https://developer.nvidia.com/rdp/cudnn-archive) before.
 
 ​    
 
