@@ -168,6 +168,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     # select the min error num of hic file( default: according to the dict key)
     min_hic = min(error_count_dict, key=lambda k: error_count_dict[k]["error_sum"])
     final_adjust_path = error_count_dict[min_hic]["adjust_path"]
+    logger.info(f"Select the {final_adjust_path} epoch\n")
 
     hic_error_records.append(get_cfg.get_each_error(os.path.join(final_adjust_path, "error_summary.json")))
     hic_error_records[hic_error_records_epoch].insert(0, os.path.join(final_adjust_path, "error_summary.xlsx"))
