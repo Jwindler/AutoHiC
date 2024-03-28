@@ -69,7 +69,7 @@ def mul_process(hic_file, genome_id, out_file, methods, process_num, _resolution
         if resolution < 500:  # resolution < 500 is not for inference
             continue
 
-        logger.info("Processing resolution: %s\n" % resolution)
+        # logger.info("Processing resolution: %s\n" % resolution)
 
         # create resolution folder
         resolution_folder = os.path.join(hic_class.genome_folder, str(resolution))
