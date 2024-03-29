@@ -238,8 +238,8 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
         run_sh = "bash " + os.path.join(cfg_data["TD_DNA_DIR"],
                                         "run-asm-pipeline-post-review.sh") + " -r " + mdy_asy_file + " " + \
                  original_genome + " " + merged_nodups_path + " > " + adjust_log + " 2>&1"
+        logger.info("Run command : %s\n" % run_sh)
         get_cfg.subprocess_popen(run_sh, cwd=final_adjust_path)
-        # print(run_sh)
 
         # generate hic img
         hic_img_dir = os.path.join(final_adjust_path, "png")
