@@ -293,7 +293,7 @@ species_name/
 
 **The main output:**
 
-1. fasta file with a "`_autohic`" suffix containing the output scaffolds at the chromosome level.
+1. fasta file with a "`_autohic`" suffix containing the output scaffolds at the chromosome level. If the size of `genome_autohic.fasta ` differs significantly from the genome, it is recommended to use `genome.FINAL.fasta` (`Path:/path/AutoHiC/autohic_results/chromosome`) for optimal results. If the genome scaffolding effect is poor during chromosome assignment, the model may have errors in identifying chromosomes, which can lead to issues. Other scaffolding software can be used, followed by the use of AutoHiC to correct and assign the chromosomes. Please refer to [Other tools](https://github.com/Jwindler/AutoHiC/blob/main/example/other_tools.md).
 
 2. The `result.html` file, which provides detailed information before and after genome correction, where the error occurred, and a heat map of HiC interaction and chromosome length before and after. 
 
