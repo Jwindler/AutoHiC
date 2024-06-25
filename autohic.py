@@ -107,10 +107,10 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     run_sh_dir = os.path.join(cfg_data["AutoHiC_DIR"], "src/common/run.sh")
     run_sh = "bash " + run_sh_dir + " " + cfg_dir
     get_cfg.subprocess_popen(run_sh)
-    logger.info("Run Juicer and  3d-dna finished\n")
+    logger.info("Juicer and  3d-dna finished\n")
 
     # Stage 2: select the min error num hic file
-    logger.info("Stage 2: Select the min error number of  hic file\n")
+    logger.info("Stage 2: Select the min error number of hic file\n")
 
     # get hic file
     hic_file_dir = os.path.join(top_output_dir, "hic_results", "3d-dna")
@@ -189,7 +189,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
                           os.path.join(final_adjust_path, "translocation_error.json"))}
 
     # generate before adjust whole hic map png
-    logger.info("Generate before adjust whole hic map png\n")
+    logger.info("Generate before adjust whole hic heatmap\n")
     plot_chr(adjust_hic_file, genome_name="", chr_len_file=None, out_path=final_adjust_path,
              fig_format="png")
     ctg_hic_map = os.path.join(final_adjust_path, "chromosome.png")
@@ -292,16 +292,16 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
             break
     logger.info("Iterative tuning error completed\n")
 
-    logger.info("Stage 3: Split chromosome\n")
+    logger.info("Stage 3: Assign chromosome\n")
     chr_adjust_path = os.path.join(autohic_results, "chromosome")
     os.mkdir(chr_adjust_path)
 
     # generate whole hic map png
-    logger.info("Generate adjusted whole hic map png\n")
+    logger.info("Generate adjusted whole hic heatmap png\n")
     plot_chr_inter(adjust_hic_file, adjust_asy_file, chr_adjust_path, fig_format="png")
 
     # infer chromosome img
-    logger.info("Chromosome number detection\n")
+    logger.info("Chromosome detection\n")
     img_path = os.path.join(chr_adjust_path, "chromosome.png")
     chr_asy_file, chr_number = split_chr(img_path, adjust_asy_file, adjust_hic_file, cfg_dir, device=device)
 
@@ -311,10 +311,10 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
                                     "run-asm-pipeline-post-review.sh") + " -r " + chr_asy_file + " " + \
              original_genome + " " + merged_nodups_path + " > " + chr_adjust_log + " 2>&1"
     get_cfg.subprocess_popen(run_sh, cwd=chr_adjust_path)
-    logger.info("Chromosome split completed\n")
+    logger.info("Chromosome assignment completed\n")
 
     # Generate report
-    logger.info("Generate genome report\n")
+    logger.info("Generate assembly report\n")
     chr_fa_name = genome_name_without_extension + ".FINAL.fasta"
     chr_fa_path = os.path.join(chr_adjust_path, chr_fa_name)
     if os.path.exists(chr_fa_path) is False:
@@ -371,7 +371,7 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
                    ctg_hic_map,
                    chr_hic_map, inversion_pairs, translocation_pairs, debris_pairs, hic_error_records,
                    template_path, report_output=top_output_dir)
-    logger.info("Genome report completed\n")
+    logger.info("Report generated\n")
     logger.info("AutoHiC finished\n")
 
 
