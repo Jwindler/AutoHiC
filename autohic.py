@@ -32,9 +32,9 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     # initialing logger
     logger.info("AutoHiC start running ...\n")
 
-    logger.info("Get configuration items\n")
     # get cfg
     cfg_data = get_cfg.get_cfg(cfg_dir)
+    logger.info("Get configuration items\n")
 
     score = float(cfg_data["ERROR_FILTER_SCORE"])
     error_min_len = int(cfg_data["ERROR_MIN_LEN"])
@@ -52,8 +52,8 @@ def whole(cfg_dir: str = typer.Option(..., "--config", "-c", help="autohic confi
     hic_error_records = []
     hic_error_records_epoch = 0
 
-    logger.info("Check if the GPU is available")
     # check gpu whether available
+    logger.info("Check if the GPU is available")
     device = ('cuda:0' if torch.cuda.is_available() else 'cpu')
     if device == 'cpu':
         logger.info("GPU is not available, AutoHiC will run on CPU\n")

@@ -59,12 +59,7 @@ Email: jzjlab@163.com
 
 **If you used AutoHiC in your research, please cite us:**
 
-```sh
-AutoHiC: a deep-learning method for automatic and accurate chromosome-level genome assembly
-Zijie Jiang, Zhixiang Peng, Yongjiang Luo, Lingzi Bie, Yi Wang
-
-bioRxiv 2023.08.27.555031; doi: https://doi.org/10.1101/2023.08.27.555031
-```
+**Zijie Jiang, Zhixiang Peng, Zhaoyuan Wei, Jiahe Sun, Yongjiang Luo, Lingzi Bie, Guoqing Zhang, Yi Wang, A deep learning-based method enables the automatic and accurate assembly of chromosome-level genomes, Nucleic Acids Research, 2024;, gkae789, https://doi.org/10.1093/nar/gkae789**
 
 
 
