@@ -34,24 +34,25 @@ singularity build your_container.sif AutoHiC.sif
 # run container
 singularity exec your_container.sif bash
 
-# enter the working directory
-cd /home/autohic
-# This directory contains juicer and 3d-dna.
-
-# clone AutoHiC
-git clone https://github.com/Jwindler/AutoHiC.git
+# init conda 
+/home/autohic/miniconda3/bin/conda init bash
+source ~/.bashrc
 
 # activate AutoHiC
 conda activate autohic
 
-# configuration environment
-cd /home/autohic/AutoHiC/src/models/swin
+# clone AutoHiC
+git clone https://github.com/Jwindler/AutoHiC.git
 
+# configuration environment
 # install dependencies
+cd ~/AutoHiC/src/models/swin
 pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 # return to AutoHiC word folder
-cd /home/autohic/AutoHiC
+cd ~/AutoHiC
+
+# This directory(/home/autohic) contains juicer and 3d-dna.
 ```
 
 
