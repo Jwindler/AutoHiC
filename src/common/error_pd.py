@@ -476,7 +476,7 @@ class ERRORS:
                     "abnormal": len(chr_len_removed_errors[key])
                 }
             except KeyError:
-                logger.info(f"KeyError: {key} not in errors_dict")
+                logger.info(f"Warning: {key} not in errors_dict")
                 chr_len_filtered_errors_counter[key] = {
                     "normal": 0,
                     "abnormal": 0
@@ -524,7 +524,7 @@ class ERRORS:
                     error["hic_loci"][1] = error["hic_loci"][1] - threshold
                     zoomed_errors[key].append(error)
             except KeyError:
-                logger.info(f"KeyError: {key} not in errors_dict")
+                logger.info(f"Warning: {key} not in errors_dict")
                 continue
 
         with open(os.path.join(self.out_path, out_path), "w") as outfile:
