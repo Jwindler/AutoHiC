@@ -380,7 +380,7 @@ python3.9 visualizer.py -hic example.hic
 cd /home/ubuntu/AutoHic  
 
 # run onehic
-python3.9 onehic.py -hic test.hic -asy test.assembly -autohic /home/ubuntu/AutoHic -p pretrained.pth -out ./
+python3.9 onehic.py -hic test.hic -asy test.assembly -autohic /home/ubuntu/AutoHic -p error_model.pth -out ./
 
 # run 3d-dna to get fasta
 bash run-asm-pipeline-post-review.sh -r adjusted.assembly genome.fasta merged_nodups.txt 
