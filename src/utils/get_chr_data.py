@@ -165,131 +165,82 @@ def split_list(lst, val):
 
 
 def divide_chr(chr_len_txt, hic_file, assembly_file, modified_assembly_file, hic_len):
-    """
-        divide chr
-    Args:
-        chr_len_txt: chromosome length txt
-        hic_file: hic file
-        assembly_file: assembly file
-        modified_assembly_file: modified assembly file
-        hic_len: hic length
-
-    Returns:
-
-    """
+    """Split after inclusive chromosome ends without making empty fragments."""
     chr_len_list = []
-    with open(chr_len_txt, 'r') as f:
-        for line in f.readlines():
-            line_split = line.strip().split("\t")
-            if line_split[0] == "Chr":
-                continue
-            chr_len_list.append(int(line_split[2]))
-
-    # get ratio of hic file and assembly file
-    ratio = get_ratio(hic_file, assembly_file)
-
-    # class AssemblyOperate class
-    asy_operate = AssemblyOperate(assembly_file, ratio)
-
-    flag = True  # flag to judge whether the file is modified
-
-    # cut chr ctg
-    for chr_len in chr_len_list:
-        if flag:
-            flag = False
-        else:
-            assembly_file = modified_assembly_file
-
-        # find ctg
-        if chr_len + 2 >= hic_len:
-            error_contains_ctg = asy_operate.find_site_ctg_s(assembly_file, chr_len - 2, chr_len)
-        else:
-            error_contains_ctg = asy_operate.find_site_ctg_s(assembly_file, chr_len, chr_len + 2)
-
-        # json format
-        contain_ctg = json.loads(error_contains_ctg)
-
-        # cut final insert location ctg right point
-        contain_ctg_second = list(contain_ctg.keys())[0]
-
-        second_cut_ctg = {contain_ctg_second: math.ceil(chr_len * ratio) + 1}
-
-        # if boundary equal, no need to cut
-        if contain_ctg[contain_ctg_second]["start"] != chr_len:
-            # check whether the ctg is already cut
-            if "fragment" in contain_ctg_second or "debris" in contain_ctg_second:
-                asy_operate.re_cut_ctg_s(assembly_file, second_cut_ctg, modified_assembly_file)
-            else:
-                asy_operate.cut_ctg_s(assembly_file, second_cut_ctg, modified_assembly_file)
-    logger.info("Cut errors ctg done \n")
-
-    # get chr cut ctg order
-    chr_cut_ctg_order = []
-    for chr_len in chr_len_list:
-        # find ctg
-        error_contains_ctg = asy_operate.find_site_ctg_s(modified_assembly_file, chr_len, chr_len + 2)
-
-        # json format
-        contain_ctg = json.loads(error_contains_ctg)
-
-        # cut final insert location ctg right point
-        contain_ctg_second = list(contain_ctg.keys())[0]
-
-        each_chr_cut_ctg_order = asy_operate.get_ctg_info(ctg_name=contain_ctg_second,
-                                                          new_asy_file=modified_assembly_file)
-        chr_cut_ctg_order.append(str(each_chr_cut_ctg_order["ctg_order"]))
-
-    # cut chr ctg order
-    ctg_s = OrderedDict()  # ctg_s information
-    ctg_orders = []  # ctg_s orders
-
-    # get ctg number and total length
-    with open(modified_assembly_file, "r") as f:
+    with open(chr_len_txt, "r") as f:
         for line in f:
-            if line.startswith(">"):
-                temp_line = line.strip().split()
-                ctg_s[temp_line[0]] = {
-                    "order": temp_line[1],
-                    "length": temp_line[2]
-                }
-            else:
-                temp_line = line.strip().split(" ")
-                ctg_orders.append(temp_line)
-    one_dim_ctg_orders = [item for sublist in ctg_orders for item in sublist]
+            fields = line.strip().split("\t")
+            if fields and fields[0] != "Chr":
+                chr_len_list.append(int(fields[2]))
+    if (not chr_len_list or chr_len_list[-1] != hic_len or
+            any(end <= 0 for end in chr_len_list) or
+            any(a >= b for a, b in zip(chr_len_list, chr_len_list[1:]))):
+        raise ValueError("Chromosome ends must increase and finish at the inference span")
 
-    # cut to two dimension list
-    def split_chr_list(chars_list, split_chars_list):
-        # define a variable to store the start index of current sub list
-        start_index = 0
+    ratio = get_ratio(hic_file, assembly_file)
+    if not math.isfinite(ratio) or ratio <= 0:
+        raise ValueError("Invalid assembly/map coordinate ratio")
+    # AutoHiC uses inclusive ends in map coordinates; cuts start at the next base.
+    boundaries = [math.ceil(end * ratio) for end in chr_len_list]
+    if len(set(boundaries)) != len(boundaries):
+        raise ValueError("Chromosome ends collapse to the same assembly coordinate")
+    if os.path.abspath(assembly_file) == os.path.abspath(modified_assembly_file):
+        raise ValueError("Use a separate chromosome assembly output")
+    with open(assembly_file) as source, open(modified_assembly_file, "w") as output:
+        output.write(source.read())
+    asy_operate = AssemblyOperate(modified_assembly_file, ratio)
 
-        # define an empty list to store the two dimension list after split
-        result_list = []
+    for boundary in boundaries:
+        cut_site = boundary + 1
+        ctg_s, ctg_orders = asy_operate._get_ctg_orders(modified_assembly_file)
+        by_order = {int(value["order"]): (name, int(value["length"]))
+                    for name, value in ctg_s.items()}
+        offset = 0
+        for order in (value for group in ctg_orders for value in group):
+            name, length = by_order[abs(int(order))]
+            if length <= 0:
+                raise ValueError("Nonpositive input fragment length")
+            start, end = offset + 1, offset + length
+            offset = end
+            # Existing joins and the very last base require regrouping only.
+            # The strict lower bound prevents a zero-length left fragment;
+            # the upper bound prevents a zero-length right fragment.
+            if start < cut_site <= end:
+                operation = (asy_operate.re_cut_ctg_s if
+                             "fragment" in name or "debris" in name else
+                             asy_operate.cut_ctg_s)
+                operation(modified_assembly_file, {name: cut_site}, modified_assembly_file)
+                break
 
-        # loop through chars_list
-        for i in range(len(chars_list)):
-            if chars_list[i] in split_chars_list:
-                result_list.append(chars_list[start_index:i])
-                start_index = i
+    ctg_s, ctg_orders = asy_operate._get_ctg_orders(modified_assembly_file)
+    lengths = {int(value["order"]): int(value["length"]) for value in ctg_s.values()}
+    orders = [value for group in ctg_orders for value in group]
+    if (any(length <= 0 for length in lengths.values()) or
+            len(orders) != len(set(abs(int(order)) for order in orders)) or
+            set(abs(int(order)) for order in orders) != set(lengths)):
+        raise ValueError("Invalid chromosome assembly fragments or placements")
 
-        # if there are still some chars left, add them to the last sub list
-        if start_index < len(chars_list):
-            result_list.append(chars_list[start_index:])
-
-        return result_list
-
-    result_orders = split_chr_list(one_dim_ctg_orders, chr_cut_ctg_order)
-
-    # update order and write to new file
-    with open(modified_assembly_file, "w") as f:
-        # write the new ctg information
-        for key, value in ctg_s.items():
-            f.write(key + " " + value["order"] + " " + value["length"] + "\n")
-
-        # write new ctg order information
-        for ctg_order in result_orders:
-            f.write(" ".join(ctg_order) + "\n")
-
-    logger.info("Get ctg_s information done \n")
+    # Regroup by cumulative ends, rather than querying a two-base interval:
+    # that query can pick the wrong side of a join or no fragment at EOF.
+    boundary_set = set(boundaries)
+    groups, current, offset, reached = [], [], 0, set()
+    for order in orders:
+        current.append(order)
+        offset += lengths[abs(int(order))]
+        if offset in boundary_set:
+            groups.append(current)
+            current = []
+            reached.add(offset)
+    if reached != boundary_set:
+        raise ValueError("Chromosome end is outside the assembly or was not split")
+    if current:
+        groups.append(current)  # retain all unassigned fragments after the model span
+    with open(modified_assembly_file, "w") as output:
+        for name, value in ctg_s.items():
+            output.write(name + " " + value["order"] + " " + value["length"] + "\n")
+        for group in groups:
+            output.write(" ".join(group) + "\n")
+    logger.info("Chromosome boundary cutting and regrouping done\n")
 
 
 def split_chr(img_file, asy_file, hic_file, cfg_file, device='cpu'):
